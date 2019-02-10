@@ -31,3 +31,14 @@ C:\Users\User\Source\Repos\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.AssemblyInfoInpu
 C:\Users\User\Source\Repos\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.AssemblyInfo.cs
 C:\Users\User\Source\Repos\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.dll
 C:\Users\User\Source\Repos\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.pdb
+D:\workspace\Projects\RPGT\TRP\bin\Debug\netcoreapp2.1\TRP.deps.json
+D:\workspace\Projects\RPGT\TRP\bin\Debug\netcoreapp2.1\TRP.runtimeconfig.json
+D:\workspace\Projects\RPGT\TRP\bin\Debug\netcoreapp2.1\TRP.runtimeconfig.dev.json
+D:\workspace\Projects\RPGT\TRP\bin\Debug\netcoreapp2.1\TRP.dll
+D:\workspace\Projects\RPGT\TRP\bin\Debug\netcoreapp2.1\TRP.pdb
+D:\workspace\Projects\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.csprojResolveAssemblyReference.cache
+D:\workspace\Projects\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.csproj.CoreCompileInputs.cache
+D:\workspace\Projects\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.AssemblyInfoInputs.cache
+D:\workspace\Projects\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.AssemblyInfo.cs
+D:\workspace\Projects\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.dll
+D:\workspace\Projects\RPGT\TRP\obj\Debug\netcoreapp2.1\TRP.pdb
