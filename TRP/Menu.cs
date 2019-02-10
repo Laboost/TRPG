@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,7 +18,7 @@ namespace TRP
             this.options = options;
         }
         
-        public void Show()
+        public Action Show()
         {
             Console.WriteLine(this.title);
             int count = 1;
@@ -28,12 +28,20 @@ namespace TRP
                 ++count;
             }
 
-            int selection = 0;
-            while (!int.TryParse(Console.ReadLine(), out selection))
+            int selection = 1;
+            bool valid_input = false;
+            while (!valid_input)
             {
-                Console.WriteLine("Please enter a valid selection");
+                int.TryParse(Console.ReadLine(), out selection);
+                if (selection > 0 && selection < this.options.Count)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
             }
 
+            return this.options[selection - 1].Action;
 
         }
     }
