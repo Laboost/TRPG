@@ -694,11 +694,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\TRP\\TRP\\TRP.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\RPGT\\TRP\\TRP.csproj",
       "projectName": "TRP",
-      "projectPath": "C:\\Users\\User\\source\\repos\\TRP\\TRP\\TRP.csproj",
+      "projectPath": "C:\\Users\\User\\Source\\Repos\\RPGT\\TRP\\TRP.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\TRP\\TRP\\obj\\",
+      "outputPath": "C:\\Users\\User\\Source\\Repos\\RPGT\\TRP\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

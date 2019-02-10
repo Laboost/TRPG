@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-//test
+//tests
 namespace TRP
 {
     class Program
