@@ -15,42 +15,52 @@ namespace TRP
 
     class Fighter : Body
     {
-        protected string[] inventory;
-        protected int hitPoints;         
+        protected Item[] inventory = { new Item("PlaceHolder", 0) };
+        protected int hitPoints;
         protected int attackPoints;
 
         public int AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
         public int HitPoints { get { return hitPoints; } set { hitPoints = value; } }
-        public string[] Inventory { get { return inventory; } }
+        public Item[] Inventory
+        {
+            get { return inventory; }
+            set { inventory = value; }
+        }
     }
-
     class Player : Fighter
     {
-        private Weapon equippedWeapon;
-        public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value;} }
+        private Weapon equippedWeapon = new Weapon("Sword",4);
+        public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value; } }
+        
 
-        public Player(string name, int hitPoints , int power , Weapon equippedWeapon)
+          public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
         {
             this.equippedWeapon = equippedWeapon;
             this.name = name;
             this.hitPoints = hitPoints;
-            this.power = power;
+            this.power = power;           
         }
 
-        public void UpdateAP()
+        public void UpdateAP() //updates the player AttackPoints
         {
-            this.attackPoints = equippedWeapon.Power + this.power;
+            attackPoints = equippedWeapon.Power + power;
+        }
+
+        public void EquipWeapon(Weapon weapon)
+        {
+            UnEquipWeapon();
+            equippedWeapon = weapon;
+        }
+
+        public void UnEquipWeapon()
+        {
+            inventory[inventory.Length] = equippedWeapon;
+            equippedWeapon = null;
         }
     }
 
     class Monster : Fighter
-    {
-        #region Private Vars
-
-        private string[] loot;
-
-        #endregion
-    
+    { 
         public Monster(string name, int hitPoints, int attackPoints)
         {
             this.name = name;
@@ -58,4 +68,5 @@ namespace TRP
             this.attackPoints = attackPoints;
         }
     }
-} 
+}
+    
