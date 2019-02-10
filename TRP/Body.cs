@@ -46,13 +46,13 @@ namespace TRP
             attackPoints = equippedWeapon.Power + power;
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public void EquipWeapon(Weapon weapon) //equip given weapon
         {
             UnEquipWeapon();
             equippedWeapon = weapon;
         }
 
-        public void UnEquipWeapon()
+        public void UnEquipWeapon() //unequip current weapon
         {
             inventory[inventory.Count - 1] = equippedWeapon;
             equippedWeapon = null;
