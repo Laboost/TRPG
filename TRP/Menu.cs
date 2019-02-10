@@ -23,9 +23,12 @@ namespace TRP
 
     class Option
     {
-        public string text;
-        public Action action;
-        
+        private string text;
+        private Action action;
+
+        public string Text { get { return text; } set { text = value; } }
+        public Action Action { get { return action; } set { action = value; } }
+
         public Option(string text, Action action)
         {
             this.text = text;
