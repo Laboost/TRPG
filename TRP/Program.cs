@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -31,7 +31,8 @@ namespace TRP
 
             
             Menu m = new Menu("Asd", new List<Option> { new Option("text1", test_option), new Option("text2", test_option) });
-            m.Show();
+            Action action = m.Show();
+            action();
             test();           //REMOVE WHEN FINISHED
             StartingMenu();
 
