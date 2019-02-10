@@ -37,7 +37,12 @@ namespace TRP
 
         public static void ShowStats(Body body)
         {
-            if (body is Fighter)
+            if (body is Player)
+            {
+                Player player = (Player)body;
+                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + player.EquippedWeapon.Name + "\n");
+            }
+            else if (body is Fighter)
             {
                 Fighter fighter = (Fighter)body;
                 Console.WriteLine("Name:" + body.Name + " HP:" + fighter.HitPoints + "\n");
