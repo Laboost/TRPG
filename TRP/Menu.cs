@@ -18,6 +18,24 @@ namespace TRP
             this.options = options;
         }
         
+        public void Show()
+        {
+            Console.WriteLine(this.title);
+            int count = 1;
+            foreach (Option option in this.options)
+            {
+                Console.WriteLine("[{0}] {1}", count, option.Text);
+                ++count;
+            }
+
+            int selection = 0;
+            while (!int.TryParse(Console.ReadLine(), out selection))
+            {
+                Console.WriteLine("Please enter a valid selection");
+            }
+
+
+        }
     }
 
 
