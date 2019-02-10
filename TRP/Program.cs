@@ -13,7 +13,7 @@ namespace TRP
 
         static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 4), new Weapon("Stick", 2), }; //load all game items
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
-        static Player Player1 = new Player("Shoval", 100, 1,(Weapon)Items[0]);
+        static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]);
 
         #endregion
 
@@ -59,6 +59,7 @@ namespace TRP
             if (Player1.Inventory.Count > 0)
             {
                 Console.Clear();
+                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
                 for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
                 {
                     Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory               
@@ -74,7 +75,6 @@ namespace TRP
                 System.Threading.Thread.Sleep(1000);
             }
             Console.Clear();
-            ActionMenu();
         }
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
@@ -290,6 +290,7 @@ namespace TRP
             if (input == 2)
             {
                 Inventory();
+                ActionMenu();
             }
             if (input == 3)
             {
