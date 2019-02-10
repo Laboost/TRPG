@@ -56,7 +56,10 @@ namespace TRP
             int lastCell = monsters.Length - 1;
             Random rnd = new Random();
             int randomCell = rnd.Next(0, lastCell);
-            Monster enemy = monsters[randomCell];
+            Monster enemy = new Monster("null",0,0);
+            enemy.Name = monsters[randomCell].Name;
+            enemy.AttackPoints = monsters[randomCell].AttackPoints;
+            enemy.HitPoints = monsters[randomCell].HitPoints;
             return (enemy);
         }
 
@@ -121,7 +124,7 @@ namespace TRP
 
         public static void Attack(Fighter attacker, Fighter target) //one fighter attacks another
         {
-           target.hitPoints -= attacker.AttackPoints;
+           target.HitPoints -= attacker.AttackPoints;
         }
 
         public static bool PlayersTurn(Fighter enemy) //handles the player turn , returns true if player escaped

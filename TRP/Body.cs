@@ -9,25 +9,25 @@ namespace TRP
         protected string name;
         protected int power;
 
-        public string Name { get { return name; } }
-        public int Power { get { return power; } }
+        public string Name { get { return name; } set { name = value; } }
+        public int Power { get { return power; } set { power = value; } }
     }
 
     class Fighter : Body
     {
         protected string[] inventory;
-        public int hitPoints;              //fix!
+        protected int hitPoints;         
         protected int attackPoints;
 
-        public int AttackPoints { get { return attackPoints; } set { attackPoints = AttackPoints; } }
-        public int HitPoints { get { return hitPoints; } set { hitPoints = HitPoints; } }
+        public int AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
+        public int HitPoints { get { return hitPoints; } set { hitPoints = value; } }
         public string[] Inventory { get { return inventory; } }
     }
 
     class Player : Fighter
     {
         private Weapon equippedWeapon;
-        public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = EquippedWeapon;} }
+        public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value;} }
 
         public Player(string name, int hitPoints , int power , Weapon equippedWeapon)
         {
@@ -58,4 +58,4 @@ namespace TRP
             this.attackPoints = attackPoints;
         }
     }
-}
+} 
