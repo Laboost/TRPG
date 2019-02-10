@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -17,11 +17,20 @@ namespace TRP
 
         #endregion
 
+
+        public static void test_option()
+        {
+            Console.WriteLine("asd");
+        }
+
         static void Main(string[] args)
         {           
             Item[] Items;
             Monster[] monsters;
             Player Player1;
+
+            
+            Menu m = new Menu("Asd", { new Option("1", test_option), new Option("2", test_option) });
 
             test();           //REMOVE WHEN FINISHED
             StartingMenu();
