@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace TRP
     {
         #region load objects
 
-        static Item[] Items = { new Weapon("Sword", 4), new Weapon("Spike", 4), new Weapon("Stick", 2), }; //load all game items
+        static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 4), new Weapon("Stick", 2), }; //load all game items
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Shoval", 100, 1,(Weapon)Items[0]);
 
@@ -30,16 +31,7 @@ namespace TRP
 
         public static void test() //Test
         {
-            /*Console.WriteLine(Player1.Inventory[0].Name);
-
-            for (int i = 0; i <= Player1.Inventory.Length - 1; i++)
-            {
-                
-                
-                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory
-                
-            }
-            System.Threading.Thread.Sleep(10000);*/
+            Console.WriteLine(Items.Count);
         }
 
 
@@ -59,7 +51,7 @@ namespace TRP
 
         public static void Inventory()
         {
-            for (int i = 0; i <= Player1.Inventory.Length - 1; i++)
+            for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
             {
                 if (i != 0)
                 {
@@ -72,10 +64,11 @@ namespace TRP
             System.Threading.Thread.Sleep(5500);
         } //WIP
 
-        public static void LootMonster(Monster monster, Player player)
-        {
-            player.Inventory[player.Inventory.Length] = monster.Inventory[monster.Inventory.Length];
-        } //transfer Monster item to the player
+        public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
+        {           
+            Item loot = monster.Inventory[monster.Inventory.Count - 1];
+            player.Inventory.Add(loot);
+        } 
 
         #endregion
            
@@ -83,18 +76,18 @@ namespace TRP
 
         public static Item GenerateItem() //generate a random Item
         {
-            int lastCell = Items.Length - 1;
+            int lastCell = Items.Count - 1;
             Random rnd = new Random();
-            int randomCell = rnd.Next(0, lastCell);
+            int randomCell = rnd.Next(0, lastCell + 1);
             Item item = Items[randomCell];
             return item;
         }
 
         public static Monster GenerateMonster() //generate a random monster
         {
-            int lastCell = monsters.Length;
+            int lastCell = monsters.Length - 1;
             Random rnd = new Random();          //pick random number
-            int randomCell = rnd.Next(0, lastCell);
+            int randomCell = rnd.Next(0, lastCell + 1);
 
             Monster enemy = new Monster("null",0,0);
             enemy.Name = monsters[randomCell].Name;
@@ -102,7 +95,7 @@ namespace TRP
             enemy.HitPoints = monsters[randomCell].HitPoints;
 
             Item item = GenerateItem();
-            enemy.Inventory[enemy.Inventory.Length - 1] = item; //add loot to the monster
+            enemy.Inventory.Add(item); //add loot to the monster
 
             return (enemy);
         }

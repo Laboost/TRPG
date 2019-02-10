@@ -15,13 +15,13 @@ namespace TRP
 
     class Fighter : Body
     {
-        protected Item[] inventory = { new Item("PlaceHolder", 0) };
+        protected List<Item> inventory = new List<Item>();
         protected int hitPoints;
         protected int attackPoints;
 
         public int AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
         public int HitPoints { get { return hitPoints; } set { hitPoints = value; } }
-        public Item[] Inventory
+        public List<Item> Inventory
         {
             get { return inventory; }
             set { inventory = value; }
@@ -54,7 +54,7 @@ namespace TRP
 
         public void UnEquipWeapon()
         {
-            inventory[inventory.Length] = equippedWeapon;
+            inventory[inventory.Count] = equippedWeapon;
             equippedWeapon = null;
         }
     }
