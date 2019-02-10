@@ -31,7 +31,7 @@ namespace TRP
 
         public static void test() //Test
         {
-            Console.WriteLine(Items.Count);
+
         }
 
 
@@ -49,23 +49,31 @@ namespace TRP
 
         #region Item Methods
 
-        public static void Inventory()
+        public static void Inventory() //Handles The inventory UI
         {
-            for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
+            if (Player1.Inventory.Count > 0)
             {
-                if (i != 0)
+                Console.Clear();
+                for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
                 {
-                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory
+                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory               
                 }
+                int input;
+                input = Convert.ToInt32(Console.ReadLine());
+                Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1]);
             }
-            int input;
-             input = Convert.ToInt32(Console.ReadLine());
-            Player1.EquipWeapon((Weapon)Player1.Inventory[input]);        
-            System.Threading.Thread.Sleep(5500);
-        } //WIP
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Inventory is empty");
+                System.Threading.Thread.Sleep(1000);
+            }
+            Console.Clear();
+            ActionMenu();
+        }
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
-        {           
+        {
             Item loot = monster.Inventory[monster.Inventory.Count - 1];
             player.Inventory.Add(loot);
         } 

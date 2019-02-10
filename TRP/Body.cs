@@ -54,7 +54,7 @@ namespace TRP
 
         public void UnEquipWeapon()
         {
-            inventory[inventory.Count] = equippedWeapon;
+            inventory[inventory.Count - 1] = equippedWeapon;
             equippedWeapon = null;
         }
     }
