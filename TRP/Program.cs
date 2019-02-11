@@ -10,7 +10,7 @@ namespace TRP
     {
         #region load objects
 
-        static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 4), new Weapon("Stick", 2), }; //load all game items
+        static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]);
 
@@ -115,6 +115,7 @@ namespace TRP
 
         public static void Battle()
         {
+            Player1.UpdateAP();
             Monster Enemy = GenerateMonster();
             Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
             bool endBattle = false;
