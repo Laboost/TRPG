@@ -50,6 +50,7 @@ namespace TRP
         {
             UnEquipWeapon();
             equippedWeapon = weapon;
+            UpdateAP();
         }
 
         public void UnEquipWeapon() //unequip current weapon

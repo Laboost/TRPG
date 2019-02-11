@@ -190,21 +190,18 @@ namespace TRP
             bool endTurn = false;
             while (endTurn == false)
             {
-                Player1.UpdateAP();
                 Console.Clear();
                 ShowStats(enemy);
 
                 int action = FightMenu();
                 if (action == 1) //Attack
                 {
-                    Player1.UpdateAP();
                     Attack(Player1, enemy);
                     return "Attacked";
                 }
                 else if (action == 2) //Inventory
                 {
                     Inventory();
-                    Player1.UpdateAP();
                 }
                 else if (action == 3) //run!
                 {
