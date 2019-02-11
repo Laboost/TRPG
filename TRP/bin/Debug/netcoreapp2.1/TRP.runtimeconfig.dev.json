@@ -1,8 +1,13 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
+<<<<<<< HEAD
       "C:\\Users\\omer5\\.dotnet\\store\\|arch|\\|tfm|",
       "C:\\Users\\omer5\\.nuget\\packages",
+=======
+      "C:\\Users\\shoval\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\shoval\\.nuget\\packages",
+>>>>>>> Inventory_System
       "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
     ]
   }
