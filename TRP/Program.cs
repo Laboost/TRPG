@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using System.Collections.Generic;
-
 
 namespace TRP
 {
@@ -19,21 +17,12 @@ namespace TRP
         #endregion
 
 
-        public static void test_option()
-        {
-            Console.WriteLine("asd");
-        }
-
         static void Main(string[] args)
         {           
             Item[] Items;
             Monster[] monsters;
             Player Player1;
 
-            
-            Menu m = new Menu("Asd", new List<Option> { new Option("text1", test_option), new Option("text2", test_option) });
-            Action action = m.Show();
-            action();
             test();           //REMOVE WHEN FINISHED
             StartingMenu();
 
