@@ -33,7 +33,7 @@ namespace TRP
             while (!valid_input)
             {
                 int.TryParse(Console.ReadLine(), out selection);
-                if (selection > 0 && selection < this.options.Count)
+                if (selection > 0 && selection <= this.options.Count)
                 {
                     valid_input = true;
                     break;
