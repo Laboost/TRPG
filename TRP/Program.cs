@@ -14,9 +14,7 @@ namespace TRP
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
 
-        //List<Option> StartingMenuList = new List<Option>(new Option("Start a new Game", ActionMenu()));
-
-        //Menu StartingMenu = new Menu("Main Menu" , )
+       // Menu StartingMenu1 = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", ActionMenu) });
 
         #endregion
 
