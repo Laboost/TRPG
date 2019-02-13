@@ -13,24 +13,23 @@ namespace TRP
         static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
-
-       
+        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", ActionMenu) });
 
         #endregion
 
 
         static void Main(string[] args)
         {
-           // Menu StartingMenu1 = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", ActionMenu) });
-            test();           //REMOVE WHEN FINISHED
-            StartingMenu();
+
+            test();
+            StartingMenu.Show()();
 
           System.Threading.Thread.Sleep(5000);
         }
 
         public static void test() //Test
         {
-            //StartingMenu1.Show();
+           
         }
 
 
@@ -240,7 +239,7 @@ namespace TRP
         #endregion
 
         #region Menus
-        public static void StartingMenu()
+        public static void StartingMenu1()
         {
             #region Options
             string[] options =

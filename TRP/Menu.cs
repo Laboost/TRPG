@@ -40,7 +40,7 @@ namespace TRP
                 }
                 Console.WriteLine("Please enter a valid selection: ");
             }
-
+            Console.Clear();
             return this.options[selection - 1].Action;
 
         }
