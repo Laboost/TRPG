@@ -14,9 +14,15 @@ namespace TRP
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
         static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", ActionMenu) });
-
+        static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
+            new Option("Search for Trouble", Battle),
+            new Option("Open Inventory", Inventory)            
+        });
+        static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
+            new Option("Attack", Battle)
+        });
         #endregion
-
+"Open Inventory","Run!"
 
         static void Main(string[] args)
         {
@@ -260,7 +266,7 @@ namespace TRP
             }
         } //Main Menu
 
-        public static void ActionMenu()
+        public static void ActionMenu1()
         {
             #region Options
             string[] options =
@@ -296,7 +302,7 @@ namespace TRP
 
         } // idle menu
 
-        public static int FightMenu()
+        public static int FightMenu1()
         {
             #region Options
             string[] options =
