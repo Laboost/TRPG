@@ -79,10 +79,12 @@ namespace TRP
         private string text;
         private Action action;
         private int choiceNum;
+        private Func<Weapon> weaponOption;
 
         public string Text { get { return text; } set { text = value; } }
         public Action Action { get { return action; } set { action = value; } }
         public int ChoiceNum { get { return choiceNum; } set { choiceNum = value; } }
+        public Func<Weapon> WeaponOption { get{return weaponOption;} set{weaponOption = value;} }
 
         public Option(string text, Action action)
         {
@@ -96,6 +98,11 @@ namespace TRP
             this.choiceNum = choiceNum;
         }
 
+        public Option (string text , Func<Weapon> weaponOption)
+        {
+            this.text = text;
+            this.weaponOption = weaponOption;
+        }
 
     }
 }
