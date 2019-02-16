@@ -13,22 +13,33 @@ namespace TRP
         static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
-        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", ActionMenu) });
+
         static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", Battle),
-            new Option("Open Inventory", Inventory)            
+            new Option("Open Inventory", Inventory)
         });
-        static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
-            new Option("Attack", Battle)
-        });
+        static void ShowActionMenu()
+        {
+            ActionMenu.Show()();
+        }
+
+        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game",ShowActionMenu)});
+        static void ShowStartMenu()
+        {
+            StartingMenu.Show()();
+        }
+
+            /* 
+         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
+            new Option("Attack", (Action)Battle)
+        });*/
         #endregion
-"Open Inventory","Run!"
 
         static void Main(string[] args)
         {
 
             test();
-            StartingMenu.Show()();
+            ShowStartMenu();
 
           System.Threading.Thread.Sleep(5000);
         }
@@ -172,7 +183,7 @@ namespace TRP
             else
             {
                 Console.Clear();
-                ActionMenu();
+                ShowActionMenu();
             }
 
 
@@ -262,7 +273,7 @@ namespace TRP
             if (input == 1)
             {
                 Console.Clear();
-                ActionMenu();
+                ShowActionMenu();
             }
         } //Main Menu
 
@@ -292,7 +303,7 @@ namespace TRP
             if (input == 2)
             {
                 Inventory();
-                ActionMenu();
+                ShowActionMenu();
             }
             if (input == 3)
             {
@@ -302,7 +313,7 @@ namespace TRP
 
         } // idle menu
 
-        public static int FightMenu1()
+        public static int FightMenu()
         {
             #region Options
             string[] options =
