@@ -26,7 +26,7 @@ namespace TRP
             {
                 Console.WriteLine("[{0}] {1}", count, option.Text);
                 ++count;
-            }
+            }        
 
             int selection = 1;
             bool valid_input = false;

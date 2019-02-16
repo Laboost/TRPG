@@ -32,7 +32,8 @@ namespace TRP
 
         static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory", (Action)ActionMenuInventory)
+            new Option("Open Inventory", (Action)ActionMenuInventory),
+            new Option("Show Stats", (Action)ShowPlayerStats)
         }); // Idle Menu
         static void ShowActionMenu()
         {
@@ -79,6 +80,11 @@ namespace TRP
                 Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
 
         } //shows a body stats
+        public static void ShowPlayerStats()
+        {
+            ShowStats(Player1);
+            ShowActionMenu();
+        }
 
         #region Item Methods
        /* public static void NewInventory()
@@ -247,7 +253,8 @@ namespace TRP
         public static void RefreshScreen(Monster Enemy) //used for battle screen refresh
         {
             Console.Clear();
-            ShowStats(Enemy);
+            ShowStats(Enemy);     
+            ShowStats(Player1);
             OnlyShowFightMenu();
         }
 
@@ -263,6 +270,7 @@ namespace TRP
             {
                 Console.Clear();
                 ShowStats(enemy);
+                ShowStats(Player1);
 
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
@@ -324,7 +332,6 @@ namespace TRP
             #endregion
 
             Console.WriteLine('\n');
-            ShowStats(Player1);
         } //Only SHOWS fight menu
 
         #endregion
