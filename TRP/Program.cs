@@ -14,6 +14,8 @@ namespace TRP
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
 
+        //static Menu InventoryMenu = new Menu("Inventory", new List<Option>
+
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
             new Option("Open Inventory",2),
@@ -26,7 +28,7 @@ namespace TRP
 
         static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", Battle),
-            new Option("Open Inventory", Inventory)
+            new Option("Open Inventory", ActionMenuInventory)
         }); // Idle Menu
         static void ShowActionMenu()
         {
@@ -97,6 +99,30 @@ namespace TRP
                 System.Threading.Thread.Sleep(1000);
             }
             Console.Clear();
+        }
+
+        public static void ActionMenuInventory() //Handles The inventory UI
+        {
+            if (Player1.Inventory.Count > 0)
+            {
+                Console.Clear();
+                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
+                for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
+                {
+                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory               
+                }
+                int input;
+                input = Convert.ToInt32(Console.ReadLine());
+                Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1]);
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Inventory is empty");
+                System.Threading.Thread.Sleep(1000);
+            }
+            Console.Clear();
+            ShowActionMenu();
         }
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
