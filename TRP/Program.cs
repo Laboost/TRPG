@@ -14,7 +14,11 @@ namespace TRP
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
 
-        //static Menu InventoryMenu = new Menu("Inventory", new List<Option>
+        static Menu InventoryMenu = new Menu("Inventory", new List<Option> { });
+        static void ShowInventoryMenu()
+        {
+            InventoryMenu.ChooseAction();
+        }
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
@@ -55,7 +59,7 @@ namespace TRP
 
         public static void test() //Test
         {
-
+            
         }
 
 
@@ -77,6 +81,18 @@ namespace TRP
         } //shows a body stats
 
         #region Item Methods
+        public static void NewInventory()
+        {
+            Console.Clear();
+            Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
+            for (int i = 0; i < Player1.Inventory.Count; i++)
+            {
+                InventoryMenu.Options[i].Text = Player1.Inventory[i].Name;
+                //InventoryMenu.Options[i].Action = Player1.EquipWeapon((Weapon)(Player1.Inventory[i]));
+            }
+            ShowInventoryMenu();
+
+        }
 
         public static void Inventory() //Handles The inventory UI
         {

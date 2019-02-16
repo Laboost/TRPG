@@ -95,5 +95,11 @@ namespace TRP
             this.text = text;
             this.choiceNum = choiceNum;
         }
+
+        public Option (string text , Object action)
+        {
+            this.text = text;
+            this.action = (Action)action;
+        }
     }
 }
