@@ -14,25 +14,32 @@ namespace TRP
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
 
+        static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
+            new Option("Attack", 1),
+            new Option("Open Inventory",2),
+            new Option("Run!",3)
+        }); //Battle Menu
+        static int ShowFightMenu()
+        {
+           return FightMenu.ChooseNum();
+        } //return fight menu option number
+
         static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", Battle),
             new Option("Open Inventory", Inventory)
-        });
+        }); // Idle Menu
         static void ShowActionMenu()
         {
-            ActionMenu.Show()();
-        }
+            ActionMenu.ChooseAction()();
+        } //return action menu action
 
-        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game",ShowActionMenu)});
+        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game",ShowActionMenu)}); //Main Menu
         static void ShowStartMenu()
         {
-            StartingMenu.Show()();
-        }
+            StartingMenu.ChooseAction()();
+        } //return starting menu action
 
-            /* 
-         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
-            new Option("Attack", (Action)Battle)
-        });*/
+
         #endregion
 
         static void Main(string[] args)
@@ -46,7 +53,7 @@ namespace TRP
 
         public static void test() //Test
         {
-           
+
         }
 
 
@@ -193,7 +200,7 @@ namespace TRP
         {
             Console.Clear();
             ShowStats(Enemy);
-            ShowFightMenu();
+            OnlyShowFightMenu();
         }
 
         public static void Attack(Fighter attacker, Fighter target) //one fighter attacks another
@@ -201,7 +208,7 @@ namespace TRP
            target.HitPoints -= attacker.AttackPoints;
         }
 
-        public static string PlayersTurn(Fighter enemy) //handles the player turn , returns true if player escaped
+        public static string PlayersTurn(Fighter enemy) //handles the player turn 
         {
             bool endTurn = false;
             while (endTurn == false)
@@ -209,7 +216,7 @@ namespace TRP
                 Console.Clear();
                 ShowStats(enemy);
 
-                int action = FightMenu();
+                int action = ShowFightMenu();
                 if (action == 1) //Attack
                 {
                     Attack(Player1, enemy);
@@ -256,85 +263,10 @@ namespace TRP
         #endregion
 
         #region Menus
-        public static void StartingMenu1()
+        public static void OnlyShowFightMenu()
         {
             #region Options
-            string[] options =
-                { "Start a new Game", };
-            for (int i = 0; i < (options.Length); i++)
-            {
-                Console.WriteLine("[" + (i + 1) + "] " + options[i]);
-            }
-            #endregion
-
-            int input;
-            input = Convert.ToInt32(Console.ReadLine());
-
-            if (input == 1)
-            {
-                Console.Clear();
-                ShowActionMenu();
-            }
-        } //Main Menu
-
-        public static void ActionMenu1()
-        {
-            #region Options
-            string[] options =
-                { "Search for Trouble","Open Inventory" };
-            for (int i = 0; i < (options.Length); i++)
-            {
-                Console.WriteLine("[" + (i + 1) + "] " + options[i]);
-            }
-
-            #endregion
-
-            Console.WriteLine('\n');
-            ShowStats(Player1);
-
-            int input;
-            input = Convert.ToInt32(Console.ReadLine());
-
-            if (input == 1)
-            {
-                Console.Clear();
-                Battle();
-            }
-            if (input == 2)
-            {
-                Inventory();
-                ShowActionMenu();
-            }
-            if (input == 3)
-            {
-                FightMenu();
-            }
-
-
-        } // idle menu
-
-        public static int FightMenu()
-        {
-            #region Options
-            string[] options =
-                { "Attack","Open Inventory","Run!" };
-            for (int i = 0; i < (options.Length); i++)
-            {
-                Console.WriteLine("[" + (i + 1) + "] " + options[i]);
-            }
-            #endregion
-
-            Console.WriteLine('\n');
-            ShowStats(Player1);
-
-            int input;
-            input = Convert.ToInt32(Console.ReadLine());
-            return input;
-        } //fight menu
-
-        public static void ShowFightMenu()
-        {
-            #region Options
+            Console.WriteLine("Fight Menu");
             string[] options =
                 { "Attack","Open Inventory","Run!" };
             for (int i = 0; i < (options.Length); i++)
