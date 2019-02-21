@@ -11,7 +11,7 @@ namespace TRP
         #region load objects
 
         static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
-        static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
+        static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 7, 5), new Monster("Tiger", 5, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -29,9 +29,15 @@ namespace TRP
         static void Main(string[] args)
         {
             #region load menus
+
+            Menu InventoryMenu = new Menu("Inventory", new List<Option> {new Option("Exit",ExitMenu)});
+            void ShowInventoryMenu()
+            {
+                InventoryMenu.ChooseAction();
+            }
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory", (Action)ActionMenuInventory),
+            new Option("Open Inventory", (Action)ShowInventoryMenu),
             new Option("Show Stats", (Action)ShowPlayerStats)
         }); // Idle Menu
             void ShowActionMenu()
@@ -40,11 +46,7 @@ namespace TRP
                 ShowActionMenu();
             } //return action menu action
 
-            Menu InventoryMenu = new Menu("Inventory", new List<Option> { });
-            void ShowInventoryMenu()
-            {
-                InventoryMenu.ChooseAction();
-            }
+
 
             Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu) }); //Main Menu
             void ShowStartMenu()
@@ -56,6 +58,7 @@ namespace TRP
 
             #endregion
             Player1.ItemAdded += InventoryMenu.OnItemAdded;
+            Player1.ItemRemoved += InventoryMenu.OnItemRemoved;
             test();
             ShowStartMenu();
 
@@ -68,7 +71,10 @@ namespace TRP
             
         }
 
-
+        public static void ExitMenu()
+        {
+            return;
+        }
         public static void ShowStats(Body body)
         {
             if (body is Player)
@@ -91,8 +97,9 @@ namespace TRP
         }
 
         #region Item Methods
-        /* public static void NewInventory()
+         public static void NewInventory()
          {
+            /*
              Console.Clear();
              Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
              for (int i = 0; i < Player1.Inventory.Count; i++)
@@ -100,9 +107,9 @@ namespace TRP
                  InventoryMenu.Options[i].Text = Player1.Inventory[i].Name;
                  //InventoryMenu.Options[i].WeaponOption = Player1.EquipWeapon((Weapon)(Player1.Inventory[i]));
              }
-             ShowInventoryMenu();
+             ShowInventoryMenu();*/
 
-         }*/
+         }
 
 
 

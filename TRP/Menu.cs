@@ -72,9 +72,15 @@ namespace TRP
 
         }
 
-        public void OnItemAdded(object sender, EventArgs e)
+        public void OnItemAdded(object sender, ItemEventArgs passedItem)
         {
-            Console.WriteLine("item added");
+
+            options.Add(new Option(passedItem.item.Name, () => passedItem.player.EquipWeapon((Weapon)passedItem.item, passedItem.slot)));
+        }
+
+        public void OnItemRemoved(object sender, ItemEventArgs passedItem)
+        {
+            options.RemoveAt(passedItem.slot);
         }
         
 
@@ -83,7 +89,7 @@ namespace TRP
 
     class Option
     {
-        private string text;
+        private string text; 
         private Action action;
         private int choiceNum;
         private Func<Weapon> weaponOption;
@@ -104,12 +110,5 @@ namespace TRP
             this.text = text;
             this.choiceNum = choiceNum;
         }
-
-        public Option (string text , Func<Weapon> weaponOption)
-        {
-            this.text = text;
-            this.weaponOption = weaponOption;
-        }
-
     }
 }
