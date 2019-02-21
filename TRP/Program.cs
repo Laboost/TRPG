@@ -30,14 +30,9 @@ namespace TRP
         {
             #region load menus
 
-            Menu InventoryMenu = new Menu("Inventory", new List<Option> {new Option("Exit",ExitMenu)});
-            void ShowInventoryMenu()
-            {
-                InventoryMenu.ChooseAction();
-            }
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory", (Action)ShowInventoryMenu),
+            new Option("Open Inventory", (Action)Inventory),
             new Option("Show Stats", (Action)ShowPlayerStats)
         }); // Idle Menu
             void ShowActionMenu()
@@ -57,8 +52,6 @@ namespace TRP
 
 
             #endregion
-            Player1.ItemAdded += InventoryMenu.OnItemAdded;
-            Player1.ItemRemoved += InventoryMenu.OnItemRemoved;
             test();
             ShowStartMenu();
 
@@ -97,73 +90,37 @@ namespace TRP
         }
 
         #region Item Methods
-         public static void NewInventory()
-         {
-            /*
-             Console.Clear();
-             Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
-             for (int i = 0; i < Player1.Inventory.Count; i++)
-             {
-                 InventoryMenu.Options[i].Text = Player1.Inventory[i].Name;
-                 //InventoryMenu.Options[i].WeaponOption = Player1.EquipWeapon((Weapon)(Player1.Inventory[i]));
-             }
-             ShowInventoryMenu();*/
 
-         }
-
-
-
-        public static void Inventory() //Handles The inventory UI
-        {
-            if (Player1.Inventory.Count > 0)
+            public static void Inventory() //Handles The inventory UI
             {
                 Console.Clear();
+                Console.WriteLine("Enter a Weapon's number to equip it.\n");
                 Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
                 for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
                 {
                     Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory  
                 }
-                Console.WriteLine("[0] Quit");
-                int input;
-                input = Convert.ToInt32(Console.ReadLine());
-                Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1] , (input - 1));
+                Console.WriteLine("\n[0] Quit");
+                int input = 1;
+                bool valid_input = false;
+                while (!valid_input)
+                {
+                    int.TryParse(Console.ReadLine(), out input);
+                    if (input <= Player1.Inventory.Count)
+                    {
+                        valid_input = true;
+                        break;
+                    }
+                    Console.WriteLine("Please enter a valid selection: ");
+                }
+                if (input > 0)
+                {
+                    Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1], (input - 1));
+                }
+             Console.Clear();
             }
-            else
-            {
-                Console.Clear();
-                Console.WriteLine("Inventory is empty");
-                System.Threading.Thread.Sleep(1000);
-            }
-            Console.Clear();
-        }
 
-        public static void ActionMenuInventory() //Handles The inventory UI
-        {
-            if (Player1.Inventory.Count > 0)
-            {
-                Console.Clear();
-                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
-                for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
-                {
-                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory               
-                }
-                Console.WriteLine(" \n[0] Quit");
-                int input;
-                input = Convert.ToInt32(Console.ReadLine());
-                if (input != 0)
-                {
-                    Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1] , (input - 1));
-                }
-                
-            }
-            else
-            {
-                Console.Clear();
-                Console.WriteLine("Inventory is empty");
-                System.Threading.Thread.Sleep(1000);
-            }
-            Console.Clear();
-        }
+            
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {

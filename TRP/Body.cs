@@ -32,11 +32,6 @@ namespace TRP
         private Weapon equippedWeapon = new Weapon("Sword", 4);
         public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value; } }
 
-        public delegate void InventoryEventHandler(object source, ItemEventArgs args);
-
-        public event InventoryEventHandler ItemAdded;
-        public event InventoryEventHandler ItemRemoved;
-
         public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
         {
             this.equippedWeapon = equippedWeapon;
@@ -62,32 +57,18 @@ namespace TRP
         {
             AddToInventory(equippedWeapon);
             equippedWeapon = null;
+            
         }
 
         public void AddToInventory(Item item) //adds item to player's inventory
         {
             Inventory.Add(item);
-            OnItemAdded(item,inventory.Count - 1,this);
         }
         public void RemoveFromInventory(int slot) //removes item from player's inventory
         {
             Inventory.RemoveAt(slot);
         }
 
-        protected virtual void OnItemAdded(Item addedItem , int itemSlot , Player player)
-        {
-            if (ItemAdded != null)
-            {
-                ItemAdded(this,new ItemEventArgs() {item = addedItem, slot = itemSlot, player = player } );
-            }
-        }
-        protected virtual void onItemRemoved(Item addedItem , int itemSlot, Player player)
-        {
-            if (ItemRemoved!= null)
-            {
-                ItemRemoved(this, new ItemEventArgs() { item = addedItem, slot = itemSlot, player = player });
-            }
-        }
     }
 
     class Monster : Fighter
@@ -99,15 +80,5 @@ namespace TRP
             this.attackPoints = attackPoints;
         }
     }
-
-    #region EventArgsRegion
-
-    class ItemEventArgs : EventArgs
-    {
-        public Item item { get; set; }
-        public int slot { get; set; }
-        public Player player { get; set; }
-    }
-    #endregion
 }
 
