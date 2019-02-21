@@ -14,12 +14,6 @@ namespace TRP
         static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
 
-        static Menu InventoryMenu = new Menu("Inventory", new List<Option> { });
-        static void ShowInventoryMenu()
-        {
-            InventoryMenu.ChooseAction();
-        }
-
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
             new Option("Open Inventory",2),
@@ -27,30 +21,40 @@ namespace TRP
         }); //Battle Menu
         static int ShowFightMenu()
         {
-           return FightMenu.ChooseNum();
+            return FightMenu.ChooseNum();
         } //return fight menu option number
-
-        static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
-            new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory", (Action)ActionMenuInventory),
-            new Option("Show Stats", (Action)ShowPlayerStats)
-        }); // Idle Menu
-        static void ShowActionMenu()
-        {
-            ActionMenu.ChooseAction()();
-        } //return action menu action
-
-        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu)}); //Main Menu
-        static void ShowStartMenu()
-        {
-            StartingMenu.ChooseAction()();
-        } //return starting menu action
-
 
         #endregion
 
         static void Main(string[] args)
         {
+            #region load menus
+            Menu ActionMenu = new Menu("Action Menu", new List<Option> {
+            new Option("Search for Trouble", (Action)Battle),
+            new Option("Open Inventory", (Action)ActionMenuInventory),
+            new Option("Show Stats", (Action)ShowPlayerStats)
+        }); // Idle Menu
+            void ShowActionMenu()
+            {
+                ActionMenu.ChooseAction()();
+                ShowActionMenu();
+            } //return action menu action
+
+            Menu InventoryMenu = new Menu("Inventory", new List<Option> { });
+            void ShowInventoryMenu()
+            {
+                InventoryMenu.ChooseAction();
+            }
+
+            Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu) }); //Main Menu
+            void ShowStartMenu()
+            {
+                StartingMenu.ChooseAction()();
+                ShowStartMenu();
+            } //return starting menu action
+
+
+            #endregion
             Player1.ItemAdded += InventoryMenu.OnItemAdded;
             test();
             ShowStartMenu();
@@ -84,7 +88,6 @@ namespace TRP
         public static void ShowPlayerStats()
         {
             ShowStats(Player1);
-            ShowActionMenu();
         }
 
         #region Item Methods
@@ -153,7 +156,6 @@ namespace TRP
                 System.Threading.Thread.Sleep(1000);
             }
             Console.Clear();
-            ShowActionMenu();
         }
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
@@ -247,7 +249,6 @@ namespace TRP
             else
             {
                 Console.Clear();
-                ShowActionMenu();
             }
 
 
