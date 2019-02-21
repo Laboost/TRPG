@@ -29,16 +29,19 @@ namespace TRP
     }
     class Player : Fighter
     {
-        private Weapon equippedWeapon = new Weapon("Sword",4);
+        private Weapon equippedWeapon = new Weapon("Sword", 4);
         public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value; } }
-        
 
-          public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
+        public delegate void ItemAddedEventHandler(object source, EventArgs args);
+
+        public event ItemAddedEventHandler ItemAdded;
+
+        public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
         {
             this.equippedWeapon = equippedWeapon;
             this.name = name;
             this.hitPoints = hitPoints;
-            this.power = power;           
+            this.power = power;
         }
 
         public void UpdateAP() //updates the player AttackPoints
@@ -46,17 +49,36 @@ namespace TRP
             attackPoints = equippedWeapon.Power + power;
         }
 
-        public void EquipWeapon(Weapon weapon) //equip given weapon
+        public void EquipWeapon(Weapon weapon , int slot) //equip given weapon
         {
             UnEquipWeapon();
+            RemoveFromInventory(slot);
             equippedWeapon = weapon;
             UpdateAP();
         }
 
         public void UnEquipWeapon() //unequip current weapon
         {
-            inventory[inventory.Count - 1] = equippedWeapon;
+            AddToInventory(equippedWeapon);
             equippedWeapon = null;
+        }
+
+        public void AddToInventory(Item item) //adds item to player's inventory
+        {
+            Inventory.Add(item);
+            OnItemAdded();
+        }
+        public void RemoveFromInventory(int slot) //removes item from player's inventory
+        {
+            Inventory.RemoveAt(slot);
+        }
+
+        protected virtual void OnItemAdded()
+        {
+            if (ItemAdded != null)
+            {
+                ItemAdded(this, EventArgs.Empty);
+            }
         }
     }
 
@@ -69,5 +91,13 @@ namespace TRP
             this.attackPoints = attackPoints;
         }
     }
+
+    #region EventArgsRegion
+
+    class ItemAddedEventArgs : EventArgs
+    {
+
+    }
+    #endregion
 }
-    
+

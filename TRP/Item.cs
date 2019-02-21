@@ -20,4 +20,9 @@ namespace TRP
 
         }
     }
+
+    public class ItemEventArgs : EventArgs
+    {
+        public int MyProperty { get; set; }
+    }
 }

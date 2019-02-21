@@ -17,7 +17,7 @@ namespace TRP
             this.title = title;
             this.options = options;
         }
-        
+
         public Action ChooseAction()
         {
             Console.WriteLine(this.title);
@@ -26,7 +26,7 @@ namespace TRP
             {
                 Console.WriteLine("[{0}] {1}", count, option.Text);
                 ++count;
-            }        
+            }
 
             int selection = 1;
             bool valid_input = false;
@@ -71,6 +71,13 @@ namespace TRP
             return this.options[selection - 1].ChoiceNum;
 
         }
+
+        public void OnItemAdded(object sender, EventArgs e)
+        {
+            Console.WriteLine("item added");
+        }
+        
+
     }
 
 
