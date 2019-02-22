@@ -29,16 +29,15 @@ namespace TRP
     }
     class Player : Fighter
     {
-        private Weapon equippedWeapon = new Weapon("Sword",4);
+        private Weapon equippedWeapon = new Weapon("Sword", 4);
         public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value; } }
-        
 
-          public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
+        public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
         {
             this.equippedWeapon = equippedWeapon;
             this.name = name;
             this.hitPoints = hitPoints;
-            this.power = power;           
+            this.power = power;
         }
 
         public void UpdateAP() //updates the player AttackPoints
@@ -46,18 +45,30 @@ namespace TRP
             attackPoints = equippedWeapon.Power + power;
         }
 
-        public void EquipWeapon(Weapon weapon) //equip given weapon
+        public void EquipWeapon(Weapon weapon , int slot) //equip given weapon
         {
             UnEquipWeapon();
+            RemoveFromInventory(slot);
             equippedWeapon = weapon;
             UpdateAP();
         }
 
         public void UnEquipWeapon() //unequip current weapon
         {
-            inventory[inventory.Count - 1] = equippedWeapon;
+            AddToInventory(equippedWeapon);
             equippedWeapon = null;
+            
         }
+
+        public void AddToInventory(Item item) //adds item to player's inventory
+        {
+            Inventory.Add(item);
+        }
+        public void RemoveFromInventory(int slot) //removes item from player's inventory
+        {
+            Inventory.RemoveAt(slot);
+        }
+
     }
 
     class Monster : Fighter
@@ -70,4 +81,4 @@ namespace TRP
         }
     }
 }
-    
+
