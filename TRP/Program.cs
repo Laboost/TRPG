@@ -11,8 +11,8 @@ namespace TRP
         #region load objects
 
         static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
-        static Monster[] monsters = { new Monster("Wolf", 10, 2), new Monster("Orc", 7, 5), new Monster("Tiger", 5, 6 )}; // load all monsters    
         static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
+        static List<Monster> Monsters = new List<Monster> { new Monster("Wolf", 10, 2), new Monster("Orc", 20, 5), new Monster("Tiger", 40, 6) }; // load all monsters    
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
@@ -129,28 +129,26 @@ namespace TRP
         } 
 
         #endregion
-           
+
         #region Battle methods
 
         public static Item GenerateItem() //generate a random Item
         {
-            int lastCell = Items.Count - 1;
-            Random rnd = new Random();
-            int randomCell = rnd.Next(0, lastCell + 1);
+            int randomCell = RandomCellFromList(Monsters);
             Item item = Items[randomCell];
+            Random rnd2 = new Random();
+            item.Rarity = RandomEnumValue<Rarity>();
             return item;
+            Console.WriteLine(item.Rarity);
         }
 
         public static Monster GenerateMonster() //generate a random monster
         {
-            int lastCell = monsters.Length - 1;
-            Random rnd = new Random();          //pick random number
-            int randomCell = rnd.Next(0, lastCell + 1);
-
-            Monster enemy = new Monster("null",0,0);
-            enemy.Name = monsters[randomCell].Name;
-            enemy.AttackPoints = monsters[randomCell].AttackPoints; //create empty monster and dupe a monster from array
-            enemy.HitPoints = monsters[randomCell].HitPoints;
+            int randomCell = RandomCellFromList(Items);
+            Monster enemy = new Monster("null", 0, 0);
+            enemy.Name = Monsters[randomCell].Name;
+            enemy.AttackPoints = Monsters[randomCell].AttackPoints; //create empty monster and dupe a monster from array
+            enemy.HitPoints = Monsters[randomCell].HitPoints;
 
             Item item = GenerateItem();
             enemy.Inventory.Add(item); //add loot to the monster
@@ -228,7 +226,7 @@ namespace TRP
 
         public static void Attack(Fighter attacker, Fighter target) //one fighter attacks another
         {
-           target.HitPoints -= attacker.AttackPoints;
+            target.HitPoints -= attacker.AttackPoints;
         }
 
         public static string PlayersTurn(Fighter enemy) //handles the player turn 
@@ -304,5 +302,21 @@ namespace TRP
 
         #endregion
 
+        #region Utility
+
+        static public T RandomEnumValue<T>()
+        {
+            var list = Enum.GetValues(typeof (T));
+            return (T) list.GetValue(new Random().Next(list.Length));
+        }
+
+    static public int RandomCellFromList<T>(List<T> list)
+        {
+            int lastCell = list.Count - 1;
+            Random rnd = new Random();          //pick random number
+            int randomCell = rnd.Next(0, lastCell + 1);
+            return randomCell;
+        }
+        #endregion
     }
 }
