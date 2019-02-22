@@ -9,9 +9,9 @@ namespace TRP
     class Program
     {
         #region load objects
-
+        static Weapon BasicSword = new Weapon("Sword", 4,Rarity.Common);
         static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
-        static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
+        static Player Player1 = new Player("Axel", 100, 1,BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> { new Monster("Wolf", 10, 2), new Monster("Orc", 5, 5), new Monster("Tiger", 10, 6) }; // load all monsters    
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -132,29 +132,6 @@ namespace TRP
 
         #region Battle methods
 
-        public static Item GenerateItem() //generate a random Item
-        {
-            int randomCell = RandomCellFromList(Monsters);
-            Item item = Items[randomCell];
-            Random rnd2 = new Random();
-            item.Rarity = RandomEnumValue<Rarity>();
-            return item;
-            Console.WriteLine(item.Rarity);
-        }
-
-        public static Monster GenerateMonster() //generate a random monster
-        {
-            int randomCell = RandomCellFromList(Items);
-            Monster enemy = new Monster("null", 0, 0);
-            enemy.Name = Monsters[randomCell].Name;
-            enemy.AttackPoints = Monsters[randomCell].AttackPoints; //create empty monster and dupe a monster from array
-            enemy.HitPoints = Monsters[randomCell].HitPoints;
-
-            Item item = GenerateItem();
-            enemy.Inventory.Add(item); //add loot to the monster
-
-            return (enemy);
-        }
 
         public static void Battle()
         {
@@ -282,6 +259,34 @@ namespace TRP
             }
 
         } //Player trying to escape
+        #endregion
+
+        #region generators
+
+        public static Item GenerateItem() //generate a random Item
+        {
+            int randomCell = RandomCellFromList(Monsters);
+            Item item = Items[randomCell];
+            Random rnd2 = new Random();
+            item.Rarity = RandomEnumValue<Rarity>();
+            return item;
+            Console.WriteLine(item.Rarity);
+        }
+
+        public static Monster GenerateMonster() //generate a random monster
+        {
+            int randomCell = RandomCellFromList(Items);
+            Monster enemy = new Monster("null", 0, 0);
+            enemy.Name = Monsters[randomCell].Name;
+            enemy.AttackPoints = Monsters[randomCell].AttackPoints; //create empty monster and dupe a monster from array
+            enemy.HitPoints = Monsters[randomCell].HitPoints;
+
+            Item item = GenerateItem();
+            enemy.Inventory.Add(item); //add loot to the monster
+
+            return (enemy);
+        }
+
         #endregion
 
         #region Menus
