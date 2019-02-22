@@ -265,22 +265,17 @@ namespace TRP
 
         public static Item GenerateItem() //generate a random Item
         {
-            int randomCell = RandomCellFromList(Monsters);
-            Item item = Items[randomCell];
+            int randomCell = RandomCellFromList(Items);
+            Item item = (Item)Items[randomCell].Clone();
             Random rnd2 = new Random();
             item.Rarity = RandomEnumValue<Rarity>();
-            return item;
-            Console.WriteLine(item.Rarity);
+            return item;         
         }
 
         public static Monster GenerateMonster() //generate a random monster
         {
-            int randomCell = RandomCellFromList(Items);
-            Monster enemy = new Monster("null", 0, 0);
-            enemy.Name = Monsters[randomCell].Name;
-            enemy.AttackPoints = Monsters[randomCell].AttackPoints; //create empty monster and dupe a monster from array
-            enemy.HitPoints = Monsters[randomCell].HitPoints;
-
+            int randomCell = RandomCellFromList(Monsters);
+            Monster enemy = (Monster)Monsters[randomCell].Clone();
             Item item = GenerateItem();
             enemy.Inventory.Add(item); //add loot to the monster
 
@@ -315,13 +310,14 @@ namespace TRP
             return (T) list.GetValue(new Random().Next(list.Length));
         }
 
-    static public int RandomCellFromList<T>(List<T> list)
+        static public int RandomCellFromList<T>(List<T> list)
         {
             int lastCell = list.Count - 1;
             Random rnd = new Random();          //pick random number
             int randomCell = rnd.Next(0, lastCell + 1);
             return randomCell;
         }
+
         #endregion
     }
 }

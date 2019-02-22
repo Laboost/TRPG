@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace TRP
@@ -7,10 +8,18 @@ namespace TRP
 
     enum Rarity {Common,Rare,Legendary,Divine}
 
-    class Item : Body
+    class Item : Body , ICloneable
     {
         private Rarity rarity;
-        public Rarity Rarity { get; set; }
+        public Rarity Rarity {
+            get { return rarity; }
+            set {
+                if (rarity != value)
+                {
+                    rarity = value;
+                }
+           }
+        }
 
         public Item(string name, int power)
         {
@@ -23,6 +32,11 @@ namespace TRP
             this.name = name;
             this.power = power;
             this.rarity = rarity;
+        }
+
+        public object Clone()
+        {
+          return this.MemberwiseClone();
         }
     }
 
