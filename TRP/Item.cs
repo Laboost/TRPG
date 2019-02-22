@@ -4,8 +4,12 @@ using System.Text;
 
 namespace TRP
 {
+
+    enum Rarity {Common,Rare,Legendary,Divine}
+
     class Item : Body
     {
+        public Rarity Rarity { get; set; }
         public Item(string name, int power)
         {
             this.name = name;
