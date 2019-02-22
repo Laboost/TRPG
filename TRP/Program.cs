@@ -95,10 +95,10 @@ namespace TRP
             {
                 Console.Clear();
                 Console.WriteLine("Enter a Weapon's number to equip it.\n");
-                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
+                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name +  " - " + Player1.EquippedWeapon.Rarity + "]");
                 for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
                 {
-                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory  
+                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + " - " + Player1.Inventory[i].Rarity + "]"); //show Inventory  
                 }
                 Console.WriteLine("\n[0] Quit");
                 int input = 1;
