@@ -50,8 +50,6 @@ namespace TRP
                 ShowActionMenu();
             } //return action menu action
 
-
-
             Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu) }); //Main Menu
             void ShowStartMenu()
             {
@@ -77,35 +75,41 @@ namespace TRP
 
             public static void Inventory() //Handles The inventory UI
             {
+                int eqWeaponCount;
                 Console.Clear();
-                Console.WriteLine("Enter a Weapon's number to equip it.\n");
-                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name +  " - " + Player1.EquippedWeapon.Rarity + "]");
-                for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
+                Console.WriteLine("Choose A Weapon to equip.\n");
+                for (eqWeaponCount = 0; eqWeaponCount < Player1.EquippedWeapons.Length - 1; eqWeaponCount++) // Show All equiped Weapons        
                 {
-                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + " - " + Player1.Inventory[i].Rarity + "]"); //show Inventory  
-                }
+                Console.WriteLine("[" + (eqWeaponCount + 1) + "]" + "[Equipped]" + "[" + Player1.EquippedWeapons[eqWeaponCount].Name + " - " + Player1.EquippedWeapons[eqWeaponCount].Rarity + "]");
+                }     
+                int WeaponCount = eqWeaponCount;
+                int inventoryWeaponCount;
+            for (inventoryWeaponCount = 0; inventoryWeaponCount < Player1.Inventory.Count; inventoryWeaponCount++) //shows all items in inventory
+            {
+                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[inventoryWeaponCount].Name + " - " + Player1.Inventory[inventoryWeaponCount].Rarity + "]"); //show Inventory
+                    WeaponCount++;
+                } 
                 Console.WriteLine("\n[0] Quit");
                 int input = 1;
                 bool valid_input = false;
                 while (!valid_input)
                 {
                     int.TryParse(Console.ReadLine(), out input);
-                    if (input <= Player1.Inventory.Count)
+                    if (input <= WeaponCount && input >= 0)
                     {
                         valid_input = true;
                         break;
                     }
                     Console.WriteLine("Please enter a valid selection: ");
                 }
-                if (input > 0)
+                int chosenWeaponSlot = input - eqWeaponCount - 1;
+                if (input > 0 && input >= eqWeaponCount) // if player chose a weapon from inventory
                 {
-                    Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1], (input - 1));
-                }
-             Console.Clear();
+                    Player1.EquipWeapon((Weapon)Player1.Inventory[chosenWeaponSlot], chosenWeaponSlot);
+                } 
+                Console.Clear();
             }
-
-            
-
+           
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
             Item loot = monster.Inventory[monster.Inventory.Count - 1];
@@ -291,7 +295,7 @@ namespace TRP
             if (body is Player)
             {
                 Player player = (Player)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + player.EquippedWeapon.Name + "\n");
+                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + Player1.EquippedWeapons[0] + "\n");
             }
             else if (body is Fighter)
             {
