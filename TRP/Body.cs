@@ -80,7 +80,7 @@ namespace TRP
             this.hitPoints = hitPoints;
             this.attackPoints = attackPoints;
         }
-        public Object Clone()
+        public Object Clone() //Clone the Monster
         {
             return this.MemberwiseClone();
         }

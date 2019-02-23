@@ -38,7 +38,7 @@ namespace TRP
         public object Clone()
         {
           return this.MemberwiseClone();
-        }
+        } //Clone the item
 
         public void UpdateStats()
         {
@@ -54,7 +54,7 @@ namespace TRP
             {
                 power = power * 2.5;
             }
-        }
+        } //Updates the item stats by his Attributes
     }
 
     class Weapon : Item
