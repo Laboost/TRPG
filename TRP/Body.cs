@@ -170,17 +170,17 @@ namespace TRP
 
     }
 
-    class Monster : Fighter , ICloneable
+    class Monster : Fighter
     { 
+        public Monster()
+        {
+
+        }
         public Monster(string name, double hitPoints, double attackPoints)
         {
             this.name = name;
             this.hitPoints = hitPoints;
             this.attackPoints = attackPoints;
-        }
-        public Object Clone() //Clone the Monster
-        {
-            return this.MemberwiseClone();
         }
     }
 }

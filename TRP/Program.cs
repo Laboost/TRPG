@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 namespace TRP
 {
@@ -10,13 +14,13 @@ namespace TRP
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Sword", 10,Rarity.Common,WieldAttribute.MainHand);
-        static List<Item> Items =  new List<Item> {
+        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OffHand);
+        static List<Item> Items = new List<Item> {
             new Weapon("Sword", 10,WieldAttribute.MainHand)
             , new Weapon("Spike", 20,WieldAttribute.TwoHanded)
             , new Weapon("dagger", 5,WieldAttribute.OffHand) }; //load all game items
 
-        static Player Player1 = new Player("Player1", 100, 1,BasicSword); //Player
+        static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
             new Monster("Wolf", 10, 2),
             new Monster("Orc", 5, 5),
@@ -63,58 +67,58 @@ namespace TRP
             ShowStartMenu();
 
 
-          System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(5000);
         }
 
         public static void test() //Test
         {
-            
+
         }
 
         #region Item Methods
 
-            public static void Inventory() //Handles The inventory UI
+        public static void Inventory() //Handles The inventory UI
+        {
+            int eqWeaponCount;
+            Console.Clear();
+            Console.WriteLine("Choose A Weapon to equip.\n");
+            for (eqWeaponCount = 0; eqWeaponCount < Player1.EquippedWeapons.Length - 1; eqWeaponCount++) // Show All equiped Weapons        
             {
-                int eqWeaponCount;
-                Console.Clear();
-                Console.WriteLine("Choose A Weapon to equip.\n");
-                for (eqWeaponCount = 0; eqWeaponCount < Player1.EquippedWeapons.Length - 1; eqWeaponCount++) // Show All equiped Weapons        
-                {
                 Console.WriteLine("[" + (eqWeaponCount + 1) + "]" + "[Equipped]" + "[" + Player1.EquippedWeapons[eqWeaponCount].Name + " - " + Player1.EquippedWeapons[eqWeaponCount].Rarity + "]");
-                }     
-                int WeaponCount = eqWeaponCount;
-                int inventoryWeaponCount;
+            }
+            int WeaponCount = eqWeaponCount;
+            int inventoryWeaponCount;
             for (inventoryWeaponCount = 0; inventoryWeaponCount < Player1.Inventory.Count; inventoryWeaponCount++) //shows all items in inventory
             {
                 Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[inventoryWeaponCount].Name + " - " + Player1.Inventory[inventoryWeaponCount].Rarity + "]"); //show Inventory
-                    WeaponCount++;
-                } 
-                Console.WriteLine("\n[0] Quit");
-                int input = 1;
-                bool valid_input = false;
-                while (!valid_input)
-                {
-                    int.TryParse(Console.ReadLine(), out input);
-                    if (input <= WeaponCount && input >= 0)
-                    {
-                        valid_input = true;
-                        break;
-                    }
-                    Console.WriteLine("Please enter a valid selection: ");
-                }
-                int chosenWeaponSlot = input - eqWeaponCount - 1;
-                if (input > 0 && input >= eqWeaponCount) // if player chose a weapon from inventory
-                {
-                    Player1.EquipWeapon((Weapon)Player1.Inventory[chosenWeaponSlot], chosenWeaponSlot);
-                } 
-                Console.Clear();
+                WeaponCount++;
             }
-           
+            Console.WriteLine("\n[0] Quit");
+            int input = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out input);
+                if (input <= WeaponCount && input >= 0)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+            int chosenWeaponSlot = input - eqWeaponCount - 1;
+            if (input > 0 && input > eqWeaponCount) // if player chose a weapon from inventory
+            {
+                Player1.EquipWeapon((Weapon)Player1.Inventory[chosenWeaponSlot], chosenWeaponSlot);
+            }
+            Console.Clear();
+        }
+
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
             Item loot = monster.Inventory[monster.Inventory.Count - 1];
             player.AddToInventory(loot);
-        } 
+        }
 
         #endregion
 
@@ -184,7 +188,7 @@ namespace TRP
         public static void RefreshScreen(Monster Enemy) //used for battle screen refresh
         {
             Console.Clear();
-            ShowStats(Enemy);     
+            ShowStats(Enemy);
             ShowStats(Player1);
             OnlyShowFightMenu();
         }
@@ -255,18 +259,18 @@ namespace TRP
         public static Item GenerateItem() //generate a random Item
         {
             int randomCell = RandomCellFromList(Items);
-            Item item = (Item)Items[randomCell].Clone();
+            Item item = ObjectCloner.Clone((Weapon)Items[randomCell]);
             Random rnd2 = new Random();
             item.Rarity = RandomEnumValue<Rarity>();
             item.UpdateStats();
 
-            return item;         
+            return item;
         }
 
         public static Monster GenerateMonster() //generate a random monster
         {
             int randomCell = RandomCellFromList(Monsters);
-            Monster enemy = (Monster)Monsters[randomCell].Clone();
+            Monster enemy = ObjectCloner.Clone(Monsters[randomCell]);
             Item item = GenerateItem();
             enemy.Inventory.Add(item); //add loot to the monster
 
@@ -320,8 +324,8 @@ namespace TRP
 
         static public T RandomEnumValue<T>()
         {
-            var list = Enum.GetValues(typeof (T));
-            return (T) list.GetValue(new Random().Next(list.Length));
+            var list = Enum.GetValues(typeof(T));
+            return (T)list.GetValue(new Random().Next(list.Length));
         }
 
         static public int RandomCellFromList<T>(List<T> list)
@@ -332,6 +336,18 @@ namespace TRP
             return randomCell;
         }
 
+
         #endregion
+
+
+    }
+
+    public static class ObjectCloner
+    {
+        public static T Clone<T>(T source)
+        {
+            var serialized = JsonConvert.SerializeObject(source);
+            return JsonConvert.DeserializeObject<T>(serialized);
+        }
     }
 }
