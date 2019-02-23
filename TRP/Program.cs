@@ -8,11 +8,20 @@ namespace TRP
 {
     class Program
     {
-        #region load objects
+        #region Load Objects
+
         static Weapon BasicSword = new Weapon("Sword", 10,Rarity.Common,WieldAttribute.MainHand);
-        static List<Item> Items =  new List<Item> {new Weapon("Sword", 10,WieldAttribute.MainHand), new Weapon("Spike", 20,WieldAttribute.TwoHanded), new Weapon("dagger", 5,WieldAttribute.OffHand) }; //load all game items
+        static List<Item> Items =  new List<Item> {
+            new Weapon("Sword", 10,WieldAttribute.MainHand)
+            , new Weapon("Spike", 20,WieldAttribute.TwoHanded)
+            , new Weapon("dagger", 5,WieldAttribute.OffHand) }; //load all game items
+
         static Player Player1 = new Player("Player1", 100, 1,BasicSword); //Player
-        static List<Monster> Monsters = new List<Monster> { new Monster("Wolf", 10, 2), new Monster("Orc", 5, 5), new Monster("Tiger", 10, 6) }; // load all monsters    
+        static List<Monster> Monsters = new List<Monster> {
+            new Monster("Wolf", 10, 2),
+            new Monster("Orc", 5, 5),
+            new Monster("Tiger", 10, 6) }; // load all monsters    
+
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
@@ -64,31 +73,6 @@ namespace TRP
             
         }
 
-        public static void ExitMenu()
-        {
-            return;
-        }
-        public static void ShowStats(Body body)
-        {
-            if (body is Player)
-            {
-                Player player = (Player)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + player.EquippedWeapon.Name + "\n");
-            }
-            else if (body is Fighter)
-            {
-                Fighter fighter = (Fighter)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + fighter.HitPoints + "\n");
-            }
-            else
-                Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
-
-        } //shows a body stats
-        public static void ShowPlayerStats()
-        {
-            ShowStats(Player1);
-        }
-
         #region Item Methods
 
             public static void Inventory() //Handles The inventory UI
@@ -130,7 +114,7 @@ namespace TRP
 
         #endregion
 
-        #region Battle methods
+        #region Battle Methods
 
 
         public static void Battle()
@@ -262,7 +246,7 @@ namespace TRP
         } //Player trying to escape
         #endregion
 
-        #region generators
+        #region Generators
 
         public static Item GenerateItem() //generate a random Item
         {
@@ -287,7 +271,7 @@ namespace TRP
 
         #endregion
 
-        #region Menus
+        #region UI
         public static void OnlyShowFightMenu()
         {
             #region Options
@@ -302,7 +286,30 @@ namespace TRP
 
             Console.WriteLine('\n');
         } //Only SHOWS fight menu
+        public static void ShowStats(Body body)
+        {
+            if (body is Player)
+            {
+                Player player = (Player)body;
+                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + player.EquippedWeapon.Name + "\n");
+            }
+            else if (body is Fighter)
+            {
+                Fighter fighter = (Fighter)body;
+                Console.WriteLine("Name:" + body.Name + " HP:" + fighter.HitPoints + "\n");
+            }
+            else
+                Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
 
+        } //shows a body stats
+        public static void ShowPlayerStats()
+        {
+            ShowStats(Player1);
+        }
+        public static void ExitMenu()
+        {
+            return;
+        }
         #endregion
 
         #region Utility
