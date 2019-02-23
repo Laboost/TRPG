@@ -30,7 +30,7 @@ namespace TRP
     }
     class Player : Fighter
     {
-        private Weapon equippedWeapon = new Weapon("Sword", 4);
+        private Weapon equippedWeapon;
         public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value; } }
 
         public Player(string name, double hitPoints, double power, Weapon equippedWeapon)

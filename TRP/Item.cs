@@ -7,6 +7,7 @@ namespace TRP
 {
 
     enum Rarity {Common,Rare,Legendary,Divine}
+    public enum WieldAttribute { MainHand, OffHand, TwoHanded }
 
     class Item : Body , ICloneable
     {
@@ -58,13 +59,16 @@ namespace TRP
 
     class Weapon : Item
     {
-        public Weapon(string name, int power) : base(name, power)
+        private WieldAttribute wieldAttribute;
+        public WieldAttribute WieldAttribute { get; set; }
+
+        public Weapon(string name, int power,WieldAttribute wieldAttribute) : base(name, power)
         {
 
         }
-        public Weapon(string name, int power, Rarity rarity) : base(name, power, rarity)
+        public Weapon(string name, int power, Rarity rarity , WieldAttribute wieldAttribute) : base(name, power, rarity)
         {
-
+            this.wieldAttribute = WieldAttribute;
         }
     }
 

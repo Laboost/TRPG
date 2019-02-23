@@ -9,8 +9,8 @@ namespace TRP
     class Program
     {
         #region load objects
-        static Weapon BasicSword = new Weapon("Sword", 10,Rarity.Common);
-        static List<Item> Items =  new List<Item> {new Weapon("Sword", 10), new Weapon("Spike", 20), new Weapon("Stick", 5), }; //load all game items
+        static Weapon BasicSword = new Weapon("Sword", 10,Rarity.Common,WieldAttribute.MainHand);
+        static List<Item> Items =  new List<Item> {new Weapon("Sword", 10,WieldAttribute.MainHand), new Weapon("Spike", 20,WieldAttribute.TwoHanded), new Weapon("dagger", 5,WieldAttribute.OffHand) }; //load all game items
         static Player Player1 = new Player("Player1", 100, 1,BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> { new Monster("Wolf", 10, 2), new Monster("Orc", 5, 5), new Monster("Tiger", 10, 6) }; // load all monsters    
 
@@ -271,6 +271,7 @@ namespace TRP
             Random rnd2 = new Random();
             item.Rarity = RandomEnumValue<Rarity>();
             item.UpdateStats();
+
             return item;         
         }
 
