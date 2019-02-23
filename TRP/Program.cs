@@ -9,9 +9,9 @@ namespace TRP
     class Program
     {
         #region load objects
-        static Weapon BasicSword = new Weapon("Sword", 4,Rarity.Common);
-        static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
-        static Player Player1 = new Player("Axel", 100, 1,BasicSword); //Player
+        static Weapon BasicSword = new Weapon("Sword", 10,Rarity.Common);
+        static List<Item> Items =  new List<Item> {new Weapon("Sword", 10), new Weapon("Spike", 20), new Weapon("Stick", 5), }; //load all game items
+        static Player Player1 = new Player("Player1", 100, 1,BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> { new Monster("Wolf", 10, 2), new Monster("Orc", 5, 5), new Monster("Tiger", 10, 6) }; // load all monsters    
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -201,9 +201,10 @@ namespace TRP
             OnlyShowFightMenu();
         }
 
-        public static void Attack(Fighter attacker, Fighter target) //one fighter attacks another
+        public static double Attack(Fighter attacker, Fighter target) //one fighter attacks another
         {
             target.HitPoints -= attacker.AttackPoints;
+            return target.HitPoints;
         }
 
         public static string PlayersTurn(Fighter enemy) //handles the player turn 
@@ -269,6 +270,7 @@ namespace TRP
             Item item = (Item)Items[randomCell].Clone();
             Random rnd2 = new Random();
             item.Rarity = RandomEnumValue<Rarity>();
+            item.UpdateStats();
             return item;         
         }
 

@@ -38,6 +38,22 @@ namespace TRP
         {
           return this.MemberwiseClone();
         }
+
+        public void UpdateStats()
+        {
+            if (rarity == Rarity.Rare)
+            {
+                power = power * 1.20;
+            }
+            if (rarity == Rarity.Legendary)
+            {
+                power = power * 2;
+            }
+            if (rarity == Rarity.Divine)
+            {
+                power = power * 2.5;
+            }
+        }
     }
 
     class Weapon : Item
