@@ -57,15 +57,17 @@ namespace TRP
 
         private WieldAttribute wieldAttribute;
         public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }
+        
 
 
-        public Weapon(string name, int power, WieldAttribute wa) : base(name, power)
+        }
+        public Weapon(string name, int power,WieldAttribute wa) : base(name, power)
         {
-            wieldAttribute = wa;
+           wieldAttribute = wa;
         }
         public Weapon(string name, int power, Rarity rarity , WieldAttribute wa) : base(name, power, rarity)
         {
-            wieldAttribute = wa;
+           wieldAttribute = wa;
         }
     }
 

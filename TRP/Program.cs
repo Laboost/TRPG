@@ -80,21 +80,31 @@ namespace TRP
 
         public static void Inventory() //Handles The inventory UI
         {
-            int eqWeaponCount;
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
-            for (eqWeaponCount = 0; eqWeaponCount < Player1.EquippedWeapons.Length - 1; eqWeaponCount++) // Show All equiped Weapons        
+            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + "]");
+            if (Player1.EquippedWeapons[1] != null)
             {
-                Console.WriteLine("[" + (eqWeaponCount + 1) + "]" + "[Equipped]" + "[" + Player1.EquippedWeapons[eqWeaponCount].Name + " - " + Player1.EquippedWeapons[eqWeaponCount].Rarity + "]");
+                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[1].Rarity + "]");
             }
-            int WeaponCount = eqWeaponCount;
-            int inventoryWeaponCount;
-            for (inventoryWeaponCount = 0; inventoryWeaponCount < Player1.Inventory.Count; inventoryWeaponCount++) //shows all items in inventory
+            else
             {
-                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[inventoryWeaponCount].Name + " - " + Player1.Inventory[inventoryWeaponCount].Rarity + "]"); //show Inventory
-                WeaponCount++;
+                Console.WriteLine("[OffHand]");
+            }
+
+            int WeaponCount;
+            for (WeaponCount = 0; WeaponCount < Player1.Inventory.Count; WeaponCount++) //shows all items in inventory
+            {
+                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[WeaponCount].Name + " - " + Player1.Inventory[WeaponCount].Rarity + " - " + Player1.Inventory[WeaponCount].Power + "]"); //show Inventory
             }
             Console.WriteLine("\n[0] Quit");
+            //test
+            Console.WriteLine(Player1.EquippedWeapons[0].Name);
+            if (Player1.EquippedWeapons[1] != null)
+            {
+                Console.WriteLine(Player1.EquippedWeapons[1].Name);
+            }
+            //test
             int input = 1;
             bool valid_input = false;
             while (!valid_input)
@@ -107,8 +117,8 @@ namespace TRP
                 }
                 Console.WriteLine("Please enter a valid selection: ");
             }
-            int chosenWeaponSlot = input - eqWeaponCount - 1;
-            if (input > 0 && input > eqWeaponCount) // if player chose a weapon from inventory
+            int chosenWeaponSlot = input - 1;
+            if (input > 0 && input <= WeaponCount) // if player chose a weapon from inventory
             {
                 Player1.EquipWeapon((Weapon)Player1.Inventory[chosenWeaponSlot], chosenWeaponSlot);
             }
