@@ -93,7 +93,7 @@ namespace TRP
                         weaponSwaped = true;
                         break;
                     }
-                    if (mainHand != null && offHand != null && offHand.WieldAttribute != WieldAttribute.TwoHanded)
+                    if (mainHand != null && offHand != null && mainHand.WieldAttribute != WieldAttribute.TwoHanded)
                     {
                         UnEquipWeapon(offHand);
                         offHand = weapon;

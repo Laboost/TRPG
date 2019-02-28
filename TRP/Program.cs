@@ -16,15 +16,15 @@ namespace TRP
 
         static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OneHanded);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 20,WieldAttribute.MainHand,70)
+            new Weapon("Sword", 20,WieldAttribute.MainHand,10)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,10)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,20) }; //load all game items
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,10) }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
             new Monster("Wolf", 10, 5,75),
-            new Monster("Orc", 80, 8,25),
-            new Monster("Tiger", 150, 15,5) }; // load all monsters    
+            new Monster("Orc", 20, 8,25),
+            new Monster("Tiger", 30, 15,5) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
