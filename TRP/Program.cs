@@ -72,10 +72,7 @@ namespace TRP
 
         public static void test() //Test
         {
-            for (int i = 0; i < 20; i++)
-            {
-                Player1.AddToInventory(GenerateWeapon());
-            }
+
         }
 
         #region Item Methods
@@ -199,7 +196,6 @@ namespace TRP
         {
             Console.Clear();
             ShowStats(Enemy);
-            ShowStats(Player1);
             OnlyShowFightMenu();
             ShowPlayerStats();
         }
