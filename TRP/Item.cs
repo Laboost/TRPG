@@ -7,7 +7,7 @@ namespace TRP
 {
 
     enum Rarity {Common,Rare,Legendary,Divine}
-    public enum WieldAttribute { MainHand, OffHand, TwoHanded }
+    public enum WieldAttribute { MainHand, OneHanded, TwoHanded }
 
     class Item : Body
     {

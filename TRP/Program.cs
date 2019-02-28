@@ -14,11 +14,11 @@ namespace TRP
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OffHand);
+        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OneHanded);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 10,WieldAttribute.MainHand)
             , new Weapon("Spike", 20,WieldAttribute.TwoHanded)
-            , new Weapon("dagger", 5,WieldAttribute.OffHand) }; //load all game items
+            , new Weapon("dagger", 5,WieldAttribute.OneHanded) }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
@@ -73,7 +73,10 @@ namespace TRP
 
         public static void test() //Test
         {
-            Console.WriteLine(Weapons[2].WieldAttribute);
+            for (int i = 0; i < 20; i++)
+            {
+                Player1.AddToInventory(GenerateWeapon());
+            }
         }
 
         #region Item Methods
@@ -82,15 +85,17 @@ namespace TRP
         {
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
-            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + "]");
+            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + " - "  + Player1.EquippedWeapons[0].Power + "]");
             if (Player1.EquippedWeapons[1] != null)
             {
-                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[1].Rarity + "]");
+                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - "  + Player1.EquippedWeapons[1].Rarity + " - " + Player1.EquippedWeapons[1].Power + "]");
             }
             else
             {
                 Console.WriteLine("[OffHand]");
             }
+
+            Console.WriteLine("\n"); //end of equipped Weapons
 
             int WeaponCount;
             for (WeaponCount = 0; WeaponCount < Player1.Inventory.Count; WeaponCount++) //shows all items in inventory
@@ -98,13 +103,8 @@ namespace TRP
                 Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[WeaponCount].Name + " - " + Player1.Inventory[WeaponCount].Rarity + " - " + Player1.Inventory[WeaponCount].Power + "]"); //show Inventory
             }
             Console.WriteLine("\n[0] Quit");
-            //test
-            Console.WriteLine(Player1.EquippedWeapons[0].Name);
-            if (Player1.EquippedWeapons[1] != null)
-            {
-                Console.WriteLine(Player1.EquippedWeapons[1].Name);
-            }
-            //test
+
+
             int input = 1;
             bool valid_input = false;
             while (!valid_input)
