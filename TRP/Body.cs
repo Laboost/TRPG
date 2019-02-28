@@ -176,16 +176,20 @@ namespace TRP
     }
 
     class Monster : Fighter
-    { 
+    {
+        private double dropChance;
+        public double DropChance { get { return dropChance; } set { dropChance = value; } }
+
         public Monster()
         {
 
         }
-        public Monster(string name, double hitPoints, double attackPoints)
+        public Monster(string name, double hitPoints, double attackPoints, double dropChance)
         {
             this.name = name;
             this.hitPoints = hitPoints;
             this.attackPoints = attackPoints;
+            this.dropChance = dropChance;
         }
     }
 }

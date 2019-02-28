@@ -16,15 +16,15 @@ namespace TRP
 
         static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OneHanded);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 10,WieldAttribute.MainHand,70)
-            , new Weapon("Spike", 20,WieldAttribute.TwoHanded,10)
-            , new Weapon("dagger", 5,WieldAttribute.OneHanded,20) }; //load all game items
+            new Weapon("Sword", 20,WieldAttribute.MainHand,70)
+            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,10)
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,20) }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 2),
-            new Monster("Orc", 5, 5),
-            new Monster("Tiger", 10, 6) }; // load all monsters    
+            new Monster("Wolf", 10, 5,75),
+            new Monster("Orc", 80, 8,25),
+            new Monster("Tiger", 150, 15,5) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -84,10 +84,10 @@ namespace TRP
         {
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
-            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + " - "  + Player1.EquippedWeapons[0].Power + "]");
+            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + " - " + Player1.EquippedWeapons[0].Power + "]");
             if (Player1.EquippedWeapons[1] != null)
             {
-                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - "  + Player1.EquippedWeapons[1].Rarity + " - " + Player1.EquippedWeapons[1].Power + "]");
+                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[1].Rarity + " - " + Player1.EquippedWeapons[1].Power + "]");
             }
             else
             {
@@ -137,7 +137,7 @@ namespace TRP
 
         public static void Battle()
         {
-             Player1.UpdateAP();
+            Player1.UpdateAP();
             Monster Enemy = GenerateMonster();
             Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
             bool endBattle = false;
@@ -280,8 +280,8 @@ namespace TRP
 
         public static Monster GenerateMonster() //generate a random monster
         {
-            int randomCell = RandomCellFromList(Monsters);
-            Monster enemy = CopyMonster(Monsters[randomCell]);
+            Monster X = RandomMonsterSpawn(Monsters);
+            Monster enemy = CopyMonster(X);
             Item item = GenerateWeapon();
             enemy.Inventory.Add(item); //add loot to the monster
 
@@ -306,7 +306,28 @@ namespace TRP
                 }
             }
             return null;
-        } 
+        }
+
+        public static Monster RandomMonsterSpawn(List<Monster> monsters) // generate Monster by Drop Chance
+        {
+            double maxRoll = 0;
+            foreach (Monster monster in monsters)
+            {
+                maxRoll += monster.DropChance;
+            }
+            int roll = new Random().Next(0, (int)maxRoll + 1);
+            double weightSum = 0;
+            foreach (Monster monster in monsters)
+            {
+                weightSum += monster.DropChance;
+                if (roll < weightSum)
+                {
+                    return monster;
+                }
+            }
+            return null;
+        }
+
 
         #endregion
 
@@ -369,7 +390,7 @@ namespace TRP
 
         static public Weapon CopyWeapon(Weapon original)
         {
-            Weapon weapon = new Weapon(null,0,WieldAttribute.MainHand,0);
+            Weapon weapon = new Weapon(null, 0, WieldAttribute.MainHand, 0);
             weapon.Name = original.Name;
             weapon.Power = original.Power;
             weapon.WieldAttribute = original.WieldAttribute;
@@ -379,7 +400,7 @@ namespace TRP
 
         static public Monster CopyMonster(Monster original)
         {
-            Monster monster = new Monster(null, 0, 0);
+            Monster monster = new Monster(null, 0, 0,0);
             monster.Name = original.Name;
             monster.HitPoints = original.HitPoints;
             monster.AttackPoints = original.AttackPoints;
@@ -388,7 +409,7 @@ namespace TRP
         }
         #endregion
 
-
     }
+    
 
 }
