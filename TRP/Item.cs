@@ -22,11 +22,6 @@ namespace TRP
            }
         }
 
-        public Item()
-        {
-
-        }
-
         public Item(string name, int power)
         {
             this.name = name;
@@ -61,20 +56,16 @@ namespace TRP
     {
 
         private WieldAttribute wieldAttribute;
-        public WieldAttribute WieldAttribute { get { return wieldAttribute; }
-        }
+        public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }
 
-        public Weapon()
-        {
 
-        }
-        public Weapon(string name, int power,WieldAttribute wieldAttribute) : base(name, power)
+        public Weapon(string name, int power, WieldAttribute wa) : base(name, power)
         {
-            this.wieldAttribute = wieldAttribute;
+            wieldAttribute = wa;
         }
-        public Weapon(string name, int power, Rarity rarity , WieldAttribute wieldAttribute) : base(name, power, rarity)
+        public Weapon(string name, int power, Rarity rarity , WieldAttribute wa) : base(name, power, rarity)
         {
-            this.wieldAttribute = wieldAttribute;
+            wieldAttribute = wa;
         }
     }
 

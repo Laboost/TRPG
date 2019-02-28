@@ -15,7 +15,7 @@ namespace TRP
         #region Load Objects
 
         static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OffHand);
-        static List<Item> Items = new List<Item> {
+        static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 10,WieldAttribute.MainHand)
             , new Weapon("Spike", 20,WieldAttribute.TwoHanded)
             , new Weapon("dagger", 5,WieldAttribute.OffHand) }; //load all game items
@@ -63,6 +63,7 @@ namespace TRP
 
 
             #endregion
+
             test();
             ShowStartMenu();
 
@@ -72,7 +73,7 @@ namespace TRP
 
         public static void test() //Test
         {
-
+            Console.WriteLine(Weapons[2].WieldAttribute);
         }
 
         #region Item Methods
@@ -127,7 +128,7 @@ namespace TRP
 
         public static void Battle()
         {
-            Player1.UpdateAP();
+             Player1.UpdateAP();
             Monster Enemy = GenerateMonster();
             Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
             bool endBattle = false;
@@ -256,22 +257,25 @@ namespace TRP
 
         #region Generators
 
-        public static Item GenerateItem() //generate a random Item
+
+        public static Weapon GenerateWeapon()
         {
-            int randomCell = RandomCellFromList(Items);
-            Item item = ObjectCloner.Clone((Weapon)Items[randomCell]);
+            int randomCell = RandomCellFromList(Weapons);
+            Weapon X = Weapons[randomCell];
+            Weapon item = CopyWeapon(X);
             Random rnd2 = new Random();
             item.Rarity = RandomEnumValue<Rarity>();
             item.UpdateStats();
 
             return item;
+
         }
 
         public static Monster GenerateMonster() //generate a random monster
         {
             int randomCell = RandomCellFromList(Monsters);
-            Monster enemy = ObjectCloner.Clone(Monsters[randomCell]);
-            Item item = GenerateItem();
+            Monster enemy = CopyMonster(Monsters[randomCell]);
+            Item item = GenerateWeapon();
             enemy.Inventory.Add(item); //add loot to the monster
 
             return (enemy);
@@ -336,18 +340,28 @@ namespace TRP
             return randomCell;
         }
 
+        static public Weapon CopyWeapon(Weapon original)
+        {
+            Weapon weapon = new Weapon(null,0,WieldAttribute.MainHand);
+            weapon.Name = original.Name;
+            weapon.Power = original.Power;
+            weapon.WieldAttribute = original.WieldAttribute;
 
+            return weapon;
+        }
+
+        static public Monster CopyMonster(Monster original)
+        {
+            Monster monster = new Monster(null, 0, 0);
+            monster.Name = original.Name;
+            monster.HitPoints = original.HitPoints;
+            monster.AttackPoints = original.AttackPoints;
+
+            return monster;
+        }
         #endregion
 
 
     }
 
-    public static class ObjectCloner
-    {
-        public static T Clone<T>(T source)
-        {
-            var serialized = JsonConvert.SerializeObject(source);
-            return JsonConvert.DeserializeObject<T>(serialized);
-        }
-    }
 }

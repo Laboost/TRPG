@@ -55,6 +55,7 @@ namespace TRP
             }
             
         }
+
         public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
         {
             RemoveFromInventory(inventorySlot);
@@ -144,7 +145,6 @@ namespace TRP
 
             UpdateAP();
         }
-
         public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
             AddToInventory(hand);
