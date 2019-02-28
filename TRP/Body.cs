@@ -7,34 +7,42 @@ namespace TRP
     class Body
     {
         protected string name;
-        protected int power;
+        protected double power;
 
         public string Name { get { return name; } set { name = value; } }
-        public int Power { get { return power; } set { power = value; } }
+        public double Power { get { return power; } set { power = value; } }
+
     }
 
     class Fighter : Body
     {
         protected List<Item> inventory = new List<Item>();
-        protected int hitPoints;
-        protected int attackPoints;
+        protected double hitPoints;
+        protected double attackPoints;
 
-        public int AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
-        public int HitPoints { get { return hitPoints; } set { hitPoints = value; } }
+        public double AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
+        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
         public List<Item> Inventory
         {
             get { return inventory; }
             set { inventory = value; }
         }
     }
+
     class Player : Fighter
     {
-        private Weapon equippedWeapon = new Weapon("Sword", 4);
-        public Weapon EquippedWeapon { get { return equippedWeapon; } set { equippedWeapon = value; } }
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded);
+        private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
+        private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
+        private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
 
-        public Player(string name, int hitPoints, int power, Weapon equippedWeapon)
+        public Weapon[] EquippedWeapons { get { return hands; } }
+
+        #region Methods
+        public Player(string name, double hitPoints, double power, Weapon weapon)
         {
-            this.equippedWeapon = equippedWeapon;
+            mainHand = weapon;
+            offHand = null;
             this.name = name;
             this.hitPoints = hitPoints;
             this.power = power;
@@ -42,22 +50,118 @@ namespace TRP
 
         public void UpdateAP() //updates the player AttackPoints
         {
-            attackPoints = equippedWeapon.Power + power;
+            if (offHand != null)
+            {
+                attackPoints = mainHand.Power + offHand.Power + power;
+            }
+            else attackPoints = mainHand.Power + power;
         }
 
-        public void EquipWeapon(Weapon weapon , int slot) //equip given weapon
+        public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
         {
-            UnEquipWeapon();
-            RemoveFromInventory(slot);
-            equippedWeapon = weapon;
+            RemoveFromInventory(inventorySlot);
+            bool weaponSwaped = false;
+            while (weaponSwaped == false)
+            {
+                if (weapon.WieldAttribute == WieldAttribute.MainHand) //equipping Main hand Weapon
+                {
+                    if (mainHand == null)
+                    {
+                        mainHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand != null)
+                    {
+                        UnEquipWeapon(mainHand);
+                        mainHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                }
+                if (weapon.WieldAttribute == WieldAttribute.OneHanded) //equipping One Handed Weapon
+                {
+                    if (mainHand == null && offHand == null)
+                    {
+                        mainHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand != null && offHand == null)
+                    {
+                        offHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand != null && offHand != null && offHand.WieldAttribute != WieldAttribute.TwoHanded)
+                    {
+                        UnEquipWeapon(offHand);
+                        offHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand.WieldAttribute == WieldAttribute.TwoHanded)
+                    {
+                        UnEquipWeapon(mainHand);
+                        mainHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+
+                }
+                if (weapon.WieldAttribute == WieldAttribute.TwoHanded) //equipping two Handed Weapon
+                {
+                    if (mainHand == null && offHand == null)
+                    {
+                        mainHand = weapon;
+                        offHand = twoHanded;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand != null && offHand == null )
+                    {
+                        UnEquipWeapon(mainHand);
+                        mainHand = weapon;
+                        offHand = twoHanded;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand != null && mainHand.WieldAttribute != WieldAttribute.TwoHanded && offHand !=null)
+                    {
+                        UnEquipWeapon(mainHand);
+                        UnEquipWeapon(offHand);
+                        mainHand = weapon;
+                        offHand = twoHanded;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand.WieldAttribute == WieldAttribute.TwoHanded)
+                    {
+                        mainHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                }
+            }
+
             UpdateAP();
         }
-
-        public void UnEquipWeapon() //unequip current weapon
+        public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
-            AddToInventory(equippedWeapon);
-            equippedWeapon = null;
-            
+            AddToInventory(hand);
+            if (hand.WieldAttribute == WieldAttribute.TwoHanded)
+            {
+                mainHand = null;
+                offHand = null;
+            }
+            if (hand.WieldAttribute == WieldAttribute.OneHanded)
+            {
+                offHand = null;
+            }
+            else
+            {
+                mainHand = null;
+            }           
         }
 
         public void AddToInventory(Item item) //adds item to player's inventory
@@ -68,12 +172,16 @@ namespace TRP
         {
             Inventory.RemoveAt(slot);
         }
-
+        #endregion
     }
 
     class Monster : Fighter
     { 
-        public Monster(string name, int hitPoints, int attackPoints)
+        public Monster()
+        {
+
+        }
+        public Monster(string name, double hitPoints, double attackPoints)
         {
             this.name = name;
             this.hitPoints = hitPoints;
@@ -81,4 +189,5 @@ namespace TRP
         }
     }
 }
+
 

@@ -3,16 +3,29 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 namespace TRP
 {
     class Program
     {
-        #region load objects
+        #region Load Objects
 
-        static List<Item> Items =  new List<Item> {new Weapon("Sword", 4), new Weapon("Spike", 8), new Weapon("Stick", 2), }; //load all game items
-        static Player Player1 = new Player("Axel", 100, 1,(Weapon)Items[0]); //Player
-        static List<Monster> Monsters = new List<Monster> { new Monster("Wolf", 10, 2), new Monster("Orc", 5, 5), new Monster("Tiger", 10, 6) }; // load all monsters    
+        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OneHanded);
+        static List<Weapon> Weapons = new List<Weapon> {
+            new Weapon("Sword", 10,WieldAttribute.MainHand)
+            , new Weapon("Spike", 20,WieldAttribute.TwoHanded)
+            , new Weapon("dagger", 5,WieldAttribute.OneHanded) }; //load all game items
+
+        static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
+        static List<Monster> Monsters = new List<Monster> {
+            new Monster("Wolf", 10, 2),
+            new Monster("Orc", 5, 5),
+            new Monster("Tiger", 10, 6) }; // load all monsters    
+
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
@@ -40,8 +53,6 @@ namespace TRP
                 ShowActionMenu();
             } //return action menu action
 
-
-
             Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu) }); //Main Menu
             void ShowStartMenu()
             {
@@ -51,113 +62,82 @@ namespace TRP
 
 
             #endregion
+
             test();
             ShowStartMenu();
 
 
-          System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(5000);
         }
 
         public static void test() //Test
         {
-            
-        }
-
-        public static void ExitMenu()
-        {
-            return;
-        }
-        public static void ShowStats(Body body)
-        {
-            if (body is Player)
+            for (int i = 0; i < 20; i++)
             {
-                Player player = (Player)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + player.EquippedWeapon.Name + "\n");
+                Player1.AddToInventory(GenerateWeapon());
             }
-            else if (body is Fighter)
-            {
-                Fighter fighter = (Fighter)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + fighter.HitPoints + "\n");
-            }
-            else
-                Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
-
-        } //shows a body stats
-        public static void ShowPlayerStats()
-        {
-            ShowStats(Player1);
         }
 
         #region Item Methods
 
         public static void Inventory() //Handles The inventory UI
+        {
+            Console.Clear();
+            Console.WriteLine("Choose A Weapon to equip.\n");
+            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + " - "  + Player1.EquippedWeapons[0].Power + "]");
+            if (Player1.EquippedWeapons[1] != null)
             {
-                Console.Clear();
-                Console.WriteLine("Enter a Weapon's number to equip it.\n");
-                Console.WriteLine("[Equipped]" + "[" + Player1.EquippedWeapon.Name + "]");
-                for (int i = 0; i <= Player1.Inventory.Count - 1; i++)
-                {
-                    Console.WriteLine("[" + (i + 1) + "]" + "[" + Player1.Inventory[i].Name + "]"); //show Inventory  
-                }
-                Console.WriteLine("\n[0] Quit");
-                int input = 1;
-                bool valid_input = false;
-                while (!valid_input)
-                {
-                    int.TryParse(Console.ReadLine(), out input);
-                    if (input <= Player1.Inventory.Count)
-                    {
-                        valid_input = true;
-                        break;
-                    }
-                    Console.WriteLine("Please enter a valid selection: ");
-                }
-                if (input > 0)
-                {
-                    Player1.EquipWeapon((Weapon)Player1.Inventory[input - 1], (input - 1));
-                }
-             Console.Clear();
+                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - "  + Player1.EquippedWeapons[1].Rarity + " - " + Player1.EquippedWeapons[1].Power + "]");
+            }
+            else
+            {
+                Console.WriteLine("[OffHand]");
             }
 
-            
+            Console.WriteLine("\n"); //end of equipped Weapons
+
+            int WeaponCount;
+            for (WeaponCount = 0; WeaponCount < Player1.Inventory.Count; WeaponCount++) //shows all items in inventory
+            {
+                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[WeaponCount].Name + " - " + Player1.Inventory[WeaponCount].Rarity + " - " + Player1.Inventory[WeaponCount].Power + "]"); //show Inventory
+            }
+            Console.WriteLine("\n[0] Quit");
+
+
+            int input = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out input);
+                if (input <= WeaponCount && input >= 0)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+            int chosenWeaponSlot = input - 1;
+            if (input > 0 && input <= WeaponCount) // if player chose a weapon from inventory
+            {
+                Player1.EquipWeapon((Weapon)Player1.Inventory[chosenWeaponSlot], chosenWeaponSlot);
+            }
+            Console.Clear();
+        }
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
             Item loot = monster.Inventory[monster.Inventory.Count - 1];
             player.AddToInventory(loot);
-        } 
+        }
 
         #endregion
 
-        #region Battle methods
+        #region Battle Methods
 
-        public static Item GenerateItem() //generate a random Item
-        {
-            int randomCell = RandomCellFromList(Monsters);
-            Item item = Items[randomCell];
-            Random rnd2 = new Random();
-            item.Rarity = RandomEnumValue<Rarity>();
-            return item;
-            Console.WriteLine(item.Rarity);
-        }
-
-        public static Monster GenerateMonster() //generate a random monster
-        {
-            int randomCell = RandomCellFromList(Items);
-            Monster enemy = new Monster("null", 0, 0);
-            enemy.Name = Monsters[randomCell].Name;
-            enemy.AttackPoints = Monsters[randomCell].AttackPoints; //create empty monster and dupe a monster from array
-            enemy.HitPoints = Monsters[randomCell].HitPoints;
-
-            Item item = GenerateItem();
-            enemy.Inventory.Add(item); //add loot to the monster
-
-            return (enemy);
-        }
 
         public static void Battle()
         {
-            Player1.UpdateAP();
+             Player1.UpdateAP();
             Monster Enemy = GenerateMonster();
             Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
             bool endBattle = false;
@@ -218,14 +198,16 @@ namespace TRP
         public static void RefreshScreen(Monster Enemy) //used for battle screen refresh
         {
             Console.Clear();
-            ShowStats(Enemy);          
+            ShowStats(Enemy);
+            ShowStats(Player1);
             OnlyShowFightMenu();
             ShowPlayerStats();
         }
 
-        public static void Attack(Fighter attacker, Fighter target) //one fighter attacks another
+        public static double Attack(Fighter attacker, Fighter target) //one fighter attacks another
         {
             target.HitPoints -= attacker.AttackPoints;
+            return target.HitPoints;
         }
 
         public static string PlayersTurn(Fighter enemy) //handles the player turn 
@@ -282,7 +264,35 @@ namespace TRP
         } //Player trying to escape
         #endregion
 
-        #region Menus
+        #region Generators
+
+
+        public static Weapon GenerateWeapon()
+        {
+            int randomCell = RandomCellFromList(Weapons);
+            Weapon X = Weapons[randomCell];
+            Weapon item = CopyWeapon(X);
+            Random rnd2 = new Random();
+            item.Rarity = RandomEnumValue<Rarity>();
+            item.UpdateStats();
+
+            return item;
+
+        }
+
+        public static Monster GenerateMonster() //generate a random monster
+        {
+            int randomCell = RandomCellFromList(Monsters);
+            Monster enemy = CopyMonster(Monsters[randomCell]);
+            Item item = GenerateWeapon();
+            enemy.Inventory.Add(item); //add loot to the monster
+
+            return (enemy);
+        }
+
+        #endregion
+
+        #region UI
         public static void OnlyShowFightMenu()
         {
             #region Options
@@ -297,24 +307,70 @@ namespace TRP
 
             Console.WriteLine('\n');
         } //Only SHOWS fight menu
+        public static void ShowStats(Body body)
+        {
+            if (body is Player)
+            {
+                Player player = (Player)body;
+                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + Player1.EquippedWeapons[0] + "\n");
+            }
+            else if (body is Fighter)
+            {
+                Fighter fighter = (Fighter)body;
+                Console.WriteLine("Name:" + body.Name + " HP:" + fighter.HitPoints + "\n");
+            }
+            else
+                Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
 
+        } //shows a body stats
+        public static void ShowPlayerStats()
+        {
+            ShowStats(Player1);
+        }
+        public static void ExitMenu()
+        {
+            return;
+        }
         #endregion
 
         #region Utility
 
         static public T RandomEnumValue<T>()
         {
-            var list = Enum.GetValues(typeof (T));
-            return (T) list.GetValue(new Random().Next(list.Length));
+            var list = Enum.GetValues(typeof(T));
+            return (T)list.GetValue(new Random().Next(list.Length));
         }
 
-    static public int RandomCellFromList<T>(List<T> list)
+        static public int RandomCellFromList<T>(List<T> list)
         {
             int lastCell = list.Count - 1;
             Random rnd = new Random();          //pick random number
             int randomCell = rnd.Next(0, lastCell + 1);
             return randomCell;
         }
+
+        static public Weapon CopyWeapon(Weapon original)
+        {
+            Weapon weapon = new Weapon(null,0,WieldAttribute.MainHand);
+            weapon.Name = original.Name;
+            weapon.Power = original.Power;
+            weapon.WieldAttribute = original.WieldAttribute;
+
+            return weapon;
+        }
+
+        static public Monster CopyMonster(Monster original)
+        {
+            Monster monster = new Monster(null, 0, 0);
+            monster.Name = original.Name;
+            monster.HitPoints = original.HitPoints;
+            monster.AttackPoints = original.AttackPoints;
+
+            return monster;
+        }
         #endregion
+
+
     }
+
 }
