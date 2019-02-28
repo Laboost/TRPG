@@ -16,9 +16,9 @@ namespace TRP
 
         static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OneHanded);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 10,WieldAttribute.MainHand)
-            , new Weapon("Spike", 20,WieldAttribute.TwoHanded)
-            , new Weapon("dagger", 5,WieldAttribute.OneHanded) }; //load all game items
+            new Weapon("Sword", 10,WieldAttribute.MainHand,70)
+            , new Weapon("Spike", 20,WieldAttribute.TwoHanded,10)
+            , new Weapon("dagger", 5,WieldAttribute.OneHanded,20) }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
@@ -72,7 +72,10 @@ namespace TRP
 
         public static void test() //Test
         {
-
+            for (int i = 0; i < 20; i++)
+            {
+                Player1.AddToInventory(GenerateWeapon());
+            }
         }
 
         #region Item Methods
@@ -265,8 +268,7 @@ namespace TRP
 
         public static Weapon GenerateWeapon()
         {
-            int randomCell = RandomCellFromList(Weapons);
-            Weapon X = Weapons[randomCell];
+            Weapon X = RandomWeaponDrop(Weapons);
             Weapon item = CopyWeapon(X);
             Random rnd2 = new Random();
             item.Rarity = RandomEnumValue<Rarity>();
@@ -285,6 +287,26 @@ namespace TRP
 
             return (enemy);
         }
+
+        public static Weapon RandomWeaponDrop(List<Weapon> items) //generate weapon by Drop chance
+        {
+            double maxRoll = 0;
+            foreach (Weapon item in items)
+            {
+                maxRoll += item.DropChance;
+            }
+            int roll = new Random().Next(0, (int)maxRoll + 1);
+            double weightSum = 0;
+            foreach (Weapon item in items)
+            {
+                weightSum += item.DropChance;
+                if (roll < weightSum)
+                {
+                    return item;
+                }
+            }
+            return null;
+        } 
 
         #endregion
 
@@ -347,7 +369,7 @@ namespace TRP
 
         static public Weapon CopyWeapon(Weapon original)
         {
-            Weapon weapon = new Weapon(null,0,WieldAttribute.MainHand);
+            Weapon weapon = new Weapon(null,0,WieldAttribute.MainHand,0);
             weapon.Name = original.Name;
             weapon.Power = original.Power;
             weapon.WieldAttribute = original.WieldAttribute;

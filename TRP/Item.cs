@@ -11,6 +11,9 @@ namespace TRP
 
     class Item : Body
     {
+        private double dropChance;
+        public double DropChance { get { return dropChance; } set { dropChance = value; } }
+
         private Rarity rarity;
         public Rarity Rarity {
             get { return rarity; }
@@ -22,8 +25,9 @@ namespace TRP
            }
         }
 
-        public Item(string name, int power)
+        public Item(string name, int power, double dropChance)
         {
+            this.dropChance = dropChance;
             this.name = name;
             this.power = power;        
         }
@@ -58,7 +62,7 @@ namespace TRP
         private WieldAttribute wieldAttribute;
         public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }
                 
-        public Weapon(string name, int power,WieldAttribute wa) : base(name, power)
+        public Weapon(string name, int power,WieldAttribute wa,int dropChance) : base(name, power,dropChance)
         {
            wieldAttribute = wa;
         }

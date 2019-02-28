@@ -31,7 +31,7 @@ namespace TRP
 
     class Player : Fighter
     {
-        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded);
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
         private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
         private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
         private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
