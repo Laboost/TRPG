@@ -57,10 +57,7 @@ namespace TRP
 
         private WieldAttribute wieldAttribute;
         public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }
-        
-
-
-        }
+                
         public Weapon(string name, int power,WieldAttribute wa) : base(name, power)
         {
            wieldAttribute = wa;
@@ -70,5 +67,4 @@ namespace TRP
            wieldAttribute = wa;
         }
     }
-
 }
