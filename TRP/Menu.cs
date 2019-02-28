@@ -27,6 +27,8 @@ namespace TRP
                 Console.WriteLine("[{0}] {1}", count, option.Text);
                 ++count;
             }
+            Console.WriteLine("\n");
+            Program.ShowPlayerStats();
 
             int selection = 1;
             bool valid_input = false;
@@ -53,6 +55,8 @@ namespace TRP
                 Console.WriteLine("[{0}] {1}", count, option.Text);
                 ++count;
             }
+            Console.WriteLine("\n");
+            Program.ShowPlayerStats();
 
             int selection = 1;
             bool valid_input = false;

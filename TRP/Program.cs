@@ -33,7 +33,6 @@ namespace TRP
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
             new Option("Open Inventory", (Action)Inventory),
-            new Option("Show Stats", (Action)ShowPlayerStats)
         }); // Idle Menu
             void ShowActionMenu()
             {
@@ -91,7 +90,7 @@ namespace TRP
 
         #region Item Methods
 
-            public static void Inventory() //Handles The inventory UI
+        public static void Inventory() //Handles The inventory UI
             {
                 Console.Clear();
                 Console.WriteLine("Enter a Weapon's number to equip it.\n");
@@ -219,9 +218,9 @@ namespace TRP
         public static void RefreshScreen(Monster Enemy) //used for battle screen refresh
         {
             Console.Clear();
-            ShowStats(Enemy);     
-            ShowStats(Player1);
+            ShowStats(Enemy);          
             OnlyShowFightMenu();
+            ShowPlayerStats();
         }
 
         public static void Attack(Fighter attacker, Fighter target) //one fighter attacks another
@@ -236,7 +235,6 @@ namespace TRP
             {
                 Console.Clear();
                 ShowStats(enemy);
-                ShowStats(Player1);
 
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
