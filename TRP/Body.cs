@@ -38,6 +38,7 @@ namespace TRP
 
         public Weapon[] EquippedWeapons { get { return hands; } }
 
+        #region Methods
         public Player(string name, double hitPoints, double power, Weapon weapon)
         {
             mainHand = weapon;
@@ -171,7 +172,7 @@ namespace TRP
         {
             Inventory.RemoveAt(slot);
         }
-
+        #endregion
     }
 
     class Monster : Fighter
