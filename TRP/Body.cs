@@ -19,7 +19,9 @@ namespace TRP
         protected List<Item> inventory = new List<Item>();
         protected double hitPoints;
         protected double attackPoints;
+        protected double maxHitPoints;
 
+        public double MaxHitPoints { get { return maxHitPoints; } set { maxHitPoints = value; } }
         public double AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
         public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
         public List<Item> Inventory
@@ -32,10 +34,11 @@ namespace TRP
     class Player : Fighter
     {
         private int level;
-        public int Level { get { return Level; } }
+        public int Level { get { return level; } }
 
         private double exp;
         public double Exp { get { return exp; } }
+        public double MaxExp { get; set; }
 
         static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
 
@@ -47,7 +50,7 @@ namespace TRP
 
         #region Methods
 
-        public Player(string name, double hitPoints, Weapon weapon)
+        public Player(string name, double hitPoints, Weapon weapon) 
         {
             mainHand = weapon;
             offHand = null;
@@ -55,7 +58,9 @@ namespace TRP
             this.hitPoints = hitPoints;
             power = 10;
             level = 1;
-            exp = 0;
+            exp = 0; 
+            MaxExp = 40;
+            maxHitPoints = 100; 
         }
 
         public void UpdateAP() //updates the player AttackPoints
@@ -63,7 +68,7 @@ namespace TRP
            
             #region Level
 
-            double levelPower = 10;
+            double levelPower = 2;
             for (int i = 1; i < level; i++)
             {
                 this.power += levelPower;
@@ -82,6 +87,8 @@ namespace TRP
 
             #endregion
         }
+
+        #region Weapon Methods
 
         public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
         {
@@ -193,6 +200,9 @@ namespace TRP
                 mainHand = null;
             }       
         }
+        #endregion
+
+        #region Equipment methods
 
         public void AddToInventory(Item item) //adds item to player's inventory
         {
@@ -202,33 +212,60 @@ namespace TRP
         {
             Inventory.RemoveAt(slot);
         }
+        #endregion
+
+        #region Level Methods
 
         public void AddExp(double exp) //add exp to the player
         {
             this.exp += exp;
             checkLevel();
+            UpdateAP();
         }
-        private void checkLevel()
+        private void checkLevel()//call level up when player is above expCap
         {
-            double expCap = 0;
+            if (exp >= MaxExp)
+            {
+                levelUp();
+            }
+        } 
+
+        private void levelUp()//Level up the player
+        {
+            level++;
+            exp = 0;
+            updateMaxExp();
+            updateMaxHp();
+            hitPoints = maxHitPoints;
+        } 
+        private void updateMaxExp()//update the player's MaxExp
+        {
             double neededExp = 40;
             for (int i = 1; i <= level; i++)
             {
-                expCap += neededExp;
+                MaxExp += neededExp;
                 neededExp = neededExp * 1.5;
             }
-            if (exp >= expCap)
+        } 
+        private void updateMaxHp()// update the player's maxHP
+        {
+            double hpPerLevel = 20;
+            for (int i = 1; i < level; i++)
             {
-                level++;
+                MaxHitPoints += hpPerLevel;
+                hpPerLevel = hpPerLevel * 1.1;
             }
-        } //level up the player when above expCap
+        }
+
+        #endregion
+
         #endregion
     }
 
     class Monster : Fighter
     {
         private double exp;
-        public double Exp { get { return exp; } }
+        public double Exp { get { return exp; } set { exp = value; } }
         private double dropChance;
         public double DropChance { get { return dropChance; } set { dropChance = value; } }
 
