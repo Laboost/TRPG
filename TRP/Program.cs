@@ -370,7 +370,15 @@ namespace TRP
             if (body is Player)
             {
                 Player player = (Player)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + Player1.EquippedWeapons[0] + "\n");
+                if (Player1.EquippedWeapons[1] != null)
+                {
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                }
+                else
+                {
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
+                }
+                
             }
             else if (body is Fighter)
             {
