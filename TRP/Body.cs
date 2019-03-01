@@ -203,6 +203,25 @@ namespace TRP
             Inventory.RemoveAt(slot);
         }
 
+        public void AddExp(double exp) //add exp to the player
+        {
+            this.exp += exp;
+            checkLevel();
+        }
+        private void checkLevel()
+        {
+            double expCap = 0;
+            double neededExp = 40;
+            for (int i = 1; i <= level; i++)
+            {
+                expCap += neededExp;
+                neededExp = neededExp * 1.5;
+            }
+            if (exp >= expCap)
+            {
+                level++;
+            }
+        } //level up the player when above expCap
         #endregion
     }
 
