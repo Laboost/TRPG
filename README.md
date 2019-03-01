@@ -20,3 +20,5 @@ future Ideas
 - Enhancing system - Melting Items to enhance others , gems?
 - MAP System - Locations , affect rarity ,monster difficulty, Item Drops
 
+
+
