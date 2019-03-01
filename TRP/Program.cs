@@ -43,6 +43,15 @@ namespace TRP
         {
             #region load menus
 
+            void StartGame()
+            {
+                Console.WriteLine("Choose your Name: ");
+                string name = Console.ReadLine();
+                Player1.Name = name;
+                Console.Clear();
+                ShowActionMenu();
+            } //init a new game
+
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
             new Option("Open Inventory", (Action)Inventory),
@@ -53,7 +62,7 @@ namespace TRP
                 ShowActionMenu();
             } //return action menu action
 
-            Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu) }); //Main Menu
+            Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)StartGame) }); //Main Menu
             void ShowStartMenu()
             {
                 StartingMenu.ChooseAction()();
@@ -62,6 +71,8 @@ namespace TRP
 
 
             #endregion
+
+           
 
             test();
             ShowStartMenu();
@@ -74,6 +85,8 @@ namespace TRP
         {
 
         }
+
+
 
         #region Item Methods
 
