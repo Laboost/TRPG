@@ -50,12 +50,17 @@ namespace TRP
                 string name = Console.ReadLine();
                 Player1.Name = name;
                 Console.Clear();
+                for (int i = 0; i < 20; i++)
+                {
+                    Player1.Inventory.Add(GenerateWeapon());
+                }
                 ShowActionMenu();
-            } //init a new game
+            } //init a new game    
 
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory", (Action)Inventory),
+            new Option("Open Inventory\n", (Action)Inventory),
+            new Option("Quit Game",(Action)EndGame)
         }); // Idle Menu
             void ShowActionMenu()
             {
@@ -88,7 +93,7 @@ namespace TRP
 
         public static void test() //Test
         {
-
+ 
         }
 
 
@@ -313,7 +318,7 @@ namespace TRP
             {
                 maxRoll += item.DropChance;
             }
-            int roll = new Random().Next(0, maxRoll + 1);
+            int roll = new Random().Next(0, maxRoll);
             int weightSum = 0;
             foreach (Weapon item in items)
             {
@@ -413,11 +418,39 @@ namespace TRP
         public static void ShowPlayerStats()
         {
             ShowStats(Player1);
-        }
+        } // Shows the player stats
         public static void ExitMenu()
         {
             return;
-        }
+        } // General return
+        public static void EndGame()
+        {
+            Console.WriteLine("Are you sure you want to quit?");
+            Console.WriteLine("\n[1] Yes");
+            Console.WriteLine("[2] No");
+            int selection = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out selection);
+                if (selection > 0 && selection <= 2)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+            Console.Clear();
+            if (selection == 1)
+            {
+                Player1.HitPoints = 0;
+            }
+            if (selection == 2)
+            {
+                return;
+            }
+        } // Exit to Main Menu
+        
         #endregion
 
         #region Utility
