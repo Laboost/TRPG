@@ -22,7 +22,7 @@ namespace TRP
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 5,75),
+            new Monster("Wolf", 10, 50,75),
             new Monster("Orc", 20, 8,25),
             new Monster("Tiger", 30, 15,5) }; // load all monsters    
 
@@ -45,6 +45,7 @@ namespace TRP
 
             void StartGame()
             {
+                Player1 = new Player("Player1", 100, 1, BasicSword);
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
@@ -59,6 +60,10 @@ namespace TRP
             void ShowActionMenu()
             {
                 ActionMenu.ChooseAction()();
+                if (Player1.HitPoints <= 0)
+                {
+                    return;
+                }
                 ShowActionMenu();
             } //return action menu action
 
@@ -186,15 +191,18 @@ namespace TRP
                     endBattle = true;
                     RefreshScreen(Enemy);
                     Console.WriteLine("You have DIED");
+                    System.Threading.Thread.Sleep(2000);
                     break;
                 }
 
                 RefreshScreen(Enemy);
             }
-            if (Player1.HitPoints == 0)
+            if (Player1.HitPoints <= 0)
             {
                 Console.Clear();
                 Console.WriteLine("GAME OVER.");
+                System.Threading.Thread.Sleep(5000);
+                Console.Clear();
 
             }
             else
@@ -385,11 +393,11 @@ namespace TRP
                 Player player = (Player)body;
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " + "Level:" + Player1.Power + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
                 }
                 else
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " +  Player1.EquippedWeapons[0].Name + "\n");
                 }
                 
             }
