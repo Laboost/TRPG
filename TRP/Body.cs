@@ -53,12 +53,25 @@ namespace TRP
             offHand = null;
             this.name = name;
             this.hitPoints = hitPoints;
+            power = 10;
             level = 1;
             exp = 0;
         }
 
         public void UpdateAP() //updates the player AttackPoints
         {
+           
+            #region Level
+
+            double levelPower = 10;
+            for (int i = 1; i < level; i++)
+            {
+                this.power += levelPower;
+                levelPower = levelPower * 1.5;
+            }
+
+            #endregion
+
             #region weapons
 
             if (offHand != null)
@@ -66,17 +79,6 @@ namespace TRP
                 attackPoints = mainHand.Power + offHand.Power + power;
             }
             else attackPoints = mainHand.Power + power;
-
-            #endregion
-
-            #region Level
-
-            double levelPower = 10;
-            for (int i = 1; i <= level; i++)
-            {
-                attackPoints += levelPower;
-                levelPower = levelPower * 1.5;
-            }
 
             #endregion
         }
