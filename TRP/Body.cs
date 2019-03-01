@@ -32,7 +32,10 @@ namespace TRP
     class Player : Fighter
     {
         private int level;
+        public int Level { get { return Level; } }
+
         private double exp;
+        public double Exp { get { return exp; } }
 
         static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
 
@@ -56,11 +59,26 @@ namespace TRP
 
         public void UpdateAP() //updates the player AttackPoints
         {
+            #region weapons
+
             if (offHand != null)
             {
                 attackPoints = mainHand.Power + offHand.Power + power;
             }
             else attackPoints = mainHand.Power + power;
+
+            #endregion
+
+            #region Level
+
+            double levelPower = 10;
+            for (int i = 1; i <= level; i++)
+            {
+                attackPoints += levelPower;
+                levelPower = levelPower * 1.5;
+            }
+
+            #endregion
         }
 
         public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
