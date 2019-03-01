@@ -341,7 +341,7 @@ namespace TRP //Version 0.1
             {
                 maxRoll += monster.DropChance;
             }
-            int roll = new Random().Next(0, (int)maxRoll + 1);
+            int roll = new Random().Next(0, (int)maxRoll);
             double weightSum = 0;
             foreach (Monster monster in monsters)
             {
