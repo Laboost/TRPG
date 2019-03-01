@@ -400,7 +400,7 @@ namespace TRP //Version 0.1
                 Player player = (Player)body;
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " + "Level:" + Player1.Power + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
                 }
                 else
                 {
