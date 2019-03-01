@@ -20,11 +20,12 @@ namespace TRP //Version 0.1
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
             , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game items
 
-        static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
+        static Player Player1 = new Player("Player1", 100, BasicSword); //Player
+
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 7,75),
-            new Monster("Orc", 20, 10,25),
-            new Monster("Tiger", 30, 15,5) }; // load all monsters    
+            new Monster("Wolf", 10, 7,75,40),
+            new Monster("Orc", 20, 10,25,40),
+            new Monster("Tiger", 30, 15,5,40) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -45,7 +46,7 @@ namespace TRP //Version 0.1
 
             void StartGame()
             {
-                Player1 = new Player("Player1", 100, 1, BasicSword);
+                Player1 = new Player("Player1", 100, BasicSword);
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
@@ -179,7 +180,7 @@ namespace TRP //Version 0.1
                     RefreshScreen(Enemy);
                     Console.WriteLine("You KILLED the " + Enemy.Name);
                     LootMonster(Enemy, Player1);
-
+                    Player1.AddExp(Enemy.Exp);
                     System.Threading.Thread.Sleep(1000);
                     break;
                 }
@@ -400,11 +401,11 @@ namespace TRP //Version 0.1
                 Player player = (Player)body;
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
                 }
                 else
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " +  Player1.EquippedWeapons[0].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
                 }
                 
             }
@@ -483,10 +484,11 @@ namespace TRP //Version 0.1
 
         static public Monster CopyMonster(Monster original)
         {
-            Monster monster = new Monster(null, 0, 0,0);
+            Monster monster = new Monster();
             monster.Name = original.Name;
             monster.HitPoints = original.HitPoints;
             monster.AttackPoints = original.AttackPoints;
+            monster.Exp = original.Exp;
 
             return monster;
         }
