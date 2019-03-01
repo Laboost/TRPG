@@ -71,7 +71,14 @@ namespace TRP
                         weaponSwaped = true;
                         break;
                     }
-                    if (mainHand != null)
+                    if (mainHand != null && mainHand.WieldAttribute != WieldAttribute.TwoHanded)
+                    {
+                        UnEquipWeapon(mainHand);
+                        mainHand = weapon;
+                        weaponSwaped = true;
+                        break;
+                    }
+                    if (mainHand != null && mainHand.WieldAttribute == WieldAttribute.TwoHanded)
                     {
                         UnEquipWeapon(mainHand);
                         mainHand = weapon;
@@ -126,7 +133,7 @@ namespace TRP
                         weaponSwaped = true;
                         break;
                     }
-                    if (mainHand != null && mainHand.WieldAttribute != WieldAttribute.TwoHanded && offHand !=null)
+                    if (mainHand != null && offHand != null && mainHand.WieldAttribute != WieldAttribute.TwoHanded  )
                     {
                         UnEquipWeapon(mainHand);
                         UnEquipWeapon(offHand);
@@ -149,19 +156,16 @@ namespace TRP
         public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
             AddToInventory(hand);
+
             if (hand.WieldAttribute == WieldAttribute.TwoHanded)
             {
                 mainHand = null;
                 offHand = null;
             }
-            if (hand.WieldAttribute == WieldAttribute.OneHanded)
-            {
-                offHand = null;
-            }
-            else
+            else if (hand.WieldAttribute == WieldAttribute.MainHand)
             {
                 mainHand = null;
-            }           
+            }       
         }
 
         public void AddToInventory(Item item) //adds item to player's inventory

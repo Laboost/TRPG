@@ -14,16 +14,16 @@ namespace TRP
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.OneHanded);
+        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.MainHand);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 20,WieldAttribute.MainHand,10)
-            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,10)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,10) }; //load all game items
+            new Weapon("Sword", 20,WieldAttribute.MainHand,400)
+            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 5,75),
-            new Monster("Orc", 20, 8,25),
+            new Monster("Wolf", 10, 7,75),
+            new Monster("Orc", 20, 10,25),
             new Monster("Tiger", 30, 15,5) }; // load all monsters    
 
 
@@ -43,17 +43,32 @@ namespace TRP
         {
             #region load menus
 
+            void StartGame()
+            {
+                Player1 = new Player("Player1", 100, 1, BasicSword);
+                Console.WriteLine("Choose your Name: ");
+                string name = Console.ReadLine();
+                Player1.Name = name;
+                Console.Clear();
+                ShowActionMenu();
+            } //init a new game    
+
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory", (Action)Inventory),
+            new Option("Open Inventory\n", (Action)Inventory),
+            new Option("Quit Game",(Action)EndGame)
         }); // Idle Menu
             void ShowActionMenu()
             {
                 ActionMenu.ChooseAction()();
+                if (Player1.HitPoints <= 0)
+                {
+                    return;
+                }
                 ShowActionMenu();
             } //return action menu action
 
-            Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)ShowActionMenu) }); //Main Menu
+            Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)StartGame) }); //Main Menu
             void ShowStartMenu()
             {
                 StartingMenu.ChooseAction()();
@@ -62,6 +77,8 @@ namespace TRP
 
 
             #endregion
+
+           
 
             test();
             ShowStartMenu();
@@ -72,8 +89,10 @@ namespace TRP
 
         public static void test() //Test
         {
-
+ 
         }
+
+
 
         #region Item Methods
 
@@ -124,7 +143,14 @@ namespace TRP
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
             Item loot = monster.Inventory[monster.Inventory.Count - 1];
-            player.AddToInventory(loot);
+            if (loot != null)
+            {
+                player.AddToInventory(loot);
+            }
+            else
+            {
+                return;
+            }
         }
 
         #endregion
@@ -173,15 +199,18 @@ namespace TRP
                     endBattle = true;
                     RefreshScreen(Enemy);
                     Console.WriteLine("You have DIED");
+                    System.Threading.Thread.Sleep(2000);
                     break;
                 }
 
                 RefreshScreen(Enemy);
             }
-            if (Player1.HitPoints == 0)
+            if (Player1.HitPoints <= 0)
             {
                 Console.Clear();
                 Console.WriteLine("GAME OVER.");
+                System.Threading.Thread.Sleep(5000);
+                Console.Clear();
 
             }
             else
@@ -266,6 +295,10 @@ namespace TRP
         public static Weapon GenerateWeapon()
         {
             Weapon X = RandomWeaponDrop(Weapons);
+            if (X == null)
+            {
+                return X;
+            }
             Weapon item = CopyWeapon(X);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
@@ -287,12 +320,7 @@ namespace TRP
 
         public static Weapon RandomWeaponDrop(List<Weapon> items) //generate weapon by Drop chance
         {
-            int maxRoll = 0;
-            foreach (Weapon item in items)
-            {
-                maxRoll += item.DropChance;
-            }
-            int roll = new Random().Next(0, maxRoll + 1);
+            int roll = new Random().Next(0, 1000);
             int weightSum = 0;
             foreach (Weapon item in items)
             {
@@ -328,15 +356,15 @@ namespace TRP
         public static Rarity RandomRarityDrop() //Generate Random Item Rarity
         {
             int roll = new Random().Next(0, 101);
-            if (roll <= 50)
+            if (roll <= 70)
             {
                 return Rarity.Common;
             }
-            else if (roll > 50 && roll <= 80)
+            else if (roll > 70 && roll <= 95)
             {
                 return Rarity.Rare;
             }
-            else if (roll > 80 && roll < 95)
+            else if (roll > 95 && roll < 98)
             {
                 return Rarity.Legendary;
             }
@@ -370,7 +398,15 @@ namespace TRP
             if (body is Player)
             {
                 Player player = (Player)body;
-                Console.WriteLine("Name:" + body.Name + " HP:" + player.HitPoints + " Weapon:" + Player1.EquippedWeapons[0] + "\n");
+                if (Player1.EquippedWeapons[1] != null)
+                {
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " + "Level:" + Player1.Power + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                }
+                else
+                {
+                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + "\nLevel:" + Player1.Power + "\nMain Hand: " +  Player1.EquippedWeapons[0].Name + "\n");
+                }
+                
             }
             else if (body is Fighter)
             {
@@ -384,11 +420,39 @@ namespace TRP
         public static void ShowPlayerStats()
         {
             ShowStats(Player1);
-        }
+        } // Shows the player stats
         public static void ExitMenu()
         {
             return;
-        }
+        } // General return
+        public static void EndGame()
+        {
+            Console.WriteLine("Are you sure you want to quit?");
+            Console.WriteLine("\n[1] Yes");
+            Console.WriteLine("[2] No");
+            int selection = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out selection);
+                if (selection > 0 && selection <= 2)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+            Console.Clear();
+            if (selection == 1)
+            {
+                Player1.HitPoints = 0;
+            }
+            if (selection == 2)
+            {
+                return;
+            }
+        } // Exit to Main Menu
+        
         #endregion
 
         #region Utility
