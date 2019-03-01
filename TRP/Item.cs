@@ -29,7 +29,8 @@ namespace TRP
         {
             this.dropChance = dropChance;
             this.name = name;
-            this.power = power;        
+            this.power = power;
+            UpdateStats();
         }
 
         public Item(string name, int power, Rarity rarity)
@@ -37,6 +38,7 @@ namespace TRP
             this.name = name;
             this.power = power;
             this.rarity = rarity;
+            UpdateStats();
         }
 
         public void UpdateStats()
@@ -69,6 +71,45 @@ namespace TRP
         public Weapon(string name, int power, Rarity rarity , WieldAttribute wa) : base(name, power, rarity)
         {
            wieldAttribute = wa;
+        }
+    }
+
+    class Consumeable : Item
+    {
+        private string description;
+        public string Description { get; }
+        
+        public Consumeable(string name, int power,int dropChance, string description) : base(name, power, dropChance)
+        {
+            this.description = description;
+        }
+
+        public Consumeable(string name, int power, Rarity rarity) : base(name,power,rarity)
+        {
+           
+        }
+
+        public virtual void Consume(Player player)
+        {
+
+        }
+    }
+
+    class HealthPotion : Consumeable
+    {
+        public HealthPotion(string name, int power, int dropChance, string description) : base(name, power,dropChance,description)
+        {
+
+        }
+
+        public HealthPotion(string name, int power , Rarity rarity) : base(name, power, rarity)
+        {
+
+        }
+
+        public override void Consume(Player player)
+        {
+            player.HitPoints += power;
         }
     }
 }

@@ -18,7 +18,11 @@ namespace TRP //Version 0.1
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game items
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game weapons
+        static List<Item> Items = new List<Item>
+        {
+            new HealthPotion("HP Potion",10,20,"Heals the Consumer"),
+        }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
 
