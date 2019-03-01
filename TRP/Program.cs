@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
 
-namespace TRP
+namespace TRP //Version 0.1
 {
     class Program
     {
