@@ -72,10 +72,7 @@ namespace TRP
 
         public static void test() //Test
         {
-            for (int i = 0; i < 20; i++)
-            {
-                Player1.AddToInventory(GenerateWeapon());
-            }
+
         }
 
         #region Item Methods
@@ -270,8 +267,8 @@ namespace TRP
         {
             Weapon X = RandomWeaponDrop(Weapons);
             Weapon item = CopyWeapon(X);
-            Random rnd2 = new Random();
-            item.Rarity = RandomEnumValue<Rarity>();
+            Rarity randomRarity = RandomRarityDrop();
+            item.Rarity = randomRarity;
             item.UpdateStats();
 
             return item;
@@ -290,13 +287,13 @@ namespace TRP
 
         public static Weapon RandomWeaponDrop(List<Weapon> items) //generate weapon by Drop chance
         {
-            double maxRoll = 0;
+            int maxRoll = 0;
             foreach (Weapon item in items)
             {
                 maxRoll += item.DropChance;
             }
-            int roll = new Random().Next(0, (int)maxRoll + 1);
-            double weightSum = 0;
+            int roll = new Random().Next(0, maxRoll + 1);
+            int weightSum = 0;
             foreach (Weapon item in items)
             {
                 weightSum += item.DropChance;
@@ -326,6 +323,28 @@ namespace TRP
                 }
             }
             return null;
+        }
+
+        public static Rarity RandomRarityDrop() //Generate Random Item Rarity
+        {
+            int roll = new Random().Next(0, 101);
+            if (roll <= 50)
+            {
+                return Rarity.Common;
+            }
+            else if (roll > 50 && roll <= 80)
+            {
+                return Rarity.Rare;
+            }
+            else if (roll > 80 && roll < 95)
+            {
+                return Rarity.Legendary;
+            }
+            else
+            {
+                return Rarity.Divine;
+            }
+
         }
 
 

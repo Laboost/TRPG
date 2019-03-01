@@ -11,8 +11,8 @@ namespace TRP
 
     class Item : Body
     {
-        private double dropChance;
-        public double DropChance { get { return dropChance; } set { dropChance = value; } }
+        private int dropChance;
+        public int  DropChance { get { return dropChance; } set { dropChance = value; } }
 
         private Rarity rarity;
         public Rarity Rarity {
@@ -25,7 +25,7 @@ namespace TRP
            }
         }
 
-        public Item(string name, int power, double dropChance)
+        public Item(string name, int power, int dropChance)
         {
             this.dropChance = dropChance;
             this.name = name;
