@@ -31,7 +31,7 @@ namespace TRP
 
     class Player : Fighter
     {
-        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded);
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
         private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
         private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
         private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
@@ -93,7 +93,7 @@ namespace TRP
                         weaponSwaped = true;
                         break;
                     }
-                    if (mainHand != null && offHand != null && offHand.WieldAttribute != WieldAttribute.TwoHanded)
+                    if (mainHand != null && offHand != null && mainHand.WieldAttribute != WieldAttribute.TwoHanded)
                     {
                         UnEquipWeapon(offHand);
                         offHand = weapon;
@@ -176,16 +176,20 @@ namespace TRP
     }
 
     class Monster : Fighter
-    { 
+    {
+        private double dropChance;
+        public double DropChance { get { return dropChance; } set { dropChance = value; } }
+
         public Monster()
         {
 
         }
-        public Monster(string name, double hitPoints, double attackPoints)
+        public Monster(string name, double hitPoints, double attackPoints, double dropChance)
         {
             this.name = name;
             this.hitPoints = hitPoints;
             this.attackPoints = attackPoints;
+            this.dropChance = dropChance;
         }
     }
 }
