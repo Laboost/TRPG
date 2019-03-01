@@ -16,14 +16,14 @@ namespace TRP
 
         static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.MainHand);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 20,WieldAttribute.MainHand,10)
-            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,10)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,10) }; //load all game items
+            new Weapon("Sword", 20,WieldAttribute.MainHand,400)
+            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 50,75),
-            new Monster("Orc", 20, 8,25),
+            new Monster("Wolf", 10, 7,75),
+            new Monster("Orc", 20, 10,25),
             new Monster("Tiger", 30, 15,5) }; // load all monsters    
 
 
@@ -50,10 +50,6 @@ namespace TRP
                 string name = Console.ReadLine();
                 Player1.Name = name;
                 Console.Clear();
-                for (int i = 0; i < 20; i++)
-                {
-                    Player1.Inventory.Add(GenerateWeapon());
-                }
                 ShowActionMenu();
             } //init a new game    
 
@@ -147,7 +143,14 @@ namespace TRP
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
             Item loot = monster.Inventory[monster.Inventory.Count - 1];
-            player.AddToInventory(loot);
+            if (loot != null)
+            {
+                player.AddToInventory(loot);
+            }
+            else
+            {
+                return;
+            }
         }
 
         #endregion
@@ -292,6 +295,10 @@ namespace TRP
         public static Weapon GenerateWeapon()
         {
             Weapon X = RandomWeaponDrop(Weapons);
+            if (X == null)
+            {
+                return X;
+            }
             Weapon item = CopyWeapon(X);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
@@ -313,12 +320,7 @@ namespace TRP
 
         public static Weapon RandomWeaponDrop(List<Weapon> items) //generate weapon by Drop chance
         {
-            int maxRoll = 0;
-            foreach (Weapon item in items)
-            {
-                maxRoll += item.DropChance;
-            }
-            int roll = new Random().Next(0, maxRoll);
+            int roll = new Random().Next(0, 1000);
             int weightSum = 0;
             foreach (Weapon item in items)
             {
@@ -354,15 +356,15 @@ namespace TRP
         public static Rarity RandomRarityDrop() //Generate Random Item Rarity
         {
             int roll = new Random().Next(0, 101);
-            if (roll <= 50)
+            if (roll <= 70)
             {
                 return Rarity.Common;
             }
-            else if (roll > 50 && roll <= 80)
+            else if (roll > 70 && roll <= 95)
             {
                 return Rarity.Rare;
             }
-            else if (roll > 80 && roll < 95)
+            else if (roll > 95 && roll < 98)
             {
                 return Rarity.Legendary;
             }
