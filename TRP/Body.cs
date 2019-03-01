@@ -31,7 +31,11 @@ namespace TRP
 
     class Player : Fighter
     {
+        private int level;
+        private double exp;
+
         static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
+
         private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
         private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
         private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
@@ -39,13 +43,15 @@ namespace TRP
         public Weapon[] EquippedWeapons { get { return hands; } }
 
         #region Methods
-        public Player(string name, double hitPoints, double power, Weapon weapon)
+
+        public Player(string name, double hitPoints, Weapon weapon)
         {
             mainHand = weapon;
             offHand = null;
             this.name = name;
             this.hitPoints = hitPoints;
-            this.power = power;
+            level = 1;
+            exp = 0;
         }
 
         public void UpdateAP() //updates the player AttackPoints
@@ -176,11 +182,14 @@ namespace TRP
         {
             Inventory.RemoveAt(slot);
         }
+
         #endregion
     }
 
     class Monster : Fighter
     {
+        private double exp;
+        public double Exp { get { return exp; } }
         private double dropChance;
         public double DropChance { get { return dropChance; } set { dropChance = value; } }
 
@@ -188,12 +197,13 @@ namespace TRP
         {
 
         }
-        public Monster(string name, double hitPoints, double attackPoints, double dropChance)
+        public Monster(string name, double hitPoints, double attackPoints, double dropChance , double exp)
         {
             this.name = name;
             this.hitPoints = hitPoints;
             this.attackPoints = attackPoints;
             this.dropChance = dropChance;
+            this.exp = exp;
         }
     }
 }

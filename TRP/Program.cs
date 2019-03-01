@@ -20,11 +20,12 @@ namespace TRP //Version 0.1
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
             , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game items
 
-        static Player Player1 = new Player("Player1", 100, 1, BasicSword); //Player
+        static Player Player1 = new Player("Player1", 100, BasicSword); //Player
+
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 7,75),
-            new Monster("Orc", 20, 10,25),
-            new Monster("Tiger", 30, 15,5) }; // load all monsters    
+            new Monster("Wolf", 10, 7,75,10),
+            new Monster("Orc", 20, 10,25,30),
+            new Monster("Tiger", 30, 15,5,50) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -45,7 +46,7 @@ namespace TRP //Version 0.1
 
             void StartGame()
             {
-                Player1 = new Player("Player1", 100, 1, BasicSword);
+                Player1 = new Player("Player1", 100, BasicSword);
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
@@ -483,7 +484,7 @@ namespace TRP //Version 0.1
 
         static public Monster CopyMonster(Monster original)
         {
-            Monster monster = new Monster(null, 0, 0,0);
+            Monster monster = new Monster();
             monster.Name = original.Name;
             monster.HitPoints = original.HitPoints;
             monster.AttackPoints = original.AttackPoints;
