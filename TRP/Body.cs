@@ -16,7 +16,7 @@ namespace TRP
 
     class Fighter : Body
     {
-        protected List<Item> inventory = new List<Item>();
+        protected List<Item> itemInventory = new List<Item>();
         protected double hitPoints;
         protected double attackPoints;
         protected double maxHitPoints;
@@ -24,10 +24,10 @@ namespace TRP
         public double MaxHitPoints { get { return maxHitPoints; } set { maxHitPoints = value; } }
         public double AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
         public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
-        public List<Item> Inventory
+        public List<Item> ItemInventory
         {
-            get { return inventory; }
-            set { inventory = value; }
+            get { return itemInventory; }
+            set { itemInventory = value; }
         }
     }
 
@@ -39,6 +39,9 @@ namespace TRP
         private double exp;
         public double Exp { get { return exp; } }
         public double MaxExp { get; set; }
+
+        private List<Item> weaponInventory = new List<Item>();
+        public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
 
         static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
 
@@ -92,7 +95,7 @@ namespace TRP
 
         public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
         {
-            RemoveFromInventory(inventorySlot);
+            RemoveFromWeaponInventory(inventorySlot);
             bool weaponSwaped = false;
             while (weaponSwaped == false)
             {
@@ -188,7 +191,7 @@ namespace TRP
         }
         public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
-            AddToInventory(hand);
+            AddToWeaponInventory(hand);
 
             if (hand.WieldAttribute == WieldAttribute.TwoHanded)
             {
@@ -204,13 +207,27 @@ namespace TRP
 
         #region Equipment methods
 
-        public void AddToInventory(Item item) //adds item to player's inventory
+        public void AddToWeaponInventory(Item item) //adds item to player's inventory
         {
-            Inventory.Add(item);
+            WeaponInventory.Add(item);
         }
-        public void RemoveFromInventory(int slot) //removes item from player's inventory
+        public void RemoveFromWeaponInventory(int slot) //removes item from player's inventory
         {
-            Inventory.RemoveAt(slot);
+            WeaponInventory.RemoveAt(slot);
+        }
+        public void AddToItemInventory(Item item)
+        {
+            ItemInventory.Add(item);
+        }
+        public void RemoveFromItemInventory(int slot)
+        {
+            ItemInventory.RemoveAt(slot);
+        }
+
+        public void Consume(Item item,int slot)
+        {
+            item.Use(this);
+            RemoveFromItemInventory(slot);
         }
         #endregion
 
@@ -258,6 +275,7 @@ namespace TRP
         }
 
         #endregion
+
 
         #endregion
     }

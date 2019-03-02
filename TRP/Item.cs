@@ -6,23 +6,34 @@ using System.Text;
 namespace TRP
 {
 
-    enum Rarity {Common,Rare,Legendary,Divine}
+    public enum Rarity { Common, Rare, Legendary, Divine }
     public enum WieldAttribute { MainHand, OneHanded, TwoHanded }
+    public enum ConsumableType { HealthPotion}
 
     class Item : Body
     {
+        protected string description;
+        public string Description { get { return description; } set { description = value; } }
+
         private int dropChance;
-        public int  DropChance { get { return dropChance; } set { dropChance = value; } }
+        public int DropChance { get { return dropChance; } set { dropChance = value; } }
 
         private Rarity rarity;
-        public Rarity Rarity {
+        public Rarity Rarity
+        {
             get { return rarity; }
-            set {
+            set
+            {
                 if (rarity != value)
                 {
                     rarity = value;
                 }
-           }
+            }
+        }
+
+        public Item()
+        {
+
         }
 
         public Item(string name, int power, int dropChance)
@@ -39,6 +50,11 @@ namespace TRP
             this.power = power;
             this.rarity = rarity;
             UpdateStats();
+        }
+
+        public virtual void Use(Player player)
+        {
+
         }
 
         public void UpdateStats()
@@ -63,53 +79,61 @@ namespace TRP
 
         private WieldAttribute wieldAttribute;
         public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }
-                
-        public Weapon(string name, int power,WieldAttribute wa,int dropChance) : base(name, power,dropChance)
+
+        public Weapon()
         {
-           wieldAttribute = wa;
+
         }
-        public Weapon(string name, int power, Rarity rarity , WieldAttribute wa) : base(name, power, rarity)
+
+        public Weapon(string name, int power, WieldAttribute wa, int dropChance) : base(name, power, dropChance)
         {
-           wieldAttribute = wa;
+            wieldAttribute = wa;
+        }
+        public Weapon(string name, int power, Rarity rarity, WieldAttribute wa) : base(name, power, rarity)
+        {
+            wieldAttribute = wa;
         }
     }
 
-    class Consumeable : Item
+    class Consumable : Item
     {
-        private string description;
-        public string Description { get; }
-        
-        public Consumeable(string name, int power,int dropChance, string description) : base(name, power, dropChance)
+        private ConsumableType consumableType;
+        public ConsumableType ConsumableType { get { return consumableType; } set { consumableType = value; } }
+
+        public Consumable()
         {
+
+        }
+        public Consumable(string name, int power, int dropChance, ConsumableType consumableType, string description) : base(name, power, dropChance)
+        {
+            this.consumableType = consumableType;
             this.description = description;
         }
 
-        public Consumeable(string name, int power, Rarity rarity) : base(name,power,rarity)
+        public Consumable(string name, int power, Rarity rarity) : base(name, power, rarity)
         {
-           
+
         }
 
         public virtual void Consume(Player player)
         {
+            if (consumableType == ConsumableType.HealthPotion)
+            {
+                if (player.MaxHitPoints - player.HitPoints > power)
+                {
+                   player.HitPoints += power;
+                }
+                else
+                {
+                    player.HitPoints = player.MaxHitPoints;
+                }
+            }
+        }
 
+        public override void Use(Player player)
+        {
+            Consume(player);
         }
     }
 
-    class HealthPotion : Consumeable
-    {
-        public HealthPotion(string name, int power, int dropChance, string description) : base(name, power,dropChance,description)
-        {
-
-        }
-
-        public HealthPotion(string name, int power , Rarity rarity) : base(name, power, rarity)
-        {
-
-        }
-
-        public override void Consume(Player player)
-        {
-            player.HitPoints += power;
-        }
-    }
 }
