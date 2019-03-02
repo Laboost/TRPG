@@ -8,7 +8,11 @@ namespace TRP
     {
         protected string name;
         protected double power;
+        protected double hitPoints;
+        protected double armor;
 
+        public double Armor { get { return armor; } set { armor = value; } }
+        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
         public string Name { get { return name; } set { name = value; } }
         public double Power { get { return power; } set { power = value; } }
 
@@ -17,13 +21,12 @@ namespace TRP
     class Fighter : Body
     {
         protected List<Item> itemInventory = new List<Item>();
-        protected double hitPoints;
+        
         protected double attackPoints;
         protected double maxHitPoints;
-
         public double MaxHitPoints { get { return maxHitPoints; } set { maxHitPoints = value; } }
         public double AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
-        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
+        
         public List<Item> ItemInventory
         {
             get { return itemInventory; }

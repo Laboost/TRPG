@@ -95,6 +95,11 @@ namespace TRP
         }
     }
 
+    class Equipment: Item
+    {
+
+    }
+
     class Consumable : Item
     {
         private ConsumableType consumableType;
