@@ -9,12 +9,12 @@ DONE
 - Weapon variety -  rarity , Diffrent Weild Types   ✔
 - Level System - Player Level system (affecting HP , base power etc) ✔
 - Item variety - potions ✔
-
-Todo Before Unity
-- Skill System - WEAPON has skills (Types)
-- Armor System - armor stats and items
+- Armor System - armor stats and items ✔
 
 After Transition to Unity
+
+TODO
+- Skill System - WEAPON has skills (Types)
 - Shop System - Gold System , Gold drops , RNG in shop
 - Monster variety - Difficulty , Attack Patterns 
 - Stats System - attack speed , Movement speed etc
