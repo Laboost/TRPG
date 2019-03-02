@@ -18,14 +18,18 @@ namespace TRP //Version 0.1
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game items
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game weapons
+        static List<Consumable> Items = new List<Consumable>
+        {
+            new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
+        }; //load all game items
 
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
 
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 10, 7,75,40),
-            new Monster("Orc", 20, 10,25,40),
-            new Monster("Tiger", 30, 15,5,40) }; // load all monsters    
+            new Monster("Wolf", 25, 7,75,40),
+            new Monster("Orc", 40, 10,25,40),
+            new Monster("Tiger", 80, 15,5,40) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -56,7 +60,8 @@ namespace TRP //Version 0.1
 
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Inventory\n", (Action)Inventory),
+            new Option("Open Weapon Inventory", (Action)WeaponInventory),
+            new Option("Open Item Inventory\n", (Action)ItemInventory),
             new Option("Quit Game",(Action)EndGame)
         }); // Idle Menu
             void ShowActionMenu()
@@ -79,7 +84,7 @@ namespace TRP //Version 0.1
 
             #endregion
 
-           
+
 
             test();
             ShowStartMenu();
@@ -90,14 +95,14 @@ namespace TRP //Version 0.1
 
         public static void test() //Test
         {
- 
+
         }
 
 
 
         #region Item Methods
 
-        public static void Inventory() //Handles The inventory UI
+        public static void WeaponInventory() //Handles The inventory UI
         {
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
@@ -114,12 +119,11 @@ namespace TRP //Version 0.1
             Console.WriteLine("\n"); //end of equipped Weapons
 
             int WeaponCount;
-            for (WeaponCount = 0; WeaponCount < Player1.Inventory.Count; WeaponCount++) //shows all items in inventory
+            for (WeaponCount = 0; WeaponCount < Player1.WeaponInventory.Count; WeaponCount++) //shows all items in inventory
             {
-                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.Inventory[WeaponCount].Name + " - " + Player1.Inventory[WeaponCount].Rarity + " - " + Player1.Inventory[WeaponCount].Power + "]"); //show Inventory
+                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.WeaponInventory[WeaponCount].Name + " - " + Player1.WeaponInventory[WeaponCount].Rarity + " - " + Player1.WeaponInventory[WeaponCount].Power + "]"); //show Inventory
             }
             Console.WriteLine("\n[0] Quit");
-
 
             int input = 1;
             bool valid_input = false;
@@ -133,25 +137,65 @@ namespace TRP //Version 0.1
                 }
                 Console.WriteLine("Please enter a valid selection: ");
             }
+
             int chosenWeaponSlot = input - 1;
             if (input > 0 && input <= WeaponCount) // if player chose a weapon from inventory
             {
-                Player1.EquipWeapon((Weapon)Player1.Inventory[chosenWeaponSlot], chosenWeaponSlot);
+                Player1.EquipWeapon((Weapon)Player1.WeaponInventory[chosenWeaponSlot], chosenWeaponSlot);
+            }
+            Console.Clear();
+        }
+
+        public static void ItemInventory()
+        {
+            Console.Clear();
+            Console.WriteLine("Choose Item to use.");
+            int itemCount;
+            for (itemCount = 0; itemCount < Player1.ItemInventory.Count; itemCount++)
+            {
+                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + Player1.ItemInventory[itemCount].Power + "]");
+            }
+            Console.WriteLine("\n[0] Quit");
+
+            int input = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out input);
+                if (input <= itemCount && input >= 0)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+
+            int chosenItemSlot = input - 1;
+            if (input > 0 && input <= itemCount)
+            {
+                Player1.Consume(Player1.ItemInventory[chosenItemSlot],chosenItemSlot);
             }
             Console.Clear();
         }
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
-            Item loot = monster.Inventory[monster.Inventory.Count - 1];
-            if (loot != null)
+            foreach (Item item in monster.ItemInventory)
             {
-                player.AddToInventory(loot);
+                Item loot = item;
+                if (loot != null)
+                {
+                    if (loot is Weapon)
+                    {
+                        player.AddToWeaponInventory(loot);
+                    }
+                    else
+                    {
+                        player.AddToItemInventory(loot);
+                    }
+                }
             }
-            else
-            {
-                return;
-            }
+
         }
 
         #endregion
@@ -252,7 +296,7 @@ namespace TRP //Version 0.1
                 }
                 else if (action == 2) //Inventory
                 {
-                    Inventory();
+                    WeaponInventory();
                 }
                 else if (action == 3) //run!
                 {
@@ -293,14 +337,14 @@ namespace TRP //Version 0.1
         #region Generators
 
 
-        public static Weapon GenerateWeapon()
+        public static Weapon GenerateWeapon(List<Weapon> weapons)
         {
             Weapon X = RandomWeaponDrop(Weapons);
             if (X == null)
             {
                 return X;
             }
-            Weapon item = CopyWeapon(X);
+            Weapon item = Cloner.CloneJson(X);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
             item.UpdateStats();
@@ -308,17 +352,6 @@ namespace TRP //Version 0.1
             return item;
 
         }
-
-        public static Monster GenerateMonster() //generate a random monster
-        {
-            Monster X = RandomMonsterSpawn(Monsters);
-            Monster enemy = CopyMonster(X);
-            Item item = GenerateWeapon();
-            enemy.Inventory.Add(item); //add loot to the monster
-
-            return (enemy);
-        }
-
         public static Weapon RandomWeaponDrop(List<Weapon> items) //generate weapon by Drop chance
         {
             int roll = new Random().Next(0, 1000);
@@ -334,6 +367,47 @@ namespace TRP //Version 0.1
             return null;
         }
 
+        public static Consumable GenerateConsumable(List<Consumable> items)
+        {
+            Consumable X = RandomConsumableDrop(items);
+            if (X == null)
+            {
+                return X;
+            }
+            Consumable item = Cloner.CloneJson(X);
+            Rarity randomRarity = RandomRarityDrop();
+            item.Rarity = randomRarity;
+            item.UpdateStats();
+
+            return item; 
+        }
+        public static Consumable RandomConsumableDrop(List<Consumable> items) //generate Item by Drop Chance
+        {
+            int roll = new Random().Next(0, 1000);
+            int weightSum = 0;
+            foreach (Consumable item in items)
+            {
+                weightSum += item.DropChance;
+                if (roll < weightSum)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        public static Monster GenerateMonster() //generate a random monster
+        {
+            Monster X = RandomMonsterSpawn(Monsters);
+            Monster enemy = Cloner.CloneJson(X);
+            Item weapon = GenerateWeapon(Weapons);
+            Item item = GenerateConsumable(Items);
+
+            enemy.ItemInventory.Add(item);
+            enemy.ItemInventory.Add(weapon); //add loot to the monster
+
+            return (enemy);
+        }
         public static Monster RandomMonsterSpawn(List<Monster> monsters) // generate Monster by Drop Chance
         {
             double maxRoll = 0;
@@ -376,6 +450,34 @@ namespace TRP //Version 0.1
 
         }
 
+        public static Item GenerateItem(List<Item> items)
+        {
+            Item X = RandomItemDrop(items);
+            if (X == null)
+            {
+                return X;
+            }
+            Item item = Cloner.CloneJson(X);
+            Rarity randomRarity = RandomRarityDrop();
+            item.Rarity = randomRarity;
+            item.UpdateStats();
+
+            return item;
+        }
+        public static Item RandomItemDrop(List<Item> items)
+        {
+            int roll = new Random().Next(0, 1000);
+            int weightSum = 0;
+            foreach (Item item in items)
+            {
+                weightSum += item.DropChance;
+                if (roll < weightSum)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
 
         #endregion
 
@@ -407,7 +509,7 @@ namespace TRP //Version 0.1
                 {
                     Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
                 }
-                
+
             }
             else if (body is Fighter)
             {
@@ -453,7 +555,7 @@ namespace TRP //Version 0.1
                 return;
             }
         } // Exit to Main Menu
-        
+
         #endregion
 
         #region Utility
@@ -472,6 +574,7 @@ namespace TRP //Version 0.1
             return randomCell;
         }
 
+        /*
         static public Weapon CopyWeapon(Weapon original)
         {
             Weapon weapon = new Weapon(null, 0, WieldAttribute.MainHand, 0);
@@ -492,9 +595,41 @@ namespace TRP //Version 0.1
 
             return monster;
         }
+
+        static public Consumeable CopyConsumeable(Consumeable original)
+        {
+            {
+                Consumeable item = new Consumeable(null, 0, Rarity.Common);
+                item.Name = original.Name;
+                item.Power = original.Power;
+                item.Description = original.Description;
+
+                return item;
+            }
+        }
+        */
+
         #endregion
 
     }
-    
 
+    public static class Cloner
+    {
+        public static T CloneJson<T>(this T source)
+        {
+            // Don't serialize a null object, simply return the default for that object
+            if (Object.ReferenceEquals(source, null))
+            {
+                return default(T);
+            }
+
+            // initialize inner objects individually
+            // for example in default constructor some list property initialized with some values,
+            // but in 'source' these items are cleaned -
+            // without ObjectCreationHandling.Replace default constructor values will be added to result
+            var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
+
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings);
+        }
+    }
 }
