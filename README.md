@@ -15,7 +15,7 @@ Todo Before Unity
 - Armor System - armor stats and items
 
 After Transition to Unity
-- Shop System - Gold System , Gold drops , Shop In Idle menu , RNG in shop
+- Shop System - Gold System , Gold drops , RNG in shop
 - Monster variety - Difficulty , Attack Patterns 
 - Stats System - attack speed , Movement speed etc
 
