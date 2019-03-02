@@ -24,12 +24,12 @@ namespace TRP //Version 0.1
             new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
         }; //load all game items
         static List<Equipment> Equipment = new List<Equipment> {
-            new Equipment("Iron Chest",40,EquipmentSlot.Chest,150),
-            new Equipment("Iron Head",30,EquipmentSlot.Head,150),
-            new Equipment("Iron Legs",20,EquipmentSlot.Legs,150),
-            new Equipment("Iron Wrists",10,EquipmentSlot.Wrists,200),
-            new Equipment("Iron Hands",20,EquipmentSlot.Hands,150),
-            new Equipment("Iron Feet",10,EquipmentSlot.Feet,200)
+            new Equipment("Iron Chest",10,40,EquipmentSlot.Chest,150),
+            new Equipment("Iron Head",10,30,EquipmentSlot.Head,150),
+            new Equipment("Iron Legs",10,20,EquipmentSlot.Legs,150),
+            new Equipment("Iron Wrists",10,10,EquipmentSlot.Wrists,200),
+            new Equipment("Iron Hands",10,20,EquipmentSlot.Hands,150),
+            new Equipment("Iron Feet",10,10,EquipmentSlot.Feet,200)
         }; //load all game Equipment
 
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
@@ -181,7 +181,11 @@ namespace TRP //Version 0.1
             int chosenItemSlot = input - 1;
             if (input > 0 && input <= itemCount)
             {
-                Player1.Consume(Player1.ItemInventory[chosenItemSlot],chosenItemSlot);
+                if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
+                {
+                    Player1.Equip(ItemInventory[chosenItemSlot], chosenItemSlot);
+                }
+                Player1.Use(Player1.ItemInventory[chosenItemSlot],chosenItemSlot);
             }
             Console.Clear();
         }

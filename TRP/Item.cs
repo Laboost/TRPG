@@ -86,7 +86,7 @@ namespace TRP
 
         }
 
-        public Weapon(string name, double power, WieldAttribute wa, int dropChance) : base(name, power,EquipmentSlot.Weapon,dropChance)
+        public Weapon(string name, double power, WieldAttribute wa, int dropChance) : base(name, power,0,EquipmentSlot.Weapon,dropChance)
         {
             wieldAttribute = wa;
         }
@@ -106,9 +106,10 @@ namespace TRP
 
         }
 
-        public Equipment(string name, double power, EquipmentSlot equipmentSlot,int dropChance) : base(name,power,dropChance)
+        public Equipment(string name, double power,double armor, EquipmentSlot equipmentSlot,int dropChance) : base(name,power,dropChance)
         {
             this.equipmentSlot = equipmentSlot;
+            this.armor = armor;
         }
 
         public Equipment(string name , double power, Rarity rarity)

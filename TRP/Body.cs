@@ -43,6 +43,21 @@ namespace TRP
         public double Exp { get { return exp; } }
         public double MaxExp { get; set; }
 
+        #region Equipment Fields
+        static private Equipment emptyEquipment = new Equipment();
+        private Equipment[] bodySlots = new Equipment[] {
+            emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment };
+        private Equipment head { get { return bodySlots[0]; } set { bodySlots[0] = value; } }
+        private Equipment chest { get { return bodySlots[1]; } set { bodySlots[1] = value; } }
+        private Equipment hands { get { return bodySlots[2]; } set { bodySlots[2] = value; } }
+        private Equipment wrists { get { return bodySlots[3]; } set { bodySlots[3] = value; } }
+        private Equipment legs { get { return bodySlots[4]; } set { bodySlots[4] = value; } }
+        private Equipment feet { get { return bodySlots[5]; } set { bodySlots[5] = value; } }
+        #endregion
+
+        #region Weapon Fields
+
+
         private List<Item> weaponInventory = new List<Item>();
         public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
 
@@ -53,6 +68,8 @@ namespace TRP
         private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
 
         public Weapon[] EquippedWeapons { get { return hands; } }
+
+        #endregion
 
         #region Methods
 
@@ -218,6 +235,7 @@ namespace TRP
         {
             WeaponInventory.RemoveAt(slot);
         }
+
         public void AddToItemInventory(Item item)
         {
             ItemInventory.Add(item);
@@ -227,7 +245,7 @@ namespace TRP
             ItemInventory.RemoveAt(slot);
         }
 
-        public void Consume(Item item,int slot)
+        public void Use(Item item,int slot)
         {
             item.Use(this);
             RemoveFromItemInventory(slot);
