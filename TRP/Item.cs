@@ -63,14 +63,17 @@ namespace TRP
             if (rarity == Rarity.Rare)
             {
                 power = power * 1.20;
+                armor = armor * 1.20;
             }
             if (rarity == Rarity.Legendary)
             {
                 power = power * 2;
+                armor = armor * 2;
             }
             if (rarity == Rarity.Divine)
             {
                 power = power * 2.5;
+                armor = armor * 2.5;
             }
         } //Updates the item stats by his Attributes
     }

@@ -24,12 +24,12 @@ namespace TRP //Version 0.1
             new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
         }; //load all game items
         static List<Equipment> Equipment = new List<Equipment> {
-            new Equipment("Iron Chest",10,40,EquipmentSlot.Chest,150),
-            new Equipment("Iron Head",10,30,EquipmentSlot.Head,150),
-            new Equipment("Iron Legs",10,20,EquipmentSlot.Legs,150),
-            new Equipment("Iron Wrists",10,10,EquipmentSlot.Wrists,200),
-            new Equipment("Iron Hands",10,20,EquipmentSlot.Hands,150),
-            new Equipment("Iron Feet",10,10,EquipmentSlot.Feet,200)
+            new Equipment("Iron Chest",0,40,EquipmentSlot.Chest,150),
+            new Equipment("Iron Head",0,30,EquipmentSlot.Head,150),
+            new Equipment("Iron Legs",0,20,EquipmentSlot.Legs,150),
+            new Equipment("Iron Wrists",0,10,EquipmentSlot.Wrists,200),
+            new Equipment("Iron Hands",0,20,EquipmentSlot.Hands,150),
+            new Equipment("Iron Feet",0,10,EquipmentSlot.Feet,200)
         }; //load all game Equipment
 
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
@@ -161,7 +161,7 @@ namespace TRP //Version 0.1
             int itemCount;
             for (itemCount = 0; itemCount < Player1.ItemInventory.Count; itemCount++)
             {
-                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + Player1.ItemInventory[itemCount].Power + "]");
+                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + " Power: "  + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -217,7 +217,7 @@ namespace TRP //Version 0.1
 
         public static void Battle()
         {
-            Player1.UpdateAP();
+            Player1.UpdateStats();
             Monster Enemy = GenerateMonster();
             Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
             bool endBattle = false;
@@ -547,17 +547,17 @@ namespace TRP //Version 0.1
                 Player player = (Player)body;
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nLevel:" + Player1.Level + "\nArmor: " + Player1.Armor + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints  + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
                 }
                 else
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nLevel:" + Player1.Level + "\nArmor: " + Player1.Armor + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints  + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
                 }
                 for (int i = 0; i < Player1.BodySlots.Length; i++)
                 {
                     if (Player1.BodySlots[i].Name != null)
                     {
-                      Console.WriteLine("[" + Player1.BodySlots[i].Name + " - " + Player1.BodySlots[i].Rarity + " - " + Player1.BodySlots[i].Power + "]");
+                      Console.WriteLine("[" + Player1.BodySlots[i].Name + " - " + Player1.BodySlots[i].Rarity + " - " + Player1.BodySlots[i].Armor + "]");
                     }
                     
                 }

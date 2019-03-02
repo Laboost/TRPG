@@ -86,9 +86,22 @@ namespace TRP
             maxHitPoints = 100; 
         }
 
-        public void UpdateAP() //updates the player AttackPoints
+        public void UpdateStats() //updates the player AttackPoints
         {
-           
+            #region Armor
+
+            double sumOfArmor = 0;
+
+            for (int i = 0; i < BodySlots.Length; i++)
+            {
+                sumOfArmor += BodySlots[i].Armor;
+            }
+            armor = sumOfArmor;
+
+            #endregion
+
+            #region Attack Points
+
             #region Level
 
             double levelPower = 2;
@@ -107,6 +120,17 @@ namespace TRP
                 attackPoints = mainHand.Power + offHand.Power + power;
             }
             else attackPoints = mainHand.Power + power;
+
+            #endregion
+
+            #region Equipment
+
+            for (int i = 0; i < BodySlots.Length; i++)
+            {
+                power += BodySlots[i].Power;
+            }
+
+            #endregion
 
             #endregion
         }
@@ -207,7 +231,7 @@ namespace TRP
                 }
             }
 
-            UpdateAP();
+            UpdateStats();
         }
         public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
@@ -287,6 +311,7 @@ namespace TRP
                     finishedEquipping = true;
                 }
             }
+            UpdateStats();
 
         }
         public void UnEquip(Equipment bodySlot)
@@ -307,7 +332,7 @@ namespace TRP
         {
             this.exp += exp;
             checkLevel();
-            UpdateAP();
+            UpdateStats();
         }
         private void checkLevel()//call level up when player is above expCap
         {
