@@ -8,6 +8,7 @@ namespace TRP
 
     public enum Rarity { Common, Rare, Legendary, Divine }
     public enum WieldAttribute { MainHand, OneHanded, TwoHanded }
+    public enum EquipmentSlot {Head,Chest,Hands,Wrists,Legs,Feet,Weapon }
     public enum ConsumableType { HealthPotion}
 
     class Item : Body
@@ -36,7 +37,7 @@ namespace TRP
 
         }
 
-        public Item(string name, int power, int dropChance)
+        public Item(string name, double power, int dropChance)
         {
             this.dropChance = dropChance;
             this.name = name;
@@ -44,7 +45,7 @@ namespace TRP
             UpdateStats();
         }
 
-        public Item(string name, int power, Rarity rarity)
+        public Item(string name, double power, Rarity rarity)
         {
             this.name = name;
             this.power = power;
@@ -74,7 +75,7 @@ namespace TRP
         } //Updates the item stats by his Attributes
     }
 
-    class Weapon : Item
+    class Weapon : Equipment
     {
 
         private WieldAttribute wieldAttribute;
@@ -85,11 +86,11 @@ namespace TRP
 
         }
 
-        public Weapon(string name, int power, WieldAttribute wa, int dropChance) : base(name, power, dropChance)
+        public Weapon(string name, double power, WieldAttribute wa, int dropChance) : base(name, power,EquipmentSlot.Weapon,dropChance)
         {
             wieldAttribute = wa;
         }
-        public Weapon(string name, int power, Rarity rarity, WieldAttribute wa) : base(name, power, rarity)
+        public Weapon(string name, double power, Rarity rarity, WieldAttribute wa, int dropChance) : base(name, power, rarity)
         {
             wieldAttribute = wa;
         }
@@ -97,7 +98,23 @@ namespace TRP
 
     class Equipment: Item
     {
+        private EquipmentSlot equipmentSlot;
+        public EquipmentSlot EquipmentSlot { get { return equipmentSlot; } set { equipmentSlot = value; } }
 
+        public Equipment()
+        {
+
+        }
+
+        public Equipment(string name, double power, EquipmentSlot equipmentSlot,int dropChance) : base(name,power,dropChance)
+        {
+            this.equipmentSlot = equipmentSlot;
+        }
+
+        public Equipment(string name , double power, Rarity rarity)
+        {
+
+        }
     }
 
     class Consumable : Item
@@ -109,13 +126,13 @@ namespace TRP
         {
 
         }
-        public Consumable(string name, int power, int dropChance, ConsumableType consumableType, string description) : base(name, power, dropChance)
+        public Consumable(string name, double power, int dropChance, ConsumableType consumableType, string description) : base(name, power, dropChance)
         {
             this.consumableType = consumableType;
             this.description = description;
         }
 
-        public Consumable(string name, int power, Rarity rarity) : base(name, power, rarity)
+        public Consumable(string name, double power, Rarity rarity) : base(name, power, rarity)
         {
 
         }

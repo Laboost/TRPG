@@ -14,7 +14,7 @@ namespace TRP //Version 0.1
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.MainHand);
+        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.MainHand,0);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
