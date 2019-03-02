@@ -45,14 +45,14 @@ namespace TRP
 
         #region Equipment Fields
         static private Equipment emptyEquipment = new Equipment();
-        private Equipment[] bodySlots = new Equipment[] {
+        public Equipment[] BodySlots = new Equipment[] {
             emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment };
-        private Equipment head { get { return bodySlots[0]; } set { bodySlots[0] = value; } }
-        private Equipment chest { get { return bodySlots[1]; } set { bodySlots[1] = value; } }
-        private Equipment hands { get { return bodySlots[2]; } set { bodySlots[2] = value; } }
-        private Equipment wrists { get { return bodySlots[3]; } set { bodySlots[3] = value; } }
-        private Equipment legs { get { return bodySlots[4]; } set { bodySlots[4] = value; } }
-        private Equipment feet { get { return bodySlots[5]; } set { bodySlots[5] = value; } }
+        private Equipment head { get { return BodySlots[0]; } set { BodySlots[0] = value; } }
+        private Equipment chest { get { return BodySlots[1]; } set { BodySlots[1] = value; } }
+        private Equipment hands { get { return BodySlots[2]; } set { BodySlots[2] = value; } }
+        private Equipment wrists { get { return BodySlots[3]; } set { BodySlots[3] = value; } }
+        private Equipment legs { get { return BodySlots[4]; } set { BodySlots[4] = value; } }
+        private Equipment feet { get { return BodySlots[5]; } set { BodySlots[5] = value; } }
         #endregion
 
         #region Weapon Fields
@@ -63,11 +63,11 @@ namespace TRP
 
         static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
 
-        private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
-        private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
-        private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
+        private Weapon[] weaponSlots = new Weapon[] { twoHanded, twoHanded };
+        private Weapon mainHand { get { return weaponSlots[0]; } set { weaponSlots[0] = value; } }
+        private Weapon offHand { get { return weaponSlots[1]; } set { weaponSlots[1] = value; } }
 
-        public Weapon[] EquippedWeapons { get { return hands; } }
+        public Weapon[] EquippedWeapons { get { return weaponSlots; } }
 
         #endregion
 
@@ -243,6 +243,55 @@ namespace TRP
         public void RemoveFromItemInventory(int slot)
         {
             ItemInventory.RemoveAt(slot);
+        }
+
+        public void Equip(Equipment equipment , int inventorySlot)
+        {
+            bool finishedEquipping = false;
+            while (finishedEquipping == false)
+            {
+                if (equipment.EquipmentSlot == EquipmentSlot.Head)
+                {
+                    UnEquip(head);
+                    head = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Chest)
+                {
+                    UnEquip(chest);
+                    chest = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Hands)
+                {
+                    UnEquip(hands);
+                    hands = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Wrists)
+                {
+                    UnEquip(wrists);
+                    wrists = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Legs)
+                {
+                    UnEquip(legs);
+                    legs = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Feet)
+                {
+                    UnEquip(feet);
+                    feet = equipment;
+                    finishedEquipping = true;
+                }
+            }
+
+        }
+        public void UnEquip(Equipment bodySlot)
+        {
+            bodySlot = emptyEquipment;
         }
 
         public void Use(Item item,int slot)

@@ -14,7 +14,7 @@ namespace TRP //Version 0.1
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.MainHand,0);
+        static Weapon BasicSword = new Weapon("Basic Sword",10,WieldAttribute.MainHand,0);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
@@ -183,7 +183,7 @@ namespace TRP //Version 0.1
             {
                 if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
                 {
-                    Player1.Equip(ItemInventory[chosenItemSlot], chosenItemSlot);
+                    Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
                 }
                 Player1.Use(Player1.ItemInventory[chosenItemSlot],chosenItemSlot);
             }
@@ -552,6 +552,10 @@ namespace TRP //Version 0.1
                 else
                 {
                     Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
+                }
+                for (int i = 0; i < Player1.BodySlots.Length; i++)
+                {
+                    Console.WriteLine(Player1.BodySlots[i].Name);
                 }
 
             }
