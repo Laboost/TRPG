@@ -35,9 +35,9 @@ namespace TRP //Version 0.1
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
 
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 25, 7,75,40),
-            new Monster("Orc", 40, 10,25,40),
-            new Monster("Tiger", 80, 15,5,40) }; // load all monsters    
+            new Monster("Wolf", 25, 30,75,40),
+            new Monster("Orc", 40, 30,25,40),
+            new Monster("Tiger", 80, 30,5,40) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -288,8 +288,18 @@ namespace TRP //Version 0.1
 
         public static double Attack(Fighter attacker, Fighter target) //one fighter attacks another
         {
-            target.HitPoints -= attacker.AttackPoints;
-            return target.HitPoints;
+            double damageDelt = attacker.AttackPoints;
+
+            if (target.Armor < damageDelt)
+            {
+                target.HitPoints = target.HitPoints + target.Armor - damageDelt;
+            }
+            else
+            {
+                damageDelt = 0;
+            }
+           
+            return damageDelt;
         }
 
         public static string PlayersTurn(Fighter enemy) //handles the player turn 
