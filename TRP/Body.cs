@@ -8,7 +8,11 @@ namespace TRP
     {
         protected string name;
         protected double power;
+        protected double hitPoints;
+        protected double armor;
 
+        public double Armor { get { return armor; } set { armor = value; } }
+        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
         public string Name { get { return name; } set { name = value; } }
         public double Power { get { return power; } set { power = value; } }
 
@@ -16,50 +20,126 @@ namespace TRP
 
     class Fighter : Body
     {
-        protected List<Item> inventory = new List<Item>();
-        protected double hitPoints;
+        protected List<Item> itemInventory = new List<Item>();
+        
         protected double attackPoints;
-
+        protected double maxHitPoints;
+        public double MaxHitPoints { get { return maxHitPoints; } set { maxHitPoints = value; } }
         public double AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
-        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
-        public List<Item> Inventory
+        
+        public List<Item> ItemInventory
         {
-            get { return inventory; }
-            set { inventory = value; }
+            get { return itemInventory; }
+            set { itemInventory = value; }
         }
     }
 
     class Player : Fighter
     {
-        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
-        private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
-        private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
-        private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
+        private int level;
+        public int Level { get { return level; } }
 
-        public Weapon[] EquippedWeapons { get { return hands; } }
+        private double exp;
+        public double Exp { get { return exp; } }
+        public double MaxExp { get; set; }
+
+        #region Equipment Fields
+        static private Equipment emptyEquipment = new Equipment();
+        public Equipment[] BodySlots = new Equipment[] {
+            emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment };
+        private Equipment head { get { return BodySlots[0]; } set { BodySlots[0] = value; } }
+        private Equipment chest { get { return BodySlots[1]; } set { BodySlots[1] = value; } }
+        private Equipment hands { get { return BodySlots[2]; } set { BodySlots[2] = value; } }
+        private Equipment wrists { get { return BodySlots[3]; } set { BodySlots[3] = value; } }
+        private Equipment legs { get { return BodySlots[4]; } set { BodySlots[4] = value; } }
+        private Equipment feet { get { return BodySlots[5]; } set { BodySlots[5] = value; } }
+        #endregion
+
+        #region Weapon Fields
+
+
+        private List<Item> weaponInventory = new List<Item>();
+        public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
+
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
+
+        private Weapon[] weaponSlots = new Weapon[] { twoHanded, twoHanded };
+        private Weapon mainHand { get { return weaponSlots[0]; } set { weaponSlots[0] = value; } }
+        private Weapon offHand { get { return weaponSlots[1]; } set { weaponSlots[1] = value; } }
+
+        public Weapon[] EquippedWeapons { get { return weaponSlots; } }
+
+        #endregion
 
         #region Methods
-        public Player(string name, double hitPoints, double power, Weapon weapon)
+
+        public Player(string name, double hitPoints, Weapon weapon) 
         {
             mainHand = weapon;
             offHand = null;
             this.name = name;
             this.hitPoints = hitPoints;
-            this.power = power;
+            power = 10;
+            level = 1;
+            exp = 0; 
+            MaxExp = 40;
+            maxHitPoints = 100; 
         }
 
-        public void UpdateAP() //updates the player AttackPoints
+        public void UpdateStats() //updates the player AttackPoints
         {
+            #region Armor
+
+            double sumOfArmor = 0;
+
+            for (int i = 0; i < BodySlots.Length; i++)
+            {
+                sumOfArmor += BodySlots[i].Armor;
+            }
+            armor = sumOfArmor;
+
+            #endregion
+
+            #region Attack Points
+
+            #region Level
+
+            double levelPower = 2;
+            for (int i = 1; i < level; i++)
+            {
+                this.power += levelPower;
+                levelPower = levelPower * 1.5;
+            }
+
+            #endregion
+
+            #region weapons
+
             if (offHand != null)
             {
                 attackPoints = mainHand.Power + offHand.Power + power;
             }
             else attackPoints = mainHand.Power + power;
+
+            #endregion
+
+            #region Equipment
+
+            for (int i = 0; i < BodySlots.Length; i++)
+            {
+                power += BodySlots[i].Power;
+            }
+
+            #endregion
+
+            #endregion
         }
+
+        #region Weapon Methods
 
         public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
         {
-            RemoveFromInventory(inventorySlot);
+            RemoveFromWeaponInventory(inventorySlot);
             bool weaponSwaped = false;
             while (weaponSwaped == false)
             {
@@ -151,11 +231,11 @@ namespace TRP
                 }
             }
 
-            UpdateAP();
+            UpdateStats();
         }
         public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
-            AddToInventory(hand);
+            AddToWeaponInventory(hand);
 
             if (hand.WieldAttribute == WieldAttribute.TwoHanded)
             {
@@ -167,20 +247,142 @@ namespace TRP
                 mainHand = null;
             }       
         }
+        #endregion
 
-        public void AddToInventory(Item item) //adds item to player's inventory
+        #region Equipment methods
+
+        public void AddToWeaponInventory(Item item) //adds item to player's inventory
         {
-            Inventory.Add(item);
+            WeaponInventory.Add(item);
         }
-        public void RemoveFromInventory(int slot) //removes item from player's inventory
+        public void RemoveFromWeaponInventory(int slot) //removes item from player's inventory
         {
-            Inventory.RemoveAt(slot);
+            WeaponInventory.RemoveAt(slot);
         }
+
+        public void AddToItemInventory(Item item)
+        {
+            ItemInventory.Add(item);
+        }
+        public void RemoveFromItemInventory(int slot)
+        {
+            ItemInventory.RemoveAt(slot);
+        }
+
+        public void Equip(Equipment equipment , int inventorySlot)
+        {
+            bool finishedEquipping = false;
+            while (finishedEquipping == false)
+            {
+                if (equipment.EquipmentSlot == EquipmentSlot.Head)
+                {
+                    UnEquip(head);
+                    head = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Chest)
+                {
+                    UnEquip(chest);
+                    chest = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Hands)
+                {
+                    UnEquip(hands);
+                    hands = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Wrists)
+                {
+                    UnEquip(wrists);
+                    wrists = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Legs)
+                {
+                    UnEquip(legs);
+                    legs = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Feet)
+                {
+                    UnEquip(feet);
+                    feet = equipment;
+                    finishedEquipping = true;
+                }
+            }
+            UpdateStats();
+
+        }
+        public void UnEquip(Equipment bodySlot)
+        {
+            if (bodySlot.Name != null)
+            {
+               itemInventory.Add(bodySlot);
+            }
+            bodySlot = emptyEquipment;
+        }
+
+        public void Use(Item item,int slot)
+        {
+            item.Use(this);
+            RemoveFromItemInventory(slot);
+        }
+        #endregion
+
+        #region Level Methods
+
+        public void AddExp(double exp) //add exp to the player
+        {
+            this.exp += exp;
+            checkLevel();
+            UpdateStats();
+        }
+        private void checkLevel()//call level up when player is above expCap
+        {
+            if (exp >= MaxExp)
+            {
+                levelUp();
+            }
+        } 
+
+        private void levelUp()//Level up the player
+        {
+            level++;
+            exp = 0;
+            updateMaxExp();
+            updateMaxHp();
+            hitPoints = maxHitPoints;
+        } 
+        private void updateMaxExp()//update the player's MaxExp
+        {
+            double neededExp = 40;
+            for (int i = 1; i <= level; i++)
+            {
+                MaxExp += neededExp;
+                neededExp = neededExp * 1.5;
+            }
+        } 
+        private void updateMaxHp()// update the player's maxHP
+        {
+            double hpPerLevel = 20;
+            for (int i = 1; i < level; i++)
+            {
+                MaxHitPoints += hpPerLevel;
+                hpPerLevel = hpPerLevel * 1.1;
+            }
+        }
+
+        #endregion
+
+
         #endregion
     }
 
     class Monster : Fighter
     {
+        private double exp;
+        public double Exp { get { return exp; } set { exp = value; } }
         private double dropChance;
         public double DropChance { get { return dropChance; } set { dropChance = value; } }
 
@@ -188,12 +390,13 @@ namespace TRP
         {
 
         }
-        public Monster(string name, double hitPoints, double attackPoints, double dropChance)
+        public Monster(string name, double hitPoints, double attackPoints, double dropChance , double exp)
         {
             this.name = name;
             this.hitPoints = hitPoints;
             this.attackPoints = attackPoints;
             this.dropChance = dropChance;
+            this.exp = exp;
         }
     }
 }
