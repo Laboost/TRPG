@@ -19,10 +19,18 @@ namespace TRP //Version 0.1
             new Weapon("Sword", 20,WieldAttribute.MainHand,400)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
             , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game weapons
-        static List<Consumable> Items = new List<Consumable>
+        static List<Consumable> Items = new List<Consumable> // load all game consumables
         {
             new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
         }; //load all game items
+        static List<Equipment> Equipment = new List<Equipment> {
+            new Equipment("Iron Chest",40,EquipmentSlot.Chest,150),
+            new Equipment("Iron Head",30,EquipmentSlot.Head,150),
+            new Equipment("Iron Legs",20,EquipmentSlot.Legs,150),
+            new Equipment("Iron Wrists",10,EquipmentSlot.Wrists,200),
+            new Equipment("Iron Hands",20,EquipmentSlot.Hands,150),
+            new Equipment("Iron Feet",10,EquipmentSlot.Feet,200)
+        }; //load all game Equipment
 
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
 
@@ -396,13 +404,45 @@ namespace TRP //Version 0.1
             return null;
         }
 
+        public static Equipment GenerateEquipment(List<Equipment> items)
+        {
+            Equipment X = RandomEquipmentDrop(items);
+            if (X == null)
+            {
+                return X;
+            }
+            Equipment item = Cloner.CloneJson(X);
+            Rarity randomRarity = RandomRarityDrop();
+            item.Rarity = randomRarity;
+            item.UpdateStats();
+
+            return item;
+
+        }
+        public static Equipment RandomEquipmentDrop(List<Equipment> items) //generate Equipment by Drop chance
+        {
+            int roll = new Random().Next(0, 1000);
+            int weightSum = 0;
+            foreach (Equipment item in items)
+            {
+                weightSum += item.DropChance;
+                if (roll < weightSum)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         public static Monster GenerateMonster() //generate a random monster
         {
             Monster X = RandomMonsterSpawn(Monsters);
             Monster enemy = Cloner.CloneJson(X);
             Item weapon = GenerateWeapon(Weapons);
             Item item = GenerateConsumable(Items);
+            Item equipment = GenerateEquipment(Equipment);
 
+            enemy.ItemInventory.Add(equipment);
             enemy.ItemInventory.Add(item);
             enemy.ItemInventory.Add(weapon); //add loot to the monster
 
