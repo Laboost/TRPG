@@ -316,6 +316,10 @@ namespace TRP
         }
         public void UnEquip(Equipment bodySlot)
         {
+            if (bodySlot.Name != null)
+            {
+               itemInventory.Add(bodySlot);
+            }
             bodySlot = emptyEquipment;
         }
 

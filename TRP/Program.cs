@@ -161,7 +161,11 @@ namespace TRP //Version 0.1
             int itemCount;
             for (itemCount = 0; itemCount < Player1.ItemInventory.Count; itemCount++)
             {
-                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + " Power: "  + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
+                if (Player1.ItemInventory[itemCount].Description != null)
+                {
+                    Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + " Power: " + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
+                }
+                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - "  + " Power: "  + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -313,7 +317,7 @@ namespace TRP //Version 0.1
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
                 {
-                    Attack(Player1, enemy);
+                    double damageDelt = Attack(Player1, enemy);
                     return "Attacked";
                 }
                 else if (action == 2) //Inventory
@@ -571,6 +575,7 @@ namespace TRP //Version 0.1
                     }
                     
                 }
+                Console.WriteLine("\n");
 
             }
             else if (body is Fighter)
