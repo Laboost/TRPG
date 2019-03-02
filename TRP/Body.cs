@@ -8,7 +8,11 @@ namespace TRP
     {
         protected string name;
         protected double power;
+        protected double hitPoints;
+        protected double armor;
 
+        public double Armor { get { return armor; } set { armor = value; } }
+        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
         public string Name { get { return name; } set { name = value; } }
         public double Power { get { return power; } set { power = value; } }
 
@@ -17,13 +21,12 @@ namespace TRP
     class Fighter : Body
     {
         protected List<Item> itemInventory = new List<Item>();
-        protected double hitPoints;
+        
         protected double attackPoints;
         protected double maxHitPoints;
-
         public double MaxHitPoints { get { return maxHitPoints; } set { maxHitPoints = value; } }
         public double AttackPoints { get { return attackPoints; } set { attackPoints = value; } }
-        public double HitPoints { get { return hitPoints; } set { hitPoints = value; } }
+        
         public List<Item> ItemInventory
         {
             get { return itemInventory; }
@@ -40,16 +43,33 @@ namespace TRP
         public double Exp { get { return exp; } }
         public double MaxExp { get; set; }
 
+        #region Equipment Fields
+        static private Equipment emptyEquipment = new Equipment();
+        public Equipment[] BodySlots = new Equipment[] {
+            emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment , emptyEquipment };
+        private Equipment head { get { return BodySlots[0]; } set { BodySlots[0] = value; } }
+        private Equipment chest { get { return BodySlots[1]; } set { BodySlots[1] = value; } }
+        private Equipment hands { get { return BodySlots[2]; } set { BodySlots[2] = value; } }
+        private Equipment wrists { get { return BodySlots[3]; } set { BodySlots[3] = value; } }
+        private Equipment legs { get { return BodySlots[4]; } set { BodySlots[4] = value; } }
+        private Equipment feet { get { return BodySlots[5]; } set { BodySlots[5] = value; } }
+        #endregion
+
+        #region Weapon Fields
+
+
         private List<Item> weaponInventory = new List<Item>();
         public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
 
         static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
 
-        private Weapon[] hands = new Weapon[] { twoHanded, twoHanded };
-        private Weapon mainHand { get { return hands[0]; } set { hands[0] = value; } }
-        private Weapon offHand { get { return hands[1]; } set { hands[1] = value; } }
+        private Weapon[] weaponSlots = new Weapon[] { twoHanded, twoHanded };
+        private Weapon mainHand { get { return weaponSlots[0]; } set { weaponSlots[0] = value; } }
+        private Weapon offHand { get { return weaponSlots[1]; } set { weaponSlots[1] = value; } }
 
-        public Weapon[] EquippedWeapons { get { return hands; } }
+        public Weapon[] EquippedWeapons { get { return weaponSlots; } }
+
+        #endregion
 
         #region Methods
 
@@ -66,9 +86,22 @@ namespace TRP
             maxHitPoints = 100; 
         }
 
-        public void UpdateAP() //updates the player AttackPoints
+        public void UpdateStats() //updates the player AttackPoints
         {
-           
+            #region Armor
+
+            double sumOfArmor = 0;
+
+            for (int i = 0; i < BodySlots.Length; i++)
+            {
+                sumOfArmor += BodySlots[i].Armor;
+            }
+            armor = sumOfArmor;
+
+            #endregion
+
+            #region Attack Points
+
             #region Level
 
             double levelPower = 2;
@@ -87,6 +120,17 @@ namespace TRP
                 attackPoints = mainHand.Power + offHand.Power + power;
             }
             else attackPoints = mainHand.Power + power;
+
+            #endregion
+
+            #region Equipment
+
+            for (int i = 0; i < BodySlots.Length; i++)
+            {
+                power += BodySlots[i].Power;
+            }
+
+            #endregion
 
             #endregion
         }
@@ -187,7 +231,7 @@ namespace TRP
                 }
             }
 
-            UpdateAP();
+            UpdateStats();
         }
         public void UnEquipWeapon(Weapon hand) //unequip current weapon
         {
@@ -215,6 +259,7 @@ namespace TRP
         {
             WeaponInventory.RemoveAt(slot);
         }
+
         public void AddToItemInventory(Item item)
         {
             ItemInventory.Add(item);
@@ -224,7 +269,61 @@ namespace TRP
             ItemInventory.RemoveAt(slot);
         }
 
-        public void Consume(Item item,int slot)
+        public void Equip(Equipment equipment , int inventorySlot)
+        {
+            bool finishedEquipping = false;
+            while (finishedEquipping == false)
+            {
+                if (equipment.EquipmentSlot == EquipmentSlot.Head)
+                {
+                    UnEquip(head);
+                    head = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Chest)
+                {
+                    UnEquip(chest);
+                    chest = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Hands)
+                {
+                    UnEquip(hands);
+                    hands = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Wrists)
+                {
+                    UnEquip(wrists);
+                    wrists = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Legs)
+                {
+                    UnEquip(legs);
+                    legs = equipment;
+                    finishedEquipping = true;
+                }
+                if (equipment.EquipmentSlot == EquipmentSlot.Feet)
+                {
+                    UnEquip(feet);
+                    feet = equipment;
+                    finishedEquipping = true;
+                }
+            }
+            UpdateStats();
+
+        }
+        public void UnEquip(Equipment bodySlot)
+        {
+            if (bodySlot.Name != null)
+            {
+               itemInventory.Add(bodySlot);
+            }
+            bodySlot = emptyEquipment;
+        }
+
+        public void Use(Item item,int slot)
         {
             item.Use(this);
             RemoveFromItemInventory(slot);
@@ -237,7 +336,7 @@ namespace TRP
         {
             this.exp += exp;
             checkLevel();
-            UpdateAP();
+            UpdateStats();
         }
         private void checkLevel()//call level up when player is above expCap
         {

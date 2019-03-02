@@ -14,22 +14,30 @@ namespace TRP //Version 0.1
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Sword", 10, Rarity.Common, WieldAttribute.MainHand);
+        static Weapon BasicSword = new Weapon("Basic Sword",10,WieldAttribute.MainHand,0);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
             , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game weapons
-        static List<Consumable> Items = new List<Consumable>
+        static List<Consumable> Items = new List<Consumable> // load all game consumables
         {
             new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
         }; //load all game items
+        static List<Equipment> Equipment = new List<Equipment> {
+            new Equipment("Iron Chest",0,40,EquipmentSlot.Chest,150),
+            new Equipment("Iron Head",0,30,EquipmentSlot.Head,150),
+            new Equipment("Iron Legs",0,20,EquipmentSlot.Legs,150),
+            new Equipment("Iron Wrists",0,10,EquipmentSlot.Wrists,200),
+            new Equipment("Iron Hands",0,20,EquipmentSlot.Hands,150),
+            new Equipment("Iron Feet",0,10,EquipmentSlot.Feet,200)
+        }; //load all game Equipment
 
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
 
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 25, 7,75,40),
-            new Monster("Orc", 40, 10,25,40),
-            new Monster("Tiger", 80, 15,5,40) }; // load all monsters    
+            new Monster("Wolf", 25, 30,75,40),
+            new Monster("Orc", 40, 30,25,40),
+            new Monster("Tiger", 80, 30,5,40) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -153,7 +161,11 @@ namespace TRP //Version 0.1
             int itemCount;
             for (itemCount = 0; itemCount < Player1.ItemInventory.Count; itemCount++)
             {
-                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + Player1.ItemInventory[itemCount].Power + "]");
+                if (Player1.ItemInventory[itemCount].Description != null)
+                {
+                    Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + " Power: " + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
+                }
+                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - "  + " Power: "  + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -173,7 +185,11 @@ namespace TRP //Version 0.1
             int chosenItemSlot = input - 1;
             if (input > 0 && input <= itemCount)
             {
-                Player1.Consume(Player1.ItemInventory[chosenItemSlot],chosenItemSlot);
+                if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
+                {
+                    Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+                }
+                Player1.Use(Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
             }
             Console.Clear();
         }
@@ -205,7 +221,7 @@ namespace TRP //Version 0.1
 
         public static void Battle()
         {
-            Player1.UpdateAP();
+            Player1.UpdateStats();
             Monster Enemy = GenerateMonster();
             Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
             bool endBattle = false;
@@ -276,8 +292,18 @@ namespace TRP //Version 0.1
 
         public static double Attack(Fighter attacker, Fighter target) //one fighter attacks another
         {
-            target.HitPoints -= attacker.AttackPoints;
-            return target.HitPoints;
+            double damageDelt = attacker.AttackPoints;
+
+            if (target.Armor < damageDelt)
+            {
+                target.HitPoints = target.HitPoints + target.Armor - damageDelt;
+            }
+            else
+            {
+                damageDelt = 0;
+            }
+           
+            return damageDelt;
         }
 
         public static string PlayersTurn(Fighter enemy) //handles the player turn 
@@ -291,7 +317,7 @@ namespace TRP //Version 0.1
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
                 {
-                    Attack(Player1, enemy);
+                    double damageDelt = Attack(Player1, enemy);
                     return "Attacked";
                 }
                 else if (action == 2) //Inventory
@@ -396,13 +422,45 @@ namespace TRP //Version 0.1
             return null;
         }
 
+        public static Equipment GenerateEquipment(List<Equipment> items)
+        {
+            Equipment X = RandomEquipmentDrop(items);
+            if (X == null)
+            {
+                return X;
+            }
+            Equipment item = Cloner.CloneJson(X);
+            Rarity randomRarity = RandomRarityDrop();
+            item.Rarity = randomRarity;
+            item.UpdateStats();
+
+            return item;
+
+        }
+        public static Equipment RandomEquipmentDrop(List<Equipment> items) //generate Equipment by Drop chance
+        {
+            int roll = new Random().Next(0, 1000);
+            int weightSum = 0;
+            foreach (Equipment item in items)
+            {
+                weightSum += item.DropChance;
+                if (roll < weightSum)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         public static Monster GenerateMonster() //generate a random monster
         {
             Monster X = RandomMonsterSpawn(Monsters);
             Monster enemy = Cloner.CloneJson(X);
             Item weapon = GenerateWeapon(Weapons);
             Item item = GenerateConsumable(Items);
+            Item equipment = GenerateEquipment(Equipment);
 
+            enemy.ItemInventory.Add(equipment);
             enemy.ItemInventory.Add(item);
             enemy.ItemInventory.Add(weapon); //add loot to the monster
 
@@ -503,12 +561,21 @@ namespace TRP //Version 0.1
                 Player player = (Player)body;
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nLevel:" + Player1.Level + "\nArmor: " + Player1.Armor + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints  + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\nOff Hand: " + Player1.EquippedWeapons[1].Name + "\n");
                 }
                 else
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints + "\nLevel:" + Player1.Level + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
+                    Console.WriteLine("Name: " + body.Name + "\nLevel:" + Player1.Level + "\nArmor: " + Player1.Armor + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints  + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + "\n");
                 }
+                for (int i = 0; i < Player1.BodySlots.Length; i++)
+                {
+                    if (Player1.BodySlots[i].Name != null)
+                    {
+                      Console.WriteLine("[" + Player1.BodySlots[i].Name + " - " + Player1.BodySlots[i].Rarity + " - " + Player1.BodySlots[i].Armor + "]");
+                    }
+                    
+                }
+                Console.WriteLine("\n");
 
             }
             else if (body is Fighter)
