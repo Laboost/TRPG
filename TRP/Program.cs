@@ -185,7 +185,7 @@ namespace TRP //Version 0.1
                 {
                     Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
                 }
-                Player1.Use(Player1.ItemInventory[chosenItemSlot],chosenItemSlot);
+                Player1.Use(Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
             }
             Console.Clear();
         }
@@ -555,7 +555,11 @@ namespace TRP //Version 0.1
                 }
                 for (int i = 0; i < Player1.BodySlots.Length; i++)
                 {
-                    Console.WriteLine(Player1.BodySlots[i].Name);
+                    if (Player1.BodySlots[i].Name != null)
+                    {
+                      Console.WriteLine("[" + Player1.BodySlots[i].Name + " - " + Player1.BodySlots[i].Rarity + " - " + Player1.BodySlots[i].Power + "]");
+                    }
+                    
                 }
 
             }
