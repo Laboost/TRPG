@@ -225,26 +225,25 @@ namespace TRP //Version 0.1
                     Console.WriteLine("You have Escaped!");
                     break;
                 }
+                RefreshScreen(Enemy);
+                if (playerAction.Contains("You hit")) //if player attacked
+                {
+                    Console.WriteLine(playerAction);
+                }
                 if (Enemy.HitPoints <= 0) //if enemy died
                 {
                     endBattle = true;
-                    RefreshScreen(Enemy);
                     Console.WriteLine("You KILLED the " + Enemy.Name);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
                     System.Threading.Thread.Sleep(1000);
                     break;
                 }
-                RefreshScreen(Enemy);
-                if (playerAction == "Attacked") //if player attacked
-                {
-                    Console.WriteLine("You have attacked the " + Enemy.Name + ".");
-                }
                 System.Threading.Thread.Sleep(800);
 
-                Attack(Enemy.AttackPoints, Player1); //enemy turn
+                double damageDelt = Attack(Enemy.AttackPoints, Player1); //enemy turn
 
-                Console.WriteLine("The " + Enemy.Name + " ATTACKED YOU!");
+                Console.WriteLine(Enemy.Name + " hit you with " + damageDelt + " Damage");
                 System.Threading.Thread.Sleep(800);
                 if (Player1.HitPoints <= 0) //if player died
                 {
@@ -284,8 +283,8 @@ namespace TRP //Version 0.1
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
                 {
-                    SkillMenu(enemy);
-                    return "Attacked";
+                    double damage = SkillMenu(enemy);
+                    return "You hit the " + enemy.Name + " for " + damage + " Damage";
                 }
                 else if (action == 2) //Inventory
                 {
@@ -327,7 +326,7 @@ namespace TRP //Version 0.1
             return damageDelt;
         }
 
-        public static void SkillMenu(Fighter target)
+        public static double SkillMenu(Fighter target)
         {
             List<Skill> skillList = new List<Skill>();
             foreach (Weapon weapon in Player1.EquippedWeapons)
@@ -351,11 +350,12 @@ namespace TRP //Version 0.1
             int input = Menu.ActionMenu(skillList, "Choose A skill");
             if (input == 0)
             {
-                return;
+                return 0;
             }
             Skill chosenSkill = skillList[input - 1];
             double damage = chosenSkill.Damage * Player1.AttackPoints;
-            Attack(damage, target);
+            double finaldamage = Attack(damage, target);
+            return finaldamage;
         } //choosing a skill to attack
 
         public static bool Escape()
