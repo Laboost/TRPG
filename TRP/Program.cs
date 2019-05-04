@@ -48,6 +48,7 @@ namespace TRP //Version 0.1
             new Equipment("Iron Feet",0,10,EquipmentSlot.Feet,200)
         }; //load all game Equipment
 
+        static Map Map;
         static Player Player1 = new Player("Player1", 100, BasicSword); //Player
 
         static List<Monster> Monsters = new List<Monster> {
@@ -78,9 +79,10 @@ namespace TRP //Version 0.1
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
+                Map = GenerateMap();
                 Console.Clear();
                 ShowActionMenu();
-            } //init a new game    
+            } //init a new game
 
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
@@ -97,7 +99,6 @@ namespace TRP //Version 0.1
                 }
                 ShowActionMenu();
             } //return action menu action
-
             Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)StartGame) }); //Main Menu
             void ShowStartMenu()
             {
@@ -237,6 +238,7 @@ namespace TRP //Version 0.1
                     Console.WriteLine("You KILLED the " + Enemy.Name);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
+                    Map.MoveForward();
                     System.Threading.Thread.Sleep(1000);
                     break;
                 }
@@ -561,6 +563,67 @@ namespace TRP //Version 0.1
             return null;
         }
 
+        public static Map GenerateMap()
+        {
+            Map map = new Map();
+            GenerateLayer(map);
+            map.InitMap();
+            return map;
+        }
+        public static void GenerateLayer(Map map)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Layer layer = new Layer();
+
+                Array values = Enum.GetValues(typeof(LayerType));
+                Random random = new Random();
+                LayerType randomType = (LayerType)values.GetValue(random.Next(values.Length));
+                layer.Type = randomType;
+                layer.Num = i;
+                GenerateTiles(layer);
+
+                map.Layers[i] = layer;
+            }
+        }
+        public static void GenerateTiles(Layer layer)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                Tile tile = new Tile();
+
+                TileType[] values = { TileType.Battle };
+                Random random = new Random();
+                TileType randomType = (TileType)values.GetValue(random.Next(values.Length));
+                tile.Type = randomType;
+                tile.Num = i;
+
+                int count = i + 1;
+                if (layer.Type == LayerType.Desert)
+                {
+                    tile.Name = "Desert " + count;
+                }
+                if (layer.Type == LayerType.Forest)
+                {
+                    tile.Name = "Forest " + count;
+                }
+                if (i == 7) //if tile is last in layer
+                {
+                    tile.Type = TileType.Boss;
+
+                    if (layer.Type == LayerType.Desert)
+                    {
+                        tile.Name = "Desert Boss";
+                    }
+                    if (layer.Type == LayerType.Forest)
+                    {
+                        tile.Name = "Forest Boss";
+                    }
+                }
+
+                layer.Tiles[i] = tile;
+            }
+        } //generte tiles for the layer of the map
         #endregion
 
         #region UI
@@ -614,7 +677,35 @@ namespace TRP //Version 0.1
         public static void ShowPlayerStats()
         {
             ShowStats(Player1);
+            ShowMap();
         } // Shows the player stats
+        public static void ShowMap()
+        {
+            if (Map != null)
+            {
+                if (Map.CurrentLayer.Type == LayerType.Desert)
+                {
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                }
+                if (Map.CurrentLayer.Type == LayerType.Forest)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                }
+                Console.WriteLine("-- "+ Map.LayerName +" --");
+                Console.ResetColor();
+
+                foreach (Tile tile in Map.CurrentLayer.Tiles)
+                {
+                    if (tile == Map.CurrentTile)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    Console.Write("-[ " + tile.Name + " - " + tile.Type +  " ]-");
+                    Console.ResetColor();
+                }
+                Console.WriteLine('\n');
+            }
+        } // show the map layout
         public static void ExitMenu()
         {
             return;
