@@ -29,7 +29,7 @@ namespace TRP //Version 0.1
         #endregion
         #endregion
 
-        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,null);
+        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,SwordSkillSet);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400,SwordSkillSet)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150,SpikeSkillSet)
@@ -238,7 +238,7 @@ namespace TRP //Version 0.1
                 }
                 System.Threading.Thread.Sleep(800);
 
-                Attack(Enemy, Player1); //enemy turn
+                Attack(Enemy.AttackPoints, Player1); //enemy turn
 
                 Console.WriteLine("The " + Enemy.Name + " ATTACKED YOU!");
                 System.Threading.Thread.Sleep(800);
@@ -280,7 +280,7 @@ namespace TRP //Version 0.1
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
                 {
-                    double damageDelt = Attack(Player1, enemy);
+                    SkillMenu(enemy);
                     return "Attacked";
                 }
                 else if (action == 2) //Inventory
@@ -307,9 +307,9 @@ namespace TRP //Version 0.1
             return "invalid";
         }
 
-        public static double Attack(Fighter attacker, Fighter target) //one fighter attacks another
+        public static double Attack(double Damage, Fighter target) //one fighter attacks another
         {
-            double damageDelt = attacker.AttackPoints;
+            double damageDelt = Damage;
 
             if (target.Armor < damageDelt)
             {
@@ -323,10 +323,31 @@ namespace TRP //Version 0.1
             return damageDelt;
         }
 
-        public static void SkillMenu()
+        public static void SkillMenu(Fighter target)
         {
+            List<Skill> skillList = new List<Skill>();
+            foreach (Weapon weapon in Player1.EquippedWeapons)
+            {
+                if (weapon != null)
+                {
+                    if (weapon.skillSet != null)
+                    {
+                        foreach (Skill skill in weapon.skillSet)
+                        {
+                            if (!(skillList.Contains(skill)))
+                            {
+                                skillList.Add(skill);
+                            }
+                        }
+                    }
+                }
 
-        }
+
+            } //create a list of skills
+            int input = Menu.ActionMenu(skillList, "Choose A skill");
+            Skill chosenSkill = skillList[input - 1];
+            Attack(chosenSkill.Damage, target);
+        } //choosing a skill to attack
 
         public static bool Escape()
         {

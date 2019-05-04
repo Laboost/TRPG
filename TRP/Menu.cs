@@ -107,12 +107,7 @@ namespace TRP
                 return input;
                 
             }
-            else
-            {
-                throw new System.ArgumentException("input was out of range");
-            }
-
-            
+            return 0; 
         }
         private static void DescribeItem(object item, int count)
         {
@@ -125,6 +120,11 @@ namespace TRP
             {
                 Equipment Item = item as Equipment;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+            }
+            if (item is Skill)
+            {
+                Skill Item = item as Skill;
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Damage + "]");
             }
         }
 
