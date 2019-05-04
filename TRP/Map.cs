@@ -4,12 +4,13 @@ using System.Text;
 
 namespace TRP
 {
-    public enum TileType {Battle,Boss}
+    public enum TileType {Boss, Battle} //first element is only picked for last tiles.
     public enum LayerType {Desert, Forest}
 
     class Map
     {
         public Layer[] Layers = new Layer[10];
+        public string LayerName { get; set; }
         public Layer CurrentLayer { get; private set; }
         public Tile CurrentTile { get; private set; }
 
@@ -17,6 +18,8 @@ namespace TRP
         {
             CurrentLayer = Layers[0];
             CurrentTile = CurrentLayer.Tiles[0];
+            int layerNum = CurrentLayer.Num + 1;
+            LayerName = " Layer " + layerNum;
         }
         public void MoveForward()
         {
@@ -24,6 +27,8 @@ namespace TRP
             {
                 CurrentLayer = Layers[CurrentLayer.Num + 1];
                 CurrentTile = CurrentLayer.Tiles[0];
+                int layerNum = CurrentLayer.Num + 1;
+                LayerName = " Layer " + layerNum;
             }
             else
             {

@@ -238,6 +238,7 @@ namespace TRP //Version 0.1
                     Console.WriteLine("You KILLED the " + Enemy.Name);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
+                    Map.MoveForward();
                     System.Threading.Thread.Sleep(1000);
                     break;
                 }
@@ -591,7 +592,7 @@ namespace TRP //Version 0.1
             {
                 Tile tile = new Tile();
 
-                Array values = Enum.GetValues(typeof(TileType));
+                TileType[] values = { TileType.Battle };
                 Random random = new Random();
                 TileType randomType = (TileType)values.GetValue(random.Next(values.Length));
                 tile.Type = randomType;
@@ -682,13 +683,29 @@ namespace TRP //Version 0.1
         {
             if (Map != null)
             {
-                foreach (Tile tile in Map.Layers[0].Tiles)
+                if (Map.CurrentLayer.Type == LayerType.Desert)
                 {
-                    Console.Write("-[ " + tile.Name + " ]-");
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                }
+                if (Map.CurrentLayer.Type == LayerType.Forest)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                }
+                Console.WriteLine("-- "+ Map.LayerName +" --");
+                Console.ResetColor();
+
+                foreach (Tile tile in Map.CurrentLayer.Tiles)
+                {
+                    if (tile == Map.CurrentTile)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    Console.Write("-[ " + tile.Name + " - " + tile.Type +  " ]-");
+                    Console.ResetColor();
                 }
                 Console.WriteLine('\n');
             }
-        }
+        } // show the map layout
         public static void ExitMenu()
         {
             return;
