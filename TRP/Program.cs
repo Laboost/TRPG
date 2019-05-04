@@ -565,25 +565,25 @@ namespace TRP //Version 0.1
         public static Map GenerateMap()
         {
             Map map = new Map();
-            for (int i = 0; i < 10; i++)
-            {
-                Layer layer = GenerateLayer();
-                map.Layers[i] = layer;
-            }
+            GenerateLayer(map);
+            map.InitMap();
             return map;
         }
-        public static Layer GenerateLayer()
+        public static void GenerateLayer(Map map)
         {
-            Layer layer = new Layer();
+            for (int i = 0; i < 10; i++)
+            {
+                Layer layer = new Layer();
 
-            Array values = Enum.GetValues(typeof(LayerType));
-            Random random = new Random();
-            LayerType randomType = (LayerType)values.GetValue(random.Next(values.Length));       
-            layer.Type = randomType;
+                Array values = Enum.GetValues(typeof(LayerType));
+                Random random = new Random();
+                LayerType randomType = (LayerType)values.GetValue(random.Next(values.Length));
+                layer.Type = randomType;
+                layer.Num = i;
+                GenerateTiles(layer);
 
-            GenerateTiles(layer);
-
-            return layer;
+                map.Layers[i] = layer;
+            }
         }
         public static void GenerateTiles(Layer layer)
         {
@@ -595,6 +595,7 @@ namespace TRP //Version 0.1
                 Random random = new Random();
                 TileType randomType = (TileType)values.GetValue(random.Next(values.Length));
                 tile.Type = randomType;
+                tile.Num = i;
 
                 int count = i + 1;
                 if (layer.Type == LayerType.Desert)
@@ -605,6 +606,20 @@ namespace TRP //Version 0.1
                 {
                     tile.Name = "Forest " + count;
                 }
+                if (i == 7) //if tile is last in layer
+                {
+                    tile.Type = TileType.Boss;
+
+                    if (layer.Type == LayerType.Desert)
+                    {
+                        tile.Name = "Desert Boss";
+                    }
+                    if (layer.Type == LayerType.Forest)
+                    {
+                        tile.Name = "Forest Boss";
+                    }
+                }
+
                 layer.Tiles[i] = tile;
             }
         } //generte tiles for the layer of the map
