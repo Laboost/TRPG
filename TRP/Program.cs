@@ -229,6 +229,7 @@ namespace TRP //Version 0.1
                 if (playerAction.Contains("You hit")) //if player attacked
                 {
                     Console.WriteLine(playerAction);
+                    System.Threading.Thread.Sleep(1000);
                 }
                 if (Enemy.HitPoints <= 0) //if enemy died
                 {
@@ -244,7 +245,7 @@ namespace TRP //Version 0.1
                 double damageDelt = Attack(Enemy.AttackPoints, Player1); //enemy turn
 
                 Console.WriteLine(Enemy.Name + " hit you with " + damageDelt + " Damage");
-                System.Threading.Thread.Sleep(800);
+                System.Threading.Thread.Sleep(1000);
                 if (Player1.HitPoints <= 0) //if player died
                 {
                     endBattle = true;
