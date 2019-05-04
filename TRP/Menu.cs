@@ -111,6 +111,22 @@ namespace TRP
         }
         private static void DescribeItem(object item, int count)
         {
+            if (item is Item)
+            {
+                Item Item = item as Item;
+                if (Item.Rarity == Rarity.Rare)
+                {
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                }
+                if (Item.Rarity == Rarity.Legendary)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                }
+                if (Item.Rarity == Rarity.Divine)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                }
+            }
             if (item is Consumable)
             {
                 Consumable Item = item as Consumable;
@@ -126,6 +142,7 @@ namespace TRP
                 Skill Item = item as Skill;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
             }
+            Console.ResetColor();
         }
 
     }
