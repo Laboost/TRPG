@@ -14,11 +14,27 @@ namespace TRP //Version 0.1
     {
         #region Load Objects
 
-        static Weapon BasicSword = new Weapon("Basic Sword",10,WieldAttribute.MainHand,0);
+        #region Skills
+        static Skill BasicAttack = new Skill("Basic Attack", 1);
+        static Skill SwordSlash = new Skill("Sword Slash", 1.2);
+        static Skill SpikeDash = new Skill("Spike Dash", 1.2);
+        static Skill DaggerStab = new Skill("Dagger Stab", 1.2);
+
+        #region  Skill set for types of weapons
+
+        static Skill[] SwordSkillSet = { BasicAttack, SwordSlash };
+        static Skill[] SpikeSkillSet = { BasicAttack, SpikeDash };
+        static Skill[] DaggerSkillSet = { BasicAttack, DaggerStab };
+
+        #endregion
+        #endregion
+
+        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,SwordSkillSet);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 20,WieldAttribute.MainHand,400)
-            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150) }; //load all game weapons
+            new Weapon("Sword", 20,WieldAttribute.MainHand,400,SwordSkillSet)
+            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150,SpikeSkillSet)
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150,DaggerSkillSet) };//load all game weapons
+
         static List<Consumable> Items = new List<Consumable> // load all game consumables
         {
             new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
@@ -156,41 +172,17 @@ namespace TRP //Version 0.1
 
         public static void ItemInventory()
         {
-            Console.Clear();
-            Console.WriteLine("Choose Item to use.");
-            int itemCount;
-            for (itemCount = 0; itemCount < Player1.ItemInventory.Count; itemCount++)
-            {
-                if (Player1.ItemInventory[itemCount].Description != null)
-                {
-                    Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - " + Player1.ItemInventory[itemCount].Description + " - " + " Power: " + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
-                }
-                Console.WriteLine("[" + (itemCount + 1) + "]" + "[" + Player1.ItemInventory[itemCount].Name + " - " + Player1.ItemInventory[itemCount].Rarity + " - "  + " Power: "  + Player1.ItemInventory[itemCount].Power + " Armor: " + Player1.ItemInventory[itemCount].Armor + "]");
-            }
-            Console.WriteLine("\n[0] Quit");
-
-            int input = 1;
-            bool valid_input = false;
-            while (!valid_input)
-            {
-                int.TryParse(Console.ReadLine(), out input);
-                if (input <= itemCount && input >= 0)
-                {
-                    valid_input = true;
-                    break;
-                }
-                Console.WriteLine("Please enter a valid selection: ");
-            }
-
+            int input = Menu.ActionMenu(Player1.ItemInventory, "Choose Item to use.");
             int chosenItemSlot = input - 1;
-            if (input > 0 && input <= itemCount)
+            if (input == 0)
             {
-                if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
-                {
-                    Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
-                }
-                Player1.Use(Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+                return;
             }
+            if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
+            {
+                Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+            }
+            Player1.Use(Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
             Console.Clear();
         }
 
@@ -217,7 +209,6 @@ namespace TRP //Version 0.1
         #endregion
 
         #region Battle Methods
-
 
         public static void Battle()
         {
@@ -251,7 +242,7 @@ namespace TRP //Version 0.1
                 }
                 System.Threading.Thread.Sleep(800);
 
-                Attack(Enemy, Player1); //enemy turn
+                Attack(Enemy.AttackPoints, Player1); //enemy turn
 
                 Console.WriteLine("The " + Enemy.Name + " ATTACKED YOU!");
                 System.Threading.Thread.Sleep(800);
@@ -282,30 +273,6 @@ namespace TRP //Version 0.1
 
         } //the main Battle method
 
-        public static void RefreshScreen(Monster Enemy) //used for battle screen refresh
-        {
-            Console.Clear();
-            ShowStats(Enemy);
-            OnlyShowFightMenu();
-            ShowPlayerStats();
-        }
-
-        public static double Attack(Fighter attacker, Fighter target) //one fighter attacks another
-        {
-            double damageDelt = attacker.AttackPoints;
-
-            if (target.Armor < damageDelt)
-            {
-                target.HitPoints = target.HitPoints + target.Armor - damageDelt;
-            }
-            else
-            {
-                damageDelt = 0;
-            }
-           
-            return damageDelt;
-        }
-
         public static string PlayersTurn(Fighter enemy) //handles the player turn 
         {
             bool endTurn = false;
@@ -317,7 +284,7 @@ namespace TRP //Version 0.1
                 int action = ShowFightMenu();
                 if (action == 1) //Attack
                 {
-                    double damageDelt = Attack(Player1, enemy);
+                    SkillMenu(enemy);
                     return "Attacked";
                 }
                 else if (action == 2) //Inventory
@@ -344,6 +311,53 @@ namespace TRP //Version 0.1
             return "invalid";
         }
 
+        public static double Attack(double Damage, Fighter target) //one fighter attacks another
+        {
+            double damageDelt = Damage;
+
+            if (target.Armor < damageDelt)
+            {
+                target.HitPoints = target.HitPoints + target.Armor - damageDelt;
+            }
+            else
+            {
+                damageDelt = 0;
+            }
+           
+            return damageDelt;
+        }
+
+        public static void SkillMenu(Fighter target)
+        {
+            List<Skill> skillList = new List<Skill>();
+            foreach (Weapon weapon in Player1.EquippedWeapons)
+            {
+                if (weapon != null)
+                {
+                    if (weapon.skillSet != null)
+                    {
+                        foreach (Skill skill in weapon.skillSet)
+                        {
+                            if (!(skillList.Contains(skill)))
+                            {
+                                skillList.Add(skill);
+                            }
+                        }
+                    }
+                }
+
+
+            } //create a list of skills
+            int input = Menu.ActionMenu(skillList, "Choose A skill");
+            if (input == 0)
+            {
+                return;
+            }
+            Skill chosenSkill = skillList[input - 1];
+            double damage = chosenSkill.Damage * Player1.AttackPoints;
+            Attack(damage, target);
+        } //choosing a skill to attack
+
         public static bool Escape()
         {
             Random rnd = new Random();
@@ -358,6 +372,14 @@ namespace TRP //Version 0.1
             }
 
         } //Player trying to escape
+
+        public static void RefreshScreen(Monster Enemy) //used for battle screen refresh
+        {
+            Console.Clear();
+            ShowStats(Enemy);
+            OnlyShowFightMenu();
+            ShowPlayerStats();
+        }
         #endregion
 
         #region Generators
@@ -365,14 +387,15 @@ namespace TRP //Version 0.1
 
         public static Weapon GenerateWeapon(List<Weapon> weapons)
         {
-            Weapon X = RandomWeaponDrop(Weapons);
-            if (X == null)
+            Weapon origin = RandomWeaponDrop(Weapons);
+            if (origin == null)
             {
-                return X;
+                return origin;
             }
-            Weapon item = Cloner.CloneJson(X);
+            Weapon item = Cloner.CloneJson(origin);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
+            item.skillSet = origin.skillSet;
             item.UpdateStats();
 
             return item;

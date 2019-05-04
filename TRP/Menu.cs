@@ -75,7 +75,58 @@ namespace TRP
             return this.options[selection - 1].ChoiceNum;
 
         }
-       
+        public static int ActionMenu<T>(List<T> list, string description)
+        {
+            Console.Clear();
+            Console.WriteLine(description);
+            int itemCount;
+            for (itemCount = 0; itemCount < list.Count; itemCount++)
+            {
+                DescribeItem(list[itemCount],itemCount);
+
+            }
+            Console.WriteLine("\n[0] Quit");
+
+            int input = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out input);
+                if (input <= itemCount && input >= 0)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+
+            int chosenItemSlot = input - 1;
+            Console.Clear();
+            if (input > 0 && input <= itemCount)
+            {
+                return input;
+                
+            }
+            return 0; 
+        }
+        private static void DescribeItem(object item, int count)
+        {
+            if (item is Consumable)
+            {
+                Consumable Item = item as Consumable;
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " +Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+            }
+            if (item is Equipment)
+            {
+                Equipment Item = item as Equipment;
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+            }
+            if (item is Skill)
+            {
+                Skill Item = item as Skill;
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
+            }
+        }
 
     }
 

@@ -61,7 +61,7 @@ namespace TRP
         private List<Item> weaponInventory = new List<Item>();
         public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
 
-        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0);
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0,null);
 
         private Weapon[] weaponSlots = new Weapon[] { twoHanded, twoHanded };
         private Weapon mainHand { get { return weaponSlots[0]; } set { weaponSlots[0] = value; } }

@@ -80,7 +80,8 @@ namespace TRP
 
     class Weapon : Equipment
     {
-
+        public Skill[] skillSet { get; set; }
+        
         private WieldAttribute wieldAttribute;
         public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }
 
@@ -89,12 +90,14 @@ namespace TRP
 
         }
 
-        public Weapon(string name, double power, WieldAttribute wa, int dropChance) : base(name, power,0,EquipmentSlot.Weapon,dropChance)
+        public Weapon(string name, double power, WieldAttribute wa, int dropChance,Skill[] skillSet) : base(name, power,0,EquipmentSlot.Weapon,dropChance)
         {
-            wieldAttribute = wa;
+            this.skillSet = skillSet;
+            wieldAttribute = wa;            
         }
-        public Weapon(string name, double power, Rarity rarity, WieldAttribute wa, int dropChance) : base(name, power, rarity)
+        public Weapon(string name, double power, Rarity rarity, WieldAttribute wa, int dropChance,Skill[]skillSet) : base(name, power, rarity)
         {
+            this.skillSet = skillSet;
             wieldAttribute = wa;
         }
     }
