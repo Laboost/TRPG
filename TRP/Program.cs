@@ -130,10 +130,12 @@ namespace TRP //Version 0.1
         {
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
-            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + " - " + Player1.EquippedWeapons[0].Power + "]");
+            Console.Write("[MainHand]");
+            Menu.DescribeItem(Player1.EquippedWeapons[0]);
             if (Player1.EquippedWeapons[1] != null)
             {
-                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[1].Rarity + " - " + Player1.EquippedWeapons[1].Power + "]");
+                Console.WriteLine("[OffHand]");
+                Menu.DescribeItem(Player1.EquippedWeapons[1]);
             }
             else
             {
@@ -145,7 +147,7 @@ namespace TRP //Version 0.1
             int WeaponCount;
             for (WeaponCount = 0; WeaponCount < Player1.WeaponInventory.Count; WeaponCount++) //shows all items in inventory
             {
-                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.WeaponInventory[WeaponCount].Name + " - " + Player1.WeaponInventory[WeaponCount].Rarity + " - " + Player1.WeaponInventory[WeaponCount].Power + "]"); //show Inventory
+                Menu.DescribeItem(Player1.WeaponInventory[WeaponCount], WeaponCount);//show Inventory
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -654,7 +656,7 @@ namespace TRP //Version 0.1
                 Console.Write("Name: " + body.Name + "\nLevel: ");
                 PrintInColor(Player1.Level.ToString(), ConsoleColor.Yellow);
 
-                Console.Write("\nEXP: ");
+                Console.Write(" EXP: ");
                 string exp = Player1.Exp + " \\ " + Player1.MaxExp;
                 PrintInColor(exp, ConsoleColor.Yellow);
 
@@ -664,21 +666,23 @@ namespace TRP //Version 0.1
 
                 Console.Write("\nArmor: ");
                 PrintInColor(Player1.Armor.ToString(), ConsoleColor.Gray);
-                
-                Console.WriteLine("\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Power);
+
+                Console.Write("\nMain Hand: ");
+                Menu.DescribeItem(Player1.EquippedWeapons[0]);
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("OffHand: " + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[1].Power + "\n");
+                    Console.Write("Off Hand: ");
+                    Menu.DescribeItem(Player1.EquippedWeapons[1]);
                 }
                 for (int i = 0; i < Player1.BodySlots.Length; i++)
                 {
                     if (Player1.BodySlots[i].Name != null)
                     {
-                      Console.WriteLine("[" + Player1.BodySlots[i].Name + " - " + Player1.BodySlots[i].Rarity + " - " + Player1.BodySlots[i].Armor + "]");
+                        Menu.DescribeItem(Player1.BodySlots[i]);
                     }
                     
                 }
-                Console.WriteLine("\n");
+                Console.WriteLine("\n\n");
 
             }
             else if (body is Fighter)

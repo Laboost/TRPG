@@ -109,7 +109,48 @@ namespace TRP
             }
             return 0; 
         }
-        private static void DescribeItem(object item, int count)
+        public static void DescribeItem(object item)
+        {
+            if (item is Item)
+            {
+                Item Item = item as Item;
+                if (Item.Rarity == Rarity.Rare)
+                {
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                }
+                if (Item.Rarity == Rarity.Legendary)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                }
+                if (Item.Rarity == Rarity.Divine)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                }
+            }
+            if (item is Consumable)
+            {
+                Consumable Item = item as Consumable;
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+            }
+            if (item is Equipment)
+            {
+                Equipment Item = item as Equipment;
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+            }
+            if (item is Skill)
+            {
+                Skill Item = item as Skill;
+                Console.WriteLine("[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
+            }
+            if (item is Weapon)
+            {
+                Weapon Item = item as Weapon;
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + "]");
+
+            }
+            Console.ResetColor();
+        }
+        public static void DescribeItem(object item, int count)
         {
             if (item is Item)
             {
@@ -142,8 +183,15 @@ namespace TRP
                 Skill Item = item as Skill;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
             }
+            if (item is Weapon)
+            {
+                Weapon Item = item as Weapon;
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + "]");
+
+            }
             Console.ResetColor();
-        }
+        } //as part of counted list
+        
 
     }
 
