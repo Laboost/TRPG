@@ -124,7 +124,7 @@ namespace TRP
             if (item is Skill)
             {
                 Skill Item = item as Skill;
-                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Damage + "]");
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
             }
         }
 

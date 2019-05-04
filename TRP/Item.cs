@@ -80,7 +80,7 @@ namespace TRP
 
     class Weapon : Equipment
     {
-        public Skill[] skillSet { get; private set; }
+        public Skill[] skillSet { get; set; }
         
         private WieldAttribute wieldAttribute;
         public WieldAttribute WieldAttribute { get { return wieldAttribute; } set { wieldAttribute = value; } }

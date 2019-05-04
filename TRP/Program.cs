@@ -15,10 +15,10 @@ namespace TRP //Version 0.1
         #region Load Objects
 
         #region Skills
-        static Skill BasicAttack = new Skill("Basic Attack", 5);
-        static Skill SwordSlash = new Skill("Sword Slash", 10);
-        static Skill SpikeDash = new Skill("Spike Dash", 15);
-        static Skill DaggerStab = new Skill("Dagger Stab", 7);
+        static Skill BasicAttack = new Skill("Basic Attack", 1);
+        static Skill SwordSlash = new Skill("Sword Slash", 1.2);
+        static Skill SpikeDash = new Skill("Spike Dash", 1.2);
+        static Skill DaggerStab = new Skill("Dagger Stab", 1.2);
 
         #region  Skill set for types of weapons
 
@@ -174,6 +174,10 @@ namespace TRP //Version 0.1
         {
             int input = Menu.ActionMenu(Player1.ItemInventory, "Choose Item to use.");
             int chosenItemSlot = input - 1;
+            if (input == 0)
+            {
+                return;
+            }
             if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
             {
                 Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
@@ -345,8 +349,13 @@ namespace TRP //Version 0.1
 
             } //create a list of skills
             int input = Menu.ActionMenu(skillList, "Choose A skill");
+            if (input == 0)
+            {
+                return;
+            }
             Skill chosenSkill = skillList[input - 1];
-            Attack(chosenSkill.Damage, target);
+            double damage = chosenSkill.Damage * Player1.AttackPoints;
+            Attack(damage, target);
         } //choosing a skill to attack
 
         public static bool Escape()
@@ -378,14 +387,15 @@ namespace TRP //Version 0.1
 
         public static Weapon GenerateWeapon(List<Weapon> weapons)
         {
-            Weapon X = RandomWeaponDrop(Weapons);
-            if (X == null)
+            Weapon origin = RandomWeaponDrop(Weapons);
+            if (origin == null)
             {
-                return X;
+                return origin;
             }
-            Weapon item = Cloner.CloneJson(X);
+            Weapon item = Cloner.CloneJson(origin);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
+            item.skillSet = origin.skillSet;
             item.UpdateStats();
 
             return item;
