@@ -123,18 +123,19 @@ namespace TRP //Version 0.1
 
         }
 
-
-
+ 
         #region Item Methods
 
         public static void WeaponInventory() //Handles The inventory UI
         {
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
-            Console.WriteLine("[MainHand]" + "[" + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Rarity + " - " + Player1.EquippedWeapons[0].Power + "]");
+            Console.Write("[MainHand]");
+            Menu.DescribeItem(Player1.EquippedWeapons[0]);
             if (Player1.EquippedWeapons[1] != null)
             {
-                Console.WriteLine("[OffHand]" + "[" + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[1].Rarity + " - " + Player1.EquippedWeapons[1].Power + "]");
+                Console.WriteLine("[OffHand]");
+                Menu.DescribeItem(Player1.EquippedWeapons[1]);
             }
             else
             {
@@ -146,7 +147,7 @@ namespace TRP //Version 0.1
             int WeaponCount;
             for (WeaponCount = 0; WeaponCount < Player1.WeaponInventory.Count; WeaponCount++) //shows all items in inventory
             {
-                Console.WriteLine("[" + (WeaponCount + 1) + "]" + "[" + Player1.WeaponInventory[WeaponCount].Name + " - " + Player1.WeaponInventory[WeaponCount].Rarity + " - " + Player1.WeaponInventory[WeaponCount].Power + "]"); //show Inventory
+                Menu.DescribeItem(Player1.WeaponInventory[WeaponCount], WeaponCount);//show Inventory
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -215,7 +216,7 @@ namespace TRP //Version 0.1
         {
             Player1.UpdateStats();
             Monster Enemy = GenerateMonster();
-            Console.WriteLine("A Wild " + Enemy.Name + " appeared \n");
+            PrintInColor("A Wild " + Enemy.Name + " appeared \n", ConsoleColor.DarkRed);
             bool endBattle = false;
             while (endBattle == false) //the battle loop
             {
@@ -223,7 +224,9 @@ namespace TRP //Version 0.1
                 if (playerAction == "Escaped") //if player escape
                 {
                     endBattle = true;
-                    Console.WriteLine("You have Escaped!");
+                    Console.Clear();
+                    PrintInColor("You have Escaped!", ConsoleColor.Blue);
+                    System.Threading.Thread.Sleep(3000);
                     break;
                 }
                 RefreshScreen(Enemy);
@@ -235,7 +238,7 @@ namespace TRP //Version 0.1
                 if (Enemy.HitPoints <= 0) //if enemy died
                 {
                     endBattle = true;
-                    Console.WriteLine("You KILLED the " + Enemy.Name);
+                    PrintInColor("You KILLED the " + Enemy.Name,ConsoleColor.Yellow);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
                     Map.MoveForward();
@@ -246,13 +249,16 @@ namespace TRP //Version 0.1
 
                 double damageDelt = Attack(Enemy.AttackPoints, Player1); //enemy turn
 
-                Console.WriteLine(Enemy.Name + " hit you with " + damageDelt + " Damage");
+                Console.Write(Enemy.Name + " hit you with ");
+                PrintInColor(damageDelt.ToString(), ConsoleColor.Red);
+                Console.Write(" Damage");
                 System.Threading.Thread.Sleep(1000);
                 if (Player1.HitPoints <= 0) //if player died
                 {
                     endBattle = true;
                     RefreshScreen(Enemy);
-                    Console.WriteLine("You have DIED");
+                    Console.Write("You have ");
+                    PrintInColor("DIED", ConsoleColor.Red);
                     System.Threading.Thread.Sleep(2000);
                     break;
                 }
@@ -645,24 +651,38 @@ namespace TRP //Version 0.1
         {
             if (body is Player)
             {
-                Player player = (Player)body;
+                Player player = (Player)body;         
+
+                Console.Write("Name: " + body.Name + "\nLevel: ");
+                PrintInColor(Player1.Level.ToString(), ConsoleColor.Yellow);
+
+                Console.Write(" EXP: ");
+                string exp = Player1.Exp + " \\ " + Player1.MaxExp;
+                PrintInColor(exp, ConsoleColor.Yellow);
+
+                Console.Write("\nHp: ");
+                string hp = player.HitPoints + " \\ " + Player1.MaxHitPoints;
+                PrintInColor(hp, ConsoleColor.Red);
+
+                Console.Write("\nArmor: ");
+                PrintInColor(Player1.Armor.ToString(), ConsoleColor.Gray);
+
+                Console.Write("\nMain Hand: ");
+                Menu.DescribeItem(Player1.EquippedWeapons[0]);
                 if (Player1.EquippedWeapons[1] != null)
                 {
-                    Console.WriteLine("Name: " + body.Name + "\nLevel:" + Player1.Level + "\nArmor: " + Player1.Armor + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints  + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Power +  "\nOff Hand: " + Player1.EquippedWeapons[1].Name + " - " + Player1.EquippedWeapons[0].Power + "\n");
-                }
-                else
-                {
-                    Console.WriteLine("Name: " + body.Name + "\nLevel:" + Player1.Level + "\nArmor: " + Player1.Armor + "\nHP: " + player.HitPoints + " \\ " + Player1.MaxHitPoints  + "\nExp: " + Player1.Exp + " \\ " + Player1.MaxExp + "\n\nMain Hand: " + Player1.EquippedWeapons[0].Name + " - " + Player1.EquippedWeapons[0].Power + "\n");
+                    Console.Write("Off Hand: ");
+                    Menu.DescribeItem(Player1.EquippedWeapons[1]);
                 }
                 for (int i = 0; i < Player1.BodySlots.Length; i++)
                 {
                     if (Player1.BodySlots[i].Name != null)
                     {
-                      Console.WriteLine("[" + Player1.BodySlots[i].Name + " - " + Player1.BodySlots[i].Rarity + " - " + Player1.BodySlots[i].Armor + "]");
+                        Menu.DescribeItem(Player1.BodySlots[i]);
                     }
                     
                 }
-                Console.WriteLine("\n");
+                Console.WriteLine("\n\n");
 
             }
             else if (body is Fighter)
@@ -741,6 +761,20 @@ namespace TRP //Version 0.1
         #endregion
 
         #region Utility
+
+        static public void PrintInColor(string text, ConsoleColor consoleColor)
+        {
+            Console.ForegroundColor = consoleColor;
+            Console.Write(text);
+            Console.ResetColor();
+        } //print text in foreground color
+        static public void PrintInBackColor(string text, ConsoleColor consoleColor)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.BackgroundColor = consoleColor;
+            Console.Write(text);
+            Console.ResetColor();
+        } // print text in background color
 
         static public T RandomEnumValue<T>()
         {
