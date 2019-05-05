@@ -125,26 +125,27 @@ namespace TRP
                 }
                 if (Item.Rarity == Rarity.Divine)
                 {
-                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
                 }
             }
             if (item is Consumable && printed == false)
             {
                 Consumable Item = item as Consumable;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
                 printed = true;
             }
             if (item is Weapon && printed == false)
             {
                 Weapon Item = item as Weapon;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + "]");
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Sell Price: " + Item.SellPrice + "]");
                 printed = true;
             }
             if (item is Equipment && printed == false)
             {
 
                 Equipment Item = item as Equipment;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
                 printed = true;
             }
             if (item is Skill && printed == false)
@@ -173,19 +174,20 @@ namespace TRP
                 }
                 if (Item.Rarity == Rarity.Divine)
                 {
-                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
                 }
             }
             if (item is Consumable && printed == false)
             {
                 Consumable Item = item as Consumable;
-                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " +Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " +Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
                 printed = true;
             }
             if (item is Equipment && printed == false)
             {
                 Equipment Item = item as Equipment;
-                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
                 printed = true;
             }
             if (item is Skill && printed == false)
@@ -197,7 +199,7 @@ namespace TRP
             if (item is Weapon && printed == false)
             {
                 Weapon Item = item as Weapon;
-                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + "]");
+                Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Sell Price: " + Item.SellPrice + "]");
                 printed = true;
             }
             Console.ResetColor();

@@ -32,24 +32,31 @@ namespace TRP
             }
         }
 
+        public int SellPrice { get; set; }
+        public int BuyPrice { get; set; }
+
         public Item()
         {
 
         }
 
-        public Item(string name, double power, int dropChance)
-        {
+        public Item(string name, double power, int dropChance, int buyPrice ,int sellPrice)
+        {   
             this.dropChance = dropChance;
             this.name = name;
             this.power = power;
+            BuyPrice = buyPrice;
+            SellPrice = sellPrice;
             UpdateStats();
         }
 
-        public Item(string name, double power, Rarity rarity)
+        public Item(string name, double power, Rarity rarity, int buyPrice, int sellPrice)
         {
             this.name = name;
             this.power = power;
             this.rarity = rarity;
+            BuyPrice = buyPrice;
+            SellPrice = sellPrice;
             UpdateStats();
         }
 
@@ -90,7 +97,7 @@ namespace TRP
 
         }
 
-        public Weapon(string name, double power, WieldAttribute wa, int dropChance,Skill[] skillSet) : base(name, power,0,EquipmentSlot.Weapon,dropChance)
+        public Weapon(string name, double power, WieldAttribute wa, int dropChance,Skill[] skillSet, int buyPrice, int sellPrice) : base(name, power,0,EquipmentSlot.Weapon,dropChance,buyPrice,sellPrice)
         {
             this.skillSet = skillSet;
             wieldAttribute = wa;            
@@ -112,7 +119,7 @@ namespace TRP
 
         }
 
-        public Equipment(string name, double power,double armor, EquipmentSlot equipmentSlot,int dropChance) : base(name,power,dropChance)
+        public Equipment(string name, double power,double armor, EquipmentSlot equipmentSlot,int dropChance, int buyPrice, int sellPrice) : base(name,power,dropChance, buyPrice, sellPrice)
         {
             this.equipmentSlot = equipmentSlot;
             this.armor = armor;
@@ -133,13 +140,13 @@ namespace TRP
         {
 
         }
-        public Consumable(string name, double power, int dropChance, ConsumableType consumableType, string description) : base(name, power, dropChance)
+        public Consumable(string name, double power, int dropChance, ConsumableType consumableType, string description, int buyPrice, int sellPrice) : base(name, power, dropChance, buyPrice, sellPrice)
         {
             this.consumableType = consumableType;
             this.description = description;
         }
 
-        public Consumable(string name, double power, Rarity rarity) : base(name, power, rarity)
+        public Consumable(string name, double power, Rarity rarity, int buyPrice, int sellPrice) : base(name, power, rarity,buyPrice,sellPrice)
         {
 
         }
