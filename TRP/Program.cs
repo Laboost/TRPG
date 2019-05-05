@@ -77,7 +77,7 @@ namespace TRP //Version 0.1
 
             void StartGame()
             {
-                Player1 = new Player("Player1", 100, BasicSword,20);
+                Player1 = new Player("Player1", 100, BasicSword,500);
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
@@ -635,17 +635,24 @@ namespace TRP //Version 0.1
 
         public static void ViewShop()
         {
-            int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to buy.");
-            if (input == 0)
+            bool doneShopping = false;
+            while (doneShopping == false)
             {
-                return;
+                int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to buy.");
+                if (input == 0)
+                {
+                    doneShopping = true;
+                    continue;
+                }
+                Item chosenItem = CurrentShop.Items[input - 1];
+                bool result = Player1.BuyItem(chosenItem);
+                if (result == false)
+                {
+                    Console.WriteLine("Not enough Minerals.");
+                }
+                CurrentShop.Items.Remove(chosenItem);
             }
-            Item chosenItem = CurrentShop.Items[input - 1];
-            bool result = Player1.BuyItem(chosenItem);
-            if (result == false)
-            {
-                Console.WriteLine("Not enough Minerals.");
-            }
+        
         } //show shop UI
         public static void OnlyShowFightMenu()
         {
