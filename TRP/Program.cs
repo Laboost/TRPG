@@ -53,8 +53,8 @@ namespace TRP //Version 0.1
 
         static List<Monster> Monsters = new List<Monster> {
             new Monster("Wolf", 25, 30,75,40),
-            new Monster("Orc", 40, 30,25,40),
-            new Monster("Tiger", 80, 30,5,40) }; // load all monsters    
+            new Monster("Orc", 40, 50,25,40),
+            new Monster("Tiger", 80, 60,5,40) }; // load all monsters    
 
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
@@ -247,10 +247,10 @@ namespace TRP //Version 0.1
                 }
                 System.Threading.Thread.Sleep(800);
 
-                double damageDelt = Attack(Enemy.AttackPoints, Player1); //enemy turn
+                double damageDealt = Attack(Enemy.AttackPoints, Player1); //enemy turn
 
                 Console.Write(Enemy.Name + " hit you with ");
-                PrintInColor(damageDelt.ToString(), ConsoleColor.Red);
+                PrintInColor(damageDealt.ToString(), ConsoleColor.Red);
                 Console.Write(" Damage");
                 System.Threading.Thread.Sleep(1000);
                 if (Player1.HitPoints <= 0) //if player died
@@ -321,18 +321,19 @@ namespace TRP //Version 0.1
 
         public static double Attack(double Damage, Fighter target) //one fighter attacks another
         {
-            double damageDelt = Damage;
+            double damageDealt = Damage;
 
-            if (target.Armor < damageDelt)
+            if (target.Armor < damageDealt)
             {
-                target.HitPoints = target.HitPoints + target.Armor - damageDelt;
+                damageDealt -= target.Armor;
+                target.HitPoints -= damageDealt;
             }
             else
             {
-                damageDelt = 0;
+                damageDealt = 0;
             }
            
-            return damageDelt;
+            return damageDealt;
         }
 
         public static double SkillMenu(Fighter target)
