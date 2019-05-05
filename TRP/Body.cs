@@ -325,6 +325,24 @@ namespace TRP
             bodySlot = emptyEquipment;
         }
 
+        public bool BuyItem(Item item)
+        {
+            if (Gold > item.BuyPrice)
+            {
+                Gold -= item.BuyPrice;
+                if (item is Weapon)
+                {
+                    AddToWeaponInventory((Weapon)item);
+                    return true;
+                }
+                AddToItemInventory(item);
+                return true;
+            }
+            return false;
+            
+        } // Buy selected item for the player
+
+
         public void Use(Item item,int slot)
         {
             item.Use(this);
