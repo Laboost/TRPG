@@ -111,6 +111,7 @@ namespace TRP
         }
         public static void DescribeItem(object item)
         {
+            bool printed = false;
             if (item is Item)
             {
                 Item Item = item as Item;
@@ -127,31 +128,38 @@ namespace TRP
                     Console.BackgroundColor = ConsoleColor.DarkCyan;
                 }
             }
-            if (item is Consumable)
+            if (item is Consumable && printed == false)
             {
                 Consumable Item = item as Consumable;
                 Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                printed = true;
             }
-            if (item is Equipment)
-            {
-                Equipment Item = item as Equipment;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
-            }
-            if (item is Skill)
-            {
-                Skill Item = item as Skill;
-                Console.WriteLine("[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
-            }
-            if (item is Weapon)
+            if (item is Weapon && printed == false)
             {
                 Weapon Item = item as Weapon;
                 Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + "]");
+                printed = true;
+            }
+            if (item is Equipment && printed == false)
+            {
+
+                Equipment Item = item as Equipment;
+                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                printed = true;
+            }
+            if (item is Skill && printed == false)
+            {
+                Skill Item = item as Skill;
+                Console.WriteLine("[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
 
             }
+
             Console.ResetColor();
         }
+
         public static void DescribeItem(object item, int count)
         {
+            bool printed = false;
             if (item is Item)
             {
                 Item Item = item as Item;
@@ -168,26 +176,29 @@ namespace TRP
                     Console.BackgroundColor = ConsoleColor.DarkCyan;
                 }
             }
-            if (item is Consumable)
+            if (item is Consumable && printed == false)
             {
                 Consumable Item = item as Consumable;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " +Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                printed = true;
             }
-            if (item is Equipment)
+            if (item is Equipment && printed == false)
             {
                 Equipment Item = item as Equipment;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + "]");
+                printed = true;
             }
-            if (item is Skill)
+            if (item is Skill && printed == false)
             {
                 Skill Item = item as Skill;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
+                printed = true;
             }
-            if (item is Weapon)
+            if (item is Weapon && printed == false)
             {
                 Weapon Item = item as Weapon;
                 Console.WriteLine("[" + (count + 1) + "]" + "[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + "]");
-
+                printed = true;
             }
             Console.ResetColor();
         } //as part of counted list
