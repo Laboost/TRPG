@@ -29,27 +29,27 @@ namespace TRP //Version 0.1
         #endregion
         #endregion
 
-        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,SwordSkillSet);
+        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,SwordSkillSet,0,5);
         static List<Weapon> Weapons = new List<Weapon> {
-            new Weapon("Sword", 20,WieldAttribute.MainHand,400,SwordSkillSet)
-            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150,SpikeSkillSet)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150,DaggerSkillSet) };//load all game weapons
+            new Weapon("Sword", 20,WieldAttribute.MainHand,400,SwordSkillSet,10,7)
+            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150,SpikeSkillSet,50,10)
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150,DaggerSkillSet,30,7) };//load all game weapons
 
         static List<Consumable> Items = new List<Consumable> // load all game consumables
         {
-            new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer"),
+            new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer",30,10),
         }; //load all game items
         static List<Equipment> Equipment = new List<Equipment> {
-            new Equipment("Iron Chest",0,40,EquipmentSlot.Chest,150),
-            new Equipment("Iron Head",0,30,EquipmentSlot.Head,150),
-            new Equipment("Iron Legs",0,20,EquipmentSlot.Legs,150),
-            new Equipment("Iron Wrists",0,10,EquipmentSlot.Wrists,200),
-            new Equipment("Iron Hands",0,20,EquipmentSlot.Hands,150),
-            new Equipment("Iron Feet",0,10,EquipmentSlot.Feet,200)
+            new Equipment("Iron Chest",0,40,EquipmentSlot.Chest,150,40,8),
+            new Equipment("Iron Head",0,30,EquipmentSlot.Head,150,40,8),
+            new Equipment("Iron Legs",0,20,EquipmentSlot.Legs,150,40,8),
+            new Equipment("Iron Wrists",0,10,EquipmentSlot.Wrists,200,40,8),
+            new Equipment("Iron Hands",0,20,EquipmentSlot.Hands,150,40,8),
+            new Equipment("Iron Feet",0,10,EquipmentSlot.Feet,200,40,8)
         }; //load all game Equipment
 
         static Map Map;
-        static Player Player1 = new Player("Player1", 100, BasicSword); //Player
+        static Player Player1 = new Player("Player1", 100, BasicSword,0); //Player
 
         static List<Monster> Monsters = new List<Monster> {
             new Monster("Wolf", 25, 30,75,40),
@@ -75,12 +75,15 @@ namespace TRP //Version 0.1
 
             void StartGame()
             {
-                Player1 = new Player("Player1", 100, BasicSword);
+                Player1 = new Player("Player1", 100, BasicSword,20);
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
                 Map = GenerateMap();
                 Console.Clear();
+
+                test();
+
                 ShowActionMenu();
             } //init a new game
 
@@ -108,10 +111,7 @@ namespace TRP //Version 0.1
 
 
             #endregion
-
-
-
-            test();
+            
             ShowStartMenu();
 
 
@@ -120,7 +120,10 @@ namespace TRP //Version 0.1
 
         public static void test() //Test
         {
-
+            for (int i = 0; i < 20; i++)
+            {
+                Player1.AddToWeaponInventory(GenerateWeapon(Weapons));
+            }
         }
 
  
@@ -134,7 +137,7 @@ namespace TRP //Version 0.1
             Menu.DescribeItem(Player1.EquippedWeapons[0]);
             if (Player1.EquippedWeapons[1] != null)
             {
-                Console.WriteLine("[OffHand]");
+                Console.Write("[OffHand]");
                 Menu.DescribeItem(Player1.EquippedWeapons[1]);
             }
             else
@@ -190,6 +193,7 @@ namespace TRP //Version 0.1
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
+            player.Gold += monster.Gold;
             foreach (Item item in monster.ItemInventory)
             {
                 Item loot = item;
@@ -405,6 +409,8 @@ namespace TRP //Version 0.1
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
             item.skillSet = origin.skillSet;
+            item.SellPrice = origin.SellPrice;
+            item.BuyPrice = origin.BuyPrice;
             item.UpdateStats();
 
             return item;
@@ -427,14 +433,16 @@ namespace TRP //Version 0.1
 
         public static Consumable GenerateConsumable(List<Consumable> items)
         {
-            Consumable X = RandomConsumableDrop(items);
-            if (X == null)
+            Consumable origin = RandomConsumableDrop(items);
+            if (origin == null)
             {
-                return X;
+                return origin;
             }
-            Consumable item = Cloner.CloneJson(X);
+            Consumable item = Cloner.CloneJson(origin);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
+            item.SellPrice = origin.SellPrice;
+            item.BuyPrice = origin.BuyPrice;
             item.UpdateStats();
 
             return item; 
@@ -456,14 +464,16 @@ namespace TRP //Version 0.1
 
         public static Equipment GenerateEquipment(List<Equipment> items)
         {
-            Equipment X = RandomEquipmentDrop(items);
-            if (X == null)
+            Equipment origin = RandomEquipmentDrop(items);
+            if (origin == null)
             {
-                return X;
+                return origin;
             }
-            Equipment item = Cloner.CloneJson(X);
+            Equipment item = Cloner.CloneJson(origin);
             Rarity randomRarity = RandomRarityDrop();
             item.Rarity = randomRarity;
+            item.SellPrice = origin.SellPrice;
+            item.BuyPrice = origin.BuyPrice;
             item.UpdateStats();
 
             return item;
@@ -491,7 +501,9 @@ namespace TRP //Version 0.1
             Item weapon = GenerateWeapon(Weapons);
             Item item = GenerateConsumable(Items);
             Item equipment = GenerateEquipment(Equipment);
+            int gold = 20;
 
+            enemy.Gold = gold;
             enemy.ItemInventory.Add(equipment);
             enemy.ItemInventory.Add(item);
             enemy.ItemInventory.Add(weapon); //add loot to the monster
@@ -654,21 +666,25 @@ namespace TRP //Version 0.1
                 Player player = (Player)body;         
 
                 Console.Write("Name: " + body.Name + "\nLevel: ");
-                PrintInColor(Player1.Level.ToString(), ConsoleColor.Yellow);
+                PrintInColor(Player1.Level.ToString(), ConsoleColor.Green);
 
                 Console.Write(" EXP: ");
                 string exp = Player1.Exp + " \\ " + Player1.MaxExp;
-                PrintInColor(exp, ConsoleColor.Yellow);
+                PrintInColor(exp, ConsoleColor.Green);
 
                 Console.Write("\nHp: ");
                 string hp = player.HitPoints + " \\ " + Player1.MaxHitPoints;
                 PrintInColor(hp, ConsoleColor.Red);
 
                 Console.Write("\nArmor: ");
-                PrintInColor(Player1.Armor.ToString(), ConsoleColor.Gray);
+                PrintInColor(Player1.Armor.ToString(), ConsoleColor.DarkGray);
+
+                Console.Write(" Gold: ");
+                PrintInColor(Player1.Gold.ToString(), ConsoleColor.Yellow);
 
                 Console.Write("\nMain Hand: ");
                 Menu.DescribeItem(Player1.EquippedWeapons[0]);
+
                 if (Player1.EquippedWeapons[1] != null)
                 {
                     Console.Write("Off Hand: ");

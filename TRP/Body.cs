@@ -20,6 +20,7 @@ namespace TRP
 
     class Fighter : Body
     {
+        public int Gold { get; set; }
         protected List<Item> itemInventory = new List<Item>();
         
         protected double attackPoints;
@@ -61,7 +62,7 @@ namespace TRP
         private List<Item> weaponInventory = new List<Item>();
         public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
 
-        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0,null);
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0,null,0,0);
 
         private Weapon[] weaponSlots = new Weapon[] { twoHanded, twoHanded };
         private Weapon mainHand { get { return weaponSlots[0]; } set { weaponSlots[0] = value; } }
@@ -73,8 +74,9 @@ namespace TRP
 
         #region Methods
 
-        public Player(string name, double hitPoints, Weapon weapon) 
+        public Player(string name, double hitPoints, Weapon weapon,int gold) 
         {
+            Gold = gold;
             mainHand = weapon;
             offHand = null;
             this.name = name;
