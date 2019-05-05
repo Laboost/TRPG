@@ -134,11 +134,11 @@ namespace TRP //Version 0.1
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
             Console.Write("[MainHand]");
-            Menu.DescribeItem(Player1.EquippedWeapons[0]);
+            Menu.DescribeItem(Player1.EquippedWeapons[0],false);
             if (Player1.EquippedWeapons[1] != null)
             {
-                Console.Write("[OffHand]");
-                Menu.DescribeItem(Player1.EquippedWeapons[1]);
+                Console.WriteLine("[OffHand]");
+                Menu.DescribeItem(Player1.EquippedWeapons[1],false);
             }
             else
             {
@@ -150,7 +150,7 @@ namespace TRP //Version 0.1
             int WeaponCount;
             for (WeaponCount = 0; WeaponCount < Player1.WeaponInventory.Count; WeaponCount++) //shows all items in inventory
             {
-                Menu.DescribeItem(Player1.WeaponInventory[WeaponCount], WeaponCount);//show Inventory
+                Menu.DescribeItem(Player1.WeaponInventory[WeaponCount],true ,WeaponCount);//show Inventory
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -683,18 +683,17 @@ namespace TRP //Version 0.1
                 PrintInColor(Player1.Gold.ToString(), ConsoleColor.Yellow);
 
                 Console.Write("\nMain Hand: ");
-                Menu.DescribeItem(Player1.EquippedWeapons[0]);
-
+                Menu.DescribeItem(Player1.EquippedWeapons[0],false);
                 if (Player1.EquippedWeapons[1] != null)
                 {
                     Console.Write("Off Hand: ");
-                    Menu.DescribeItem(Player1.EquippedWeapons[1]);
+                    Menu.DescribeItem(Player1.EquippedWeapons[1],false);
                 }
                 for (int i = 0; i < Player1.BodySlots.Length; i++)
                 {
                     if (Player1.BodySlots[i].Name != null)
                     {
-                        Menu.DescribeItem(Player1.BodySlots[i]);
+                        Menu.DescribeItem(Player1.BodySlots[i],false);
                     }
                     
                 }
