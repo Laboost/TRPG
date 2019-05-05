@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace TRP //Version 0.1
 {
@@ -122,7 +123,7 @@ namespace TRP //Version 0.1
         {
             for (int i = 0; i < 20; i++)
             {
-                Player1.AddToWeaponInventory(GenerateWeapon(Weapons));
+                Player1.AddToWeaponInventory(GenerateItem(Weapons));
             }
         }
 
@@ -398,109 +399,13 @@ namespace TRP //Version 0.1
         #region Generators
 
 
-        public static Weapon GenerateWeapon(List<Weapon> weapons)
-        {
-            Weapon origin = RandomWeaponDrop(Weapons);
-            if (origin == null)
-            {
-                return origin;
-            }
-            Weapon item = Cloner.CloneJson(origin);
-            Rarity randomRarity = RandomRarityDrop();
-            item.Rarity = randomRarity;
-            item.skillSet = origin.skillSet;
-            item.SellPrice = origin.SellPrice;
-            item.BuyPrice = origin.BuyPrice;
-            item.UpdateStats();
-
-            return item;
-
-        }
-        public static Weapon RandomWeaponDrop(List<Weapon> items) //generate weapon by Drop chance
-        {
-            int roll = new Random().Next(0, 1000);
-            int weightSum = 0;
-            foreach (Weapon item in items)
-            {
-                weightSum += item.DropChance;
-                if (roll < weightSum)
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        public static Consumable GenerateConsumable(List<Consumable> items)
-        {
-            Consumable origin = RandomConsumableDrop(items);
-            if (origin == null)
-            {
-                return origin;
-            }
-            Consumable item = Cloner.CloneJson(origin);
-            Rarity randomRarity = RandomRarityDrop();
-            item.Rarity = randomRarity;
-            item.SellPrice = origin.SellPrice;
-            item.BuyPrice = origin.BuyPrice;
-            item.UpdateStats();
-
-            return item; 
-        }
-        public static Consumable RandomConsumableDrop(List<Consumable> items) //generate Item by Drop Chance
-        {
-            int roll = new Random().Next(0, 1000);
-            int weightSum = 0;
-            foreach (Consumable item in items)
-            {
-                weightSum += item.DropChance;
-                if (roll < weightSum)
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        public static Equipment GenerateEquipment(List<Equipment> items)
-        {
-            Equipment origin = RandomEquipmentDrop(items);
-            if (origin == null)
-            {
-                return origin;
-            }
-            Equipment item = Cloner.CloneJson(origin);
-            Rarity randomRarity = RandomRarityDrop();
-            item.Rarity = randomRarity;
-            item.SellPrice = origin.SellPrice;
-            item.BuyPrice = origin.BuyPrice;
-            item.UpdateStats();
-
-            return item;
-
-        }
-        public static Equipment RandomEquipmentDrop(List<Equipment> items) //generate Equipment by Drop chance
-        {
-            int roll = new Random().Next(0, 1000);
-            int weightSum = 0;
-            foreach (Equipment item in items)
-            {
-                weightSum += item.DropChance;
-                if (roll < weightSum)
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
         public static Monster GenerateMonster() //generate a random monster
         {
             Monster X = RandomMonsterSpawn(Monsters);
             Monster enemy = Cloner.CloneJson(X);
-            Item weapon = GenerateWeapon(Weapons);
-            Item item = GenerateConsumable(Items);
-            Item equipment = GenerateEquipment(Equipment);
+            Item weapon = GenerateItem(Weapons);
+            Item item = GenerateItem(Items);
+            Item equipment = GenerateItem(Equipment);
             int gold = 20;
 
             enemy.Gold = gold;
@@ -552,19 +457,58 @@ namespace TRP //Version 0.1
 
         }
 
-        public static Item GenerateItem(List<Item> items)
+        public static Item GenerateItem<T>(List<T> items)
         {
-            Item X = RandomItemDrop(items);
-            if (X == null)
+            List<Item> convertedItems = items.Cast<Item>().ToList();
+            Item origin = RandomItemDrop(convertedItems);
+            if (origin == null)
             {
-                return X;
+                return origin;
             }
-            Item item = Cloner.CloneJson(X);
-            Rarity randomRarity = RandomRarityDrop();
-            item.Rarity = randomRarity;
-            item.UpdateStats();
 
-            return item;
+            if (origin is Weapon)
+            {
+                Weapon convertedOrigin = origin as Weapon;
+                Weapon item = Cloner.CloneJson(convertedOrigin);
+                Rarity randomRarity = RandomRarityDrop();
+                item.Rarity = randomRarity;
+                item.SellPrice = origin.SellPrice;
+                item.BuyPrice = origin.BuyPrice;
+                item.UpdateStats();
+                return item;
+            }
+            if (origin is Consumable)
+            {
+                Consumable convertedOrigin = origin as Consumable;
+                Consumable item = Cloner.CloneJson(convertedOrigin);
+                Rarity randomRarity = RandomRarityDrop();
+                item.Rarity = randomRarity;
+                item.SellPrice = origin.SellPrice;
+                item.BuyPrice = origin.BuyPrice;
+                item.UpdateStats();
+                return item;
+            }
+            if (origin is Equipment)
+            {
+                Equipment convertedOrigin = origin as Equipment;
+                Equipment item = Cloner.CloneJson(convertedOrigin);
+                Rarity randomRarity = RandomRarityDrop();
+                item.Rarity = randomRarity;
+                item.SellPrice = origin.SellPrice;
+                item.BuyPrice = origin.BuyPrice;
+                item.UpdateStats();
+                return item;
+            }
+            else
+            {
+                Item item = Cloner.CloneJson(origin);
+                Rarity randomRarity = RandomRarityDrop();
+                item.Rarity = randomRarity;
+                item.SellPrice = origin.SellPrice;
+                item.BuyPrice = origin.BuyPrice;
+                item.UpdateStats();
+                return item;
+            }
         }
         public static Item RandomItemDrop(List<Item> items)
         {
