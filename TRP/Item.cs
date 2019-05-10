@@ -67,21 +67,25 @@ namespace TRP
 
         public void UpdateStats()
         {
+            double multi = 1;
             if (rarity == Rarity.Rare)
             {
-                power = power * 1.20;
-                armor = armor * 1.20;
+                multi = 1.2;
             }
             if (rarity == Rarity.Legendary)
             {
-                power = power * 2;
-                armor = armor * 2;
+                multi = 2;
             }
             if (rarity == Rarity.Divine)
             {
-                power = power * 2.5;
-                armor = armor * 2.5;
+                multi = 2.5;
             }
+            power = power * multi;
+            armor = armor * multi;
+            BuyPrice = (int)(BuyPrice * multi);
+            SellPrice =(int)(SellPrice * multi);
+
+
         } //Updates the item stats by his Attributes
     }
 
