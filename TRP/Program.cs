@@ -33,12 +33,12 @@ namespace TRP //Version 0.1
         static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,SwordSkillSet,0,5);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400,SwordSkillSet,10,7)
-            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,150,SpikeSkillSet,50,10)
-            , new Weapon("dagger", 10,WieldAttribute.OneHanded,150,DaggerSkillSet,30,7) };//load all game weapons
+            , new Weapon("Spike", 40,WieldAttribute.TwoHanded,300,SpikeSkillSet,50,10)
+            , new Weapon("dagger", 10,WieldAttribute.OneHanded,300,DaggerSkillSet,30,7) };//load all game weapons
 
-        static List<Consumable> Items = new List<Consumable> // load all game consumables
+        static List<Consumable> Consumables = new List<Consumable> // load all game consumables
         {
-            new Consumable("HP Potion",10,600,ConsumableType.HealthPotion,"Heals the Consumer",30,10),
+            new Consumable("HP Potion",10,1000,ConsumableType.HealthPotion,"Heals the Consumer",30,10),
         }; //load all game items
         static List<Equipment> Equipment = new List<Equipment> {
             new Equipment("Iron Chest",0,40,EquipmentSlot.Chest,150,40,8),
@@ -57,6 +57,7 @@ namespace TRP //Version 0.1
             new Monster("Orc", 40, 50,25,40),
             new Monster("Tiger", 80, 60,5,40) }; // load all monsters    
 
+        static Shop CurrentShop = new Shop();
 
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
@@ -76,7 +77,7 @@ namespace TRP //Version 0.1
 
             void StartGame()
             {
-                Player1 = new Player("Player1", 100, BasicSword,20);
+                Player1 = new Player("Player1", 100, BasicSword,500);
                 Console.WriteLine("Choose your Name: ");
                 string name = Console.ReadLine();
                 Player1.Name = name;
@@ -87,13 +88,24 @@ namespace TRP //Version 0.1
 
                 ShowActionMenu();
             } //init a new game
+            Menu InventoryMenu = new Menu("Tabs", new List<Option>
+            {
+                new Option("Weapons",(Action)WeaponInventory),
+                new Option("Items",(Action)ItemInventory)
+            });
+            void ShowInventoryMenu()
+            {
+                InventoryMenu.ChooseAction()();
+            }
 
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("Open Weapon Inventory", (Action)WeaponInventory),
-            new Option("Open Item Inventory\n", (Action)ItemInventory),
+            new Option("Shop", (Action)EnterShop),
+            new Option("Open Inventory", (Action)ShowInventoryMenu),
             new Option("Quit Game",(Action)EndGame)
+
         }); // Idle Menu
+
             void ShowActionMenu()
             {
                 ActionMenu.ChooseAction()();
@@ -123,12 +135,21 @@ namespace TRP //Version 0.1
         {
             for (int i = 0; i < 20; i++)
             {
-                Player1.AddToWeaponInventory(GenerateItem(Weapons));
+                Player1.AddToWeaponInventory(GenerateItem(Weapons,true));
             }
         }
 
  
         #region Item Methods
+
+        public static void EnterShop()
+        {
+            if (CurrentShop.TileName != Map.CurrentTile.Name)
+            {
+                GenerateShop();
+            }
+            ViewShop();
+        } //Enter Shop Action
 
         public static void WeaponInventory() //Handles The inventory UI
         {
@@ -171,7 +192,7 @@ namespace TRP //Version 0.1
             int chosenWeaponSlot = input - 1;
             if (input > 0 && input <= WeaponCount) // if player chose a weapon from inventory
             {
-                Player1.EquipWeapon((Weapon)Player1.WeaponInventory[chosenWeaponSlot], chosenWeaponSlot);
+                Player1.EquipWeapon((Weapon)Player1.WeaponInventory[chosenWeaponSlot]);
             }
             Console.Clear();
         }
@@ -186,11 +207,11 @@ namespace TRP //Version 0.1
             }
             if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
             {
-                Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+                Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot]);
             }
-            Player1.Use(Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+            Player1.Use(Player1.ItemInventory[chosenItemSlot]);
             Console.Clear();
-        }
+        } //Handles Item inventory UI
 
         public static void LootMonster(Monster monster, Player player) //transfer Monster item to the player
         {
@@ -393,19 +414,42 @@ namespace TRP //Version 0.1
             Console.Clear();
             ShowStats(Enemy);
             OnlyShowFightMenu();
-            ShowPlayerStats();
+            ShowUI();
         }
         #endregion
 
         #region Generators
 
+        public static void GenerateShop()
+        {
+            CurrentShop.Items.Clear();
+            CurrentShop.TileName = Map.CurrentTile.Name;
+
+            for (int i = 0; i < 6; i++)
+            {
+                Random rnd = new Random();
+                int x = rnd.Next(1);
+                if (x == 0)
+                {
+                    CurrentShop.Items.Add(GenerateItem(Weapons, true));
+                }
+                if (x == 1)
+                {
+                    CurrentShop.Items.Add(GenerateItem(Consumables, true));
+                }
+                if (x == 2)
+                {
+                    CurrentShop.Items.Add(GenerateItem(Equipment, true));
+                }
+            }
+        } //Generate new Shop
 
         public static Monster GenerateMonster() //generate a random monster
         {
             Monster X = RandomMonsterSpawn(Monsters);
             Monster enemy = Cloner.CloneJson(X);
             Item weapon = GenerateItem(Weapons);
-            Item item = GenerateItem(Items);
+            Item item = GenerateItem(Consumables);
             Item equipment = GenerateItem(Equipment);
             int gold = 20;
 
@@ -458,10 +502,10 @@ namespace TRP //Version 0.1
 
         }
 
-        public static Item GenerateItem<T>(List<T> items)
+        public static Item GenerateItem<T>(List<T> items, bool NoEmpty = false)
         {
             List<Item> convertedItems = items.Cast<Item>().ToList();
-            Item origin = RandomItemDrop(convertedItems);
+            Item origin = RandomItemDrop(convertedItems,NoEmpty);
             if (origin == null)
             {
                 return origin;
@@ -511,9 +555,17 @@ namespace TRP //Version 0.1
                 return item;
             }
         }
-        public static Item RandomItemDrop(List<Item> items)
+        public static Item RandomItemDrop(List<Item> items,bool NoEmpty = false)
         {
-            int roll = new Random().Next(0, 1000);
+            int roll;
+            if (NoEmpty == true)
+            {
+                roll = new Random().Next(0, 1000);
+            }
+            else
+            {
+                roll = new Random().Next(0, 1800);
+            }
             int weightSum = 0;
             foreach (Item item in items)
             {
@@ -590,6 +642,101 @@ namespace TRP //Version 0.1
         #endregion
 
         #region UI
+
+        #region Shop
+
+        public static void ViewShop()
+        {
+            Menu shopMenu = new Menu("Action Menu", new List<Option> {
+            new Option("Buy", (Action)BuyFromShop),
+            new Option("Sell", (Action)SellToShop)
+            });
+
+            shopMenu.ChooseAction()();
+
+        } //show shop UI
+        public static void BuyFromShop()//Buying UI
+        {
+            bool doneShopping = false;
+            while (doneShopping == false)
+            {
+                int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to BUY.",true,showShopItem:true);
+                if (input == 0)
+                {
+                    doneShopping = true;
+                    continue;
+                }
+                Item chosenItem = CurrentShop.Items[input - 1];
+                bool result = Player1.BuyItem(chosenItem);
+                if (result == false)
+                {
+                    Console.WriteLine("Not enough Minerals.");
+                    Thread.Sleep(800);
+                }
+                else
+                {
+                    CurrentShop.Items.Remove(chosenItem);
+                }
+            }
+        } 
+        public static void SellToShop() // Selling UI
+        {
+            bool doneShopping = false;
+            while (doneShopping == false)
+            {
+                Item chosenItem = new Item();
+                Menu sellMenu = new Menu("Choose Type", new List<Option>
+                {
+                    new Option("Weapons",1),
+                    new Option("Armor",2),
+                    new Option("Consumables",3)
+                });
+                int result = sellMenu.ChooseNum();
+                if (result == 1)
+                {
+                    chosenItem = Menu.ItemMenu(Player1.WeaponInventory, "Please choose a Weapon to SELL.", true);
+                }
+                if (result == 2)
+                {
+                    List<Item> armor = new List<Item>();
+                    foreach (Item item in Player1.ItemInventory)
+                    {
+                        if (item is Equipment)
+                        {
+                            armor.Add(item);
+                        }
+                    }
+                    chosenItem = Menu.ItemMenu(armor, "Please choose an armor to SELL.", true);
+                }
+                if (result == 3)
+                {
+                    List<Item> items = new List<Item>();
+                    foreach (Item item in Player1.ItemInventory)
+                    {
+                        if (item is Consumable)
+                        {
+                            items.Add(item);
+                        }
+                    }
+                    chosenItem = Menu.ItemMenu(items, "Please choose an item to SELL.", true);
+                }
+
+                if (chosenItem == null)
+                {
+                    doneShopping = true;
+                    continue;
+                }
+                Player1.SellItem(chosenItem);
+            }
+        }
+
+        #endregion
+
+        public static void ShowPlayerInventory()
+        {
+
+        } // handles all inventory UI
+
         public static void OnlyShowFightMenu()
         {
             #region Options
@@ -604,6 +751,7 @@ namespace TRP //Version 0.1
 
             Console.WriteLine('\n');
         } //Only SHOWS fight menu
+
         public static void ShowStats(Body body)
         {
             if (body is Player)
@@ -654,11 +802,13 @@ namespace TRP //Version 0.1
                 Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
 
         } //shows a body stats
-        public static void ShowPlayerStats()
+
+        public static void ShowUI()
         {
             ShowStats(Player1);
             ShowMap();
         } // Shows the player stats
+
         public static void ShowMap()
         {
             if (Map != null)
@@ -686,10 +836,12 @@ namespace TRP //Version 0.1
                 Console.WriteLine('\n');
             }
         } // show the map layout
+
         public static void ExitMenu()
         {
             return;
         } // General return
+
         public static void EndGame()
         {
             Console.WriteLine("Are you sure you want to quit?");
