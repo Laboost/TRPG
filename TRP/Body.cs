@@ -20,6 +20,7 @@ namespace TRP
 
     class Fighter : Body
     {
+        public int Gold { get; set; }
         protected List<Item> itemInventory = new List<Item>();
         
         protected double attackPoints;
@@ -61,7 +62,7 @@ namespace TRP
         private List<Item> weaponInventory = new List<Item>();
         public List<Item> WeaponInventory { get { return weaponInventory; } set { weaponInventory = value; } }
 
-        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0,null);
+        static private Weapon twoHanded = new Weapon("Two Handed", 0, WieldAttribute.OneHanded,0,null,0,0);
 
         private Weapon[] weaponSlots = new Weapon[] { twoHanded, twoHanded };
         private Weapon mainHand { get { return weaponSlots[0]; } set { weaponSlots[0] = value; } }
@@ -73,8 +74,9 @@ namespace TRP
 
         #region Methods
 
-        public Player(string name, double hitPoints, Weapon weapon) 
+        public Player(string name, double hitPoints, Weapon weapon,int gold) 
         {
+            Gold = gold;
             mainHand = weapon;
             offHand = null;
             this.name = name;
@@ -137,9 +139,9 @@ namespace TRP
 
         #region Weapon Methods
 
-        public void EquipWeapon(Weapon weapon , int inventorySlot) //equip given weapon
+        public void EquipWeapon(Weapon weapon) //equip given weapon
         {
-            RemoveFromWeaponInventory(inventorySlot);
+            RemoveFromWeaponInventory(weapon);
             bool weaponSwaped = false;
             while (weaponSwaped == false)
             {
@@ -255,21 +257,21 @@ namespace TRP
         {
             WeaponInventory.Add(item);
         }
-        public void RemoveFromWeaponInventory(int slot) //removes item from player's inventory
+        public void RemoveFromWeaponInventory(Weapon weapon) //removes item from player's inventory
         {
-            WeaponInventory.RemoveAt(slot);
+            WeaponInventory.Remove(weapon);
         }
 
         public void AddToItemInventory(Item item)
         {
             ItemInventory.Add(item);
         }
-        public void RemoveFromItemInventory(int slot)
+        public void RemoveFromItemInventory(Item item)
         {
-            ItemInventory.RemoveAt(slot);
+            ItemInventory.Remove(item);
         }
 
-        public void Equip(Equipment equipment , int inventorySlot)
+        public void Equip(Equipment equipment)
         {
             bool finishedEquipping = false;
             while (finishedEquipping == false)
@@ -323,10 +325,56 @@ namespace TRP
             bodySlot = emptyEquipment;
         }
 
-        public void Use(Item item,int slot)
+        public bool BuyItem(Item item)
+        {
+            if (Gold > item.BuyPrice)
+            {
+                Gold -= item.BuyPrice;
+                if (item is Weapon)
+                {
+                    AddToWeaponInventory((Weapon)item);
+                    return true;
+                }
+                AddToItemInventory(item);
+                return true;
+            }
+            return false;
+            
+        } // Buy selected item for the player
+        public void SellItem(Item item)
+        {
+            if (item is Weapon)
+            {
+                weaponInventory.Remove(item);
+            }
+            else
+            {
+                ItemInventory.Remove(item);
+            }
+            Gold += item.SellPrice;
+        } //sell a selected item to the shop
+
+        public void UseItem(Item item) //active item from UI
+        {
+            if (item is Weapon)
+            {
+                EquipWeapon((Weapon)item);
+            }
+            if (item is Consumable)
+            {
+                Use((Consumable)item);
+            }
+            if (item is Equipment)
+            {
+                Equip((Equipment)item);
+            }
+        }
+
+
+        public void Use(Item item)
         {
             item.Use(this);
-            RemoveFromItemInventory(slot);
+            RemoveFromItemInventory(item);
         }
         #endregion
 
