@@ -28,7 +28,7 @@ namespace TRP
                 ++count;
             }
             Console.WriteLine("\n");
-            Program.ShowPlayerStats();
+            Program.ShowUI();
 
             int selection = 1;
             bool valid_input = false;
@@ -56,7 +56,7 @@ namespace TRP
                 ++count;
             }
             Console.WriteLine("\n");
-            Program.ShowPlayerStats();
+            Program.ShowUI();
 
             int selection = 1;
             bool valid_input = false;
@@ -75,17 +75,25 @@ namespace TRP
             return this.options[selection - 1].ChoiceNum;
 
         }
-        public static int ActionMenu<T>(List<T> list, string description)
+        public static int ActionMenu<T>(List<T> list, string description,bool showUI = false, int startingCount = 0, bool clearConsole = true)
         {
-            Console.Clear();
+            if (clearConsole)
+            {
+                Console.Clear();
+            }
             Console.WriteLine(description);
             int itemCount;
-            for (itemCount = 0; itemCount < list.Count; itemCount++)
+            for (itemCount = startingCount; itemCount < list.Count; itemCount++)
             {
                 DescribeItem(list[itemCount],true, itemCount);
 
             }
             Console.WriteLine("\n[0] Quit");
+
+            if (showUI == true)
+            {
+                Program.ShowUI();
+            }
 
             int input = 1;
             bool valid_input = false;
@@ -104,10 +112,49 @@ namespace TRP
             Console.Clear();
             if (input > 0 && input <= itemCount)
             {
-                return input;
-                
+                return input;               
             }
             return 0; 
+        }
+        public static Item ItemMenu(List<Item> list, string description,bool showUI = false, int startingCount = 0, bool clearConsole = true)
+        {
+            if (clearConsole)
+            {
+                Console.Clear();
+            }
+            Console.WriteLine(description);
+            int itemCount;
+            for (itemCount = startingCount; itemCount < list.Count; itemCount++)
+            {
+                DescribeItem(list[itemCount], true, itemCount);
+            }
+            Console.WriteLine("\n[0] Quit");
+
+            if (showUI == true)
+            {
+                Program.ShowUI();
+            }
+
+            int input = 1;
+            bool valid_input = false;
+            while (!valid_input)
+            {
+                int.TryParse(Console.ReadLine(), out input);
+                if (input <= itemCount && input >= 0)
+                {
+                    valid_input = true;
+                    break;
+                }
+                Console.WriteLine("Please enter a valid selection: ");
+            }
+
+            int chosenItemSlot = input - 1;
+            Console.Clear();
+            if (input > 0 && input <= itemCount)
+            {
+                return list[chosenItemSlot];
+            }
+            return null;
         }
         public static void DescribeItem(object item, bool countItem ,int count = 0)
         {
@@ -162,9 +209,7 @@ namespace TRP
 
             Console.ResetColor();
         }
-      
     }
-
 
     class Option
     {

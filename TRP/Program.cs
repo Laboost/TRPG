@@ -88,14 +88,24 @@ namespace TRP //Version 0.1
 
                 ShowActionMenu();
             } //init a new game
+            Menu InventoryMenu = new Menu("Tabs", new List<Option>
+            {
+                new Option("Weapons",(Action)WeaponInventory),
+                new Option("Items",(Action)ItemInventory)
+            });
+            void ShowInventoryMenu()
+            {
+                InventoryMenu.ChooseAction()();
+            }
 
             Menu ActionMenu = new Menu("Action Menu", new List<Option> {
             new Option("Search for Trouble", (Action)Battle),
-            new Option("GO TO NEW SHOP BOI", (Action)EnterShop),
-            new Option("Open Weapon Inventory", (Action)WeaponInventory),
-            new Option("Open Item Inventory\n", (Action)ItemInventory),
+            new Option("Shop", (Action)EnterShop),
+            new Option("Open Inventory", (Action)ShowInventoryMenu),
             new Option("Quit Game",(Action)EndGame)
+
         }); // Idle Menu
+
             void ShowActionMenu()
             {
                 ActionMenu.ChooseAction()();
@@ -125,7 +135,7 @@ namespace TRP //Version 0.1
         {
             for (int i = 0; i < 20; i++)
             {
-                Player1.AddToWeaponInventory(GenerateItem(Weapons));
+                Player1.AddToWeaponInventory(GenerateItem(Weapons,true));
             }
         }
 
@@ -182,7 +192,7 @@ namespace TRP //Version 0.1
             int chosenWeaponSlot = input - 1;
             if (input > 0 && input <= WeaponCount) // if player chose a weapon from inventory
             {
-                Player1.EquipWeapon((Weapon)Player1.WeaponInventory[chosenWeaponSlot], chosenWeaponSlot);
+                Player1.EquipWeapon((Weapon)Player1.WeaponInventory[chosenWeaponSlot]);
             }
             Console.Clear();
         }
@@ -197,9 +207,9 @@ namespace TRP //Version 0.1
             }
             if (Player1.ItemInventory[chosenItemSlot].Armor != 0)
             {
-                Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+                Player1.Equip((Equipment)Player1.ItemInventory[chosenItemSlot]);
             }
-            Player1.Use(Player1.ItemInventory[chosenItemSlot], chosenItemSlot);
+            Player1.Use(Player1.ItemInventory[chosenItemSlot]);
             Console.Clear();
         } //Handles Item inventory UI
 
@@ -404,7 +414,7 @@ namespace TRP //Version 0.1
             Console.Clear();
             ShowStats(Enemy);
             OnlyShowFightMenu();
-            ShowPlayerStats();
+            ShowUI();
         }
         #endregion
 
@@ -633,12 +643,24 @@ namespace TRP //Version 0.1
 
         #region UI
 
+        #region Shop
+
         public static void ViewShop()
+        {
+            Menu shopMenu = new Menu("Action Menu", new List<Option> {
+            new Option("Buy", (Action)BuyFromShop),
+            new Option("Sell", (Action)SellToShop)
+            });
+
+            shopMenu.ChooseAction()();
+
+        } //show shop UI
+        public static void BuyFromShop()//Buying UI
         {
             bool doneShopping = false;
             while (doneShopping == false)
             {
-                int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to buy.");
+                int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to BUY.",true);
                 if (input == 0)
                 {
                     doneShopping = true;
@@ -649,11 +671,72 @@ namespace TRP //Version 0.1
                 if (result == false)
                 {
                     Console.WriteLine("Not enough Minerals.");
+                    Thread.Sleep(800);
                 }
-                CurrentShop.Items.Remove(chosenItem);
+                else
+                {
+                    CurrentShop.Items.Remove(chosenItem);
+                }
             }
-        
-        } //show shop UI
+        } 
+        public static void SellToShop() // Selling UI
+        {
+            bool doneShopping = false;
+            while (doneShopping == false)
+            {
+                Item chosenItem = new Item();
+                Menu sellMenu = new Menu("Choose Type", new List<Option>
+                {
+                    new Option("Weapons",1),
+                    new Option("Armor",2),
+                    new Option("Consumables",3)
+                });
+                int result = sellMenu.ChooseNum();
+                if (result == 1)
+                {
+                    chosenItem = Menu.ItemMenu(Player1.WeaponInventory, "Please choose a Weapon to SELL.", true);
+                }
+                if (result == 2)
+                {
+                    List<Item> armor = new List<Item>();
+                    foreach (Item item in Player1.ItemInventory)
+                    {
+                        if (item is Equipment)
+                        {
+                            armor.Add(item);
+                        }
+                    }
+                    chosenItem = Menu.ItemMenu(armor, "Please choose an armor to SELL.", true);
+                }
+                if (result == 3)
+                {
+                    List<Item> items = new List<Item>();
+                    foreach (Item item in Player1.ItemInventory)
+                    {
+                        if (item is Consumable)
+                        {
+                            items.Add(item);
+                        }
+                    }
+                    chosenItem = Menu.ItemMenu(items, "Please choose an item to SELL.", true);
+                }
+
+                if (chosenItem == null)
+                {
+                    doneShopping = true;
+                    continue;
+                }
+                Player1.SellItem(chosenItem);
+            }
+        }
+
+        #endregion
+
+        public static void ShowPlayerInventory()
+        {
+
+        } // handles all inventory UI
+
         public static void OnlyShowFightMenu()
         {
             #region Options
@@ -668,6 +751,7 @@ namespace TRP //Version 0.1
 
             Console.WriteLine('\n');
         } //Only SHOWS fight menu
+
         public static void ShowStats(Body body)
         {
             if (body is Player)
@@ -718,11 +802,13 @@ namespace TRP //Version 0.1
                 Console.WriteLine("Name: " + body.Name + "Power: " + body.Power + "\n");
 
         } //shows a body stats
-        public static void ShowPlayerStats()
+
+        public static void ShowUI()
         {
             ShowStats(Player1);
             ShowMap();
         } // Shows the player stats
+
         public static void ShowMap()
         {
             if (Map != null)
@@ -750,10 +836,12 @@ namespace TRP //Version 0.1
                 Console.WriteLine('\n');
             }
         } // show the map layout
+
         public static void ExitMenu()
         {
             return;
         } // General return
+
         public static void EndGame()
         {
             Console.WriteLine("Are you sure you want to quit?");
