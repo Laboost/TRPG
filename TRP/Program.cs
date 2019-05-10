@@ -660,7 +660,7 @@ namespace TRP //Version 0.1
             bool doneShopping = false;
             while (doneShopping == false)
             {
-                int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to BUY.",true);
+                int input = Menu.ActionMenu(CurrentShop.Items, "Please choose an item to BUY.",true,showShopItem:true);
                 if (input == 0)
                 {
                     doneShopping = true;

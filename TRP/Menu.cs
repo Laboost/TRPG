@@ -75,7 +75,7 @@ namespace TRP
             return this.options[selection - 1].ChoiceNum;
 
         }
-        public static int ActionMenu<T>(List<T> list, string description,bool showUI = false, int startingCount = 0, bool clearConsole = true)
+        public static int ActionMenu<T>(List<T> list, string description,bool showUI = false, int startingCount = 0, bool clearConsole = true, bool showShopItem = false)
         {
             if (clearConsole)
             {
@@ -85,7 +85,7 @@ namespace TRP
             int itemCount;
             for (itemCount = startingCount; itemCount < list.Count; itemCount++)
             {
-                DescribeItem(list[itemCount],true, itemCount);
+                DescribeItem(list[itemCount],true, itemCount,showShopItem:showShopItem);
 
             }
             Console.WriteLine("\n[0] Quit");
@@ -156,7 +156,7 @@ namespace TRP
             }
             return null;
         }
-        public static void DescribeItem(object item, bool countItem ,int count = 0)
+        public static void DescribeItem(object item, bool countItem ,int count = 0,bool showShopItem = false)
         {
             bool printed = false;
             if (item is Item)
@@ -184,27 +184,46 @@ namespace TRP
             if (item is Consumable && printed == false)
             {
                 Consumable Item = item as Consumable;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
+                if (showShopItem)
+                {
+                    Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Buy Price: " + Item.BuyPrice + "]");
+                }
+                else
+                {
+                    Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + Item.Description + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
+                }
                 printed = true;
             }
             if (item is Weapon && printed == false)
             {
                 Weapon Item = item as Weapon;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Sell Price: " + Item.SellPrice + "]");
+                if (showShopItem)
+                {
+                    Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Buy Price: " + Item.BuyPrice + "]");
+                }
+                else
+                {
+                    Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Sell Price: " + Item.SellPrice + "]");
+                }
                 printed = true;
             }
             if (item is Equipment && printed == false)
             {
-
                 Equipment Item = item as Equipment;
-                Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
+                if (showShopItem)
+                {
+                  Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Buy Price: " + Item.BuyPrice + "]");
+                }
+                else
+                {
+                    Console.WriteLine("[" + Item.Name + " - " + Item.Rarity + " - " + " Power: " + Item.Power + " Armor: " + Item.Armor + " Sell Price: " + Item.SellPrice + "]");
+                }
                 printed = true;
             }
             if (item is Skill && printed == false)
             {
                 Skill Item = item as Skill;
-                Console.WriteLine("[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");
-
+                Console.WriteLine("[" + Item.Name + " - " + (Item.Damage * 100) + "% " + "]");       
             }
 
             Console.ResetColor();
