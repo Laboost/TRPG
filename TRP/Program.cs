@@ -53,9 +53,15 @@ namespace TRP //Version 0.1
         static Player Player1 = new Player("Player1", 100, BasicSword, 0); //Player
 
         static List<Monster> Monsters = new List<Monster> {
-            new Monster("Wolf", 25, 30,75,40),
-            new Monster("Orc", 40, 50,25,40),
-            new Monster("Tiger", 80, 60,5,40) }; // load all monsters    
+            new Monster("Wolf", 25, 30,70,40),
+            new Monster("Orc", 40, 50,20,40),
+            new Monster("Tiger", 80, 60,10,40) }; // load all monsters   
+        static List<Monster> Bosses = new List<Monster>
+        {
+            new Monster("Commander ORC",300,20,20,2000),
+            new Monster("Alpha WOLF",200,20,70,1000),
+            new Monster("Grand TIGER",150,25,10,5000),
+        };
 
         static Shop CurrentShop = new Shop();
 
@@ -81,8 +87,8 @@ namespace TRP //Version 0.1
             new Option("Quit Game",(Action)EndGame)
         });// Tile Menu with no shop
         static Menu ActionMenuWithShop = new Menu("Action Menu", new List<Option> {
-            new Option("Shop", (Action)EnterShop),
             new Option("Move forward!", (Action)MoveForward),
+            new Option("Shop", (Action)EnterShop),
             new Option("Open Inventory", (Action)ShowInventoryMenu),
             new Option("Quit Game",(Action)EndGame)
         }); // Tile Menu UI
@@ -125,10 +131,11 @@ namespace TRP //Version 0.1
 
         public static void GameManager() //handles a game instance
         {
+            bool gameOver = false;
             StartGame();
-            while (Player1.HitPoints > 0)
+            while (Player1.HitPoints > 0 && gameOver == false)
             {
-                InitTileEvent();
+                gameOver = InitTileEvent();
             }
         }
 
@@ -157,13 +164,24 @@ namespace TRP //Version 0.1
             Map = GenerateMap();
             Console.Clear();
             test();
+
         } //init a new game
-        public static void InitTileEvent() // init the current tile event
+        public static bool InitTileEvent() // init the current tile event
         {
             Tile tile = Map.CurrentTile;
             TileType type = tile.Type;
 
-            if (type == TileType.Battle)
+            if (Map.CurrentLayer.Num == 10 && type == TileType.Boss)
+            {
+                Battle();
+
+                if (Player1.HitPoints > 0)
+                {
+                    WinGame();
+                    return true;
+                }
+            }
+            if (type == TileType.Battle || type == TileType.Boss)
             {
                 if (!(tile.EventIsDone))
                 {
@@ -176,14 +194,23 @@ namespace TRP //Version 0.1
             {
                 ShowActionMenu();
             }
-            if (type == TileType.Boss)
-            {
-                //Initiate Boss Fight
-            }
+            return false;
         }
         public static void MoveForward() // move the player one tile forward 
         {
             Map.MoveForward();
+        }
+        public static void WinGame()
+        {
+            PrintInColor("CONGRATZ",ConsoleColor.Yellow);
+            Thread.Sleep(2000);
+            PrintInColor("\nnow back to the menu..",ConsoleColor.Yellow);
+            Thread.Sleep(2000);
+            PrintInColor("\nnothing exciting after winning",ConsoleColor.Yellow);
+            Thread.Sleep(2000);
+            PrintInColor("\nEZ WIN EZ LIFE!", ConsoleColor.Yellow);
+            Thread.Sleep(5000);
+            Console.Clear();
         }
 
         #endregion
@@ -344,7 +371,6 @@ namespace TRP //Version 0.1
                 Console.WriteLine("GAME OVER.");
                 System.Threading.Thread.Sleep(5000);
                 Console.Clear();
-
             }
             else
             {
@@ -493,7 +519,16 @@ namespace TRP //Version 0.1
 
         public static Monster GenerateMonster() //generate a random monster
         {
-            Monster X = RandomMonsterSpawn(Monsters);
+            Monster X = new Monster();
+
+            if (Map.CurrentTile.Type == TileType.Boss)
+            {
+                X = RandomMonsterSpawn(Bosses);
+            }
+            else
+            {
+                X = RandomMonsterSpawn(Monsters);
+            }
             Monster enemy = Cloner.CloneJson(X);
             Item weapon = GenerateItem(Weapons);
             Item item = GenerateItem(Consumables);
@@ -642,7 +677,7 @@ namespace TRP //Version 0.1
                 Random random = new Random();
                 LayerType randomType = (LayerType)values.GetValue(random.Next(values.Length));
                 layer.Type = randomType;
-                layer.Num = i;
+                layer.Num = i + 1;
                 GenerateTiles(layer);
 
                 map.Layers[i] = layer;

@@ -18,8 +18,7 @@ namespace TRP
         {
             CurrentLayer = Layers[0];
             CurrentTile = CurrentLayer.Tiles[0];
-            int layerNum = CurrentLayer.Num + 1;
-            LayerName = " Layer " + layerNum;
+            LayerName = " Layer " + CurrentLayer.Num;
         }
         public void MoveForward()
         {
