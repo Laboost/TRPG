@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Text;
 
 namespace TRP
-{
-
+{ 
     public enum Rarity { Common, Rare, Legendary, Divine }
     public enum WieldAttribute { MainHand, OneHanded, TwoHanded }
     public enum EquipmentSlot {Head,Chest,Hands,Wrists,Legs,Feet,Weapon }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TRP
 {
-    public enum TileType {Boss, Battle} //first element is only picked for last tiles.
+    public enum TileType {Boss, Battle, Shop} //first element is only picked for last tiles.
     public enum LayerType {Desert, Forest}
 
     class Map

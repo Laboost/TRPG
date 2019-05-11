@@ -59,6 +59,46 @@ namespace TRP //Version 0.1
 
         static Shop CurrentShop = new Shop();
 
+
+
+        #endregion
+
+        #region load menus
+
+        static Menu InventoryMenu = new Menu("Tabs", new List<Option>
+            {
+                new Option("Weapons",(Action)WeaponInventory),
+                new Option("Items",(Action)ItemInventory)
+            }); //inventory Menu UI
+        public static void ShowInventoryMenu()
+        {
+            InventoryMenu.ChooseAction()();
+        }
+
+        static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
+            new Option("Search for Trouble", (Action)Battle),
+            new Option("Shop", (Action)EnterShop),
+            new Option("Open Inventory", (Action)ShowInventoryMenu),
+            new Option("Quit Game",(Action)EndGame)
+
+        }); // Tile Menu UI
+        static void ShowActionMenu()
+        {
+            ActionMenu.ChooseAction()();
+            if (Player1.HitPoints <= 0)
+            {
+                return;
+            }
+            ShowActionMenu();
+        } //return action menu action
+
+        static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)GameManager) }); //Main Menu
+        static void ShowStartMenu()
+        {
+            StartingMenu.ChooseAction()();
+            ShowStartMenu();
+        } //return starting menu action
+
         static Menu FightMenu = new Menu("Fight Menu", new List<Option> {
             new Option("Attack", 1),
             new Option("Open Inventory",2),
@@ -69,65 +109,17 @@ namespace TRP //Version 0.1
             return FightMenu.ChooseNum();
         } //return fight menu option number
 
+
         #endregion
 
-        static void Main(string[] args)
+        public static void GameManager() //handles a game instance
         {
-            #region load menus
+            StartGame();
+        }
 
-            void StartGame()
-            {
-                Player1 = new Player("Player1", 100, BasicSword,500);
-                Console.WriteLine("Choose your Name: ");
-                string name = Console.ReadLine();
-                Player1.Name = name;
-                Map = GenerateMap();
-                Console.Clear();
-
-                test();
-
-                ShowActionMenu();
-            } //init a new game
-            Menu InventoryMenu = new Menu("Tabs", new List<Option>
-            {
-                new Option("Weapons",(Action)WeaponInventory),
-                new Option("Items",(Action)ItemInventory)
-            });
-            void ShowInventoryMenu()
-            {
-                InventoryMenu.ChooseAction()();
-            }
-
-            Menu ActionMenu = new Menu("Action Menu", new List<Option> {
-            new Option("Search for Trouble", (Action)Battle),
-            new Option("Shop", (Action)EnterShop),
-            new Option("Open Inventory", (Action)ShowInventoryMenu),
-            new Option("Quit Game",(Action)EndGame)
-
-        }); // Idle Menu
-
-            void ShowActionMenu()
-            {
-                ActionMenu.ChooseAction()();
-                if (Player1.HitPoints <= 0)
-                {
-                    return;
-                }
-                ShowActionMenu();
-            } //return action menu action
-            Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)StartGame) }); //Main Menu
-            void ShowStartMenu()
-            {
-                StartingMenu.ChooseAction()();
-                ShowStartMenu();
-            } //return starting menu action
-
-
-            #endregion
-            
+        static void Main(string[] args)
+        {             
             ShowStartMenu();
-
-
             System.Threading.Thread.Sleep(5000);
         }
 
@@ -139,7 +131,17 @@ namespace TRP //Version 0.1
             }
         }
 
- 
+        public static void StartGame()
+        {
+            Player1 = new Player("Player1", 100, BasicSword, 500);
+            Console.WriteLine("Choose your Name: ");
+            string name = Console.ReadLine();
+            Player1.Name = name;
+            Map = GenerateMap();
+            Console.Clear();
+            test();
+        } //init a new game
+
         #region Item Methods
 
         public static void EnterShop()
@@ -607,7 +609,7 @@ namespace TRP //Version 0.1
             {
                 Tile tile = new Tile();
 
-                TileType[] values = { TileType.Battle };
+                TileType[] values = {TileType.Battle, TileType.Shop};
                 Random random = new Random();
                 TileType randomType = (TileType)values.GetValue(random.Next(values.Length));
                 tile.Type = randomType;
