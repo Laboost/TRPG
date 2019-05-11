@@ -76,20 +76,31 @@ namespace TRP //Version 0.1
         }
 
         static Menu ActionMenu = new Menu("Action Menu", new List<Option> {
-            new Option("Search for Trouble", (Action)Battle),
-            new Option("Shop", (Action)EnterShop),
+            new Option("Move forward!", (Action)MoveForward),
             new Option("Open Inventory", (Action)ShowInventoryMenu),
             new Option("Quit Game",(Action)EndGame)
-
+        });// Tile Menu with no shop
+        static Menu ActionMenuWithShop = new Menu("Action Menu", new List<Option> {
+            new Option("Shop", (Action)EnterShop),
+            new Option("Move forward!", (Action)MoveForward),
+            new Option("Open Inventory", (Action)ShowInventoryMenu),
+            new Option("Quit Game",(Action)EndGame)
         }); // Tile Menu UI
+
         static void ShowActionMenu()
         {
-            ActionMenu.ChooseAction()();
+            if (Map.CurrentTile.Type == TileType.Shop)
+            {
+                ActionMenuWithShop.ChooseAction()();
+            }
+            else
+            {
+                ActionMenu.ChooseAction()();
+            }
             if (Player1.HitPoints <= 0)
             {
                 return;
             }
-            ShowActionMenu();
         } //return action menu action
 
         static Menu StartingMenu = new Menu("Main Menu", new List<Option> { new Option("Start a new Game", (Action)GameManager) }); //Main Menu
@@ -115,6 +126,10 @@ namespace TRP //Version 0.1
         public static void GameManager() //handles a game instance
         {
             StartGame();
+            while (Player1.HitPoints > 0)
+            {
+                InitTileEvent();            
+            }
         }
 
         static void Main(string[] args)
@@ -131,6 +146,8 @@ namespace TRP //Version 0.1
             }
         }
 
+        #region Game Methods
+
         public static void StartGame()
         {
             Player1 = new Player("Player1", 100, BasicSword, 500);
@@ -141,6 +158,35 @@ namespace TRP //Version 0.1
             Console.Clear();
             test();
         } //init a new game
+        public static void InitTileEvent() // init the current tile event
+        {
+            Tile tile = Map.CurrentTile;
+            TileType type = tile.Type;
+
+            if (type == TileType.Battle)
+            {
+                if (!(tile.EventIsDone))
+                {
+                    Battle();
+                    tile.EventIsDone = true;
+                }
+                ShowActionMenu();
+            }
+            if (type == TileType.Shop)
+            {
+                ShowActionMenu();
+            }
+            if (type == TileType.Boss)
+            {
+                //Initiate Boss Fight
+            }
+        }
+        public static void MoveForward() // move the player one tile forward 
+        {
+            Map.MoveForward();
+        }
+
+        #endregion
 
         #region Item Methods
 
@@ -269,7 +315,6 @@ namespace TRP //Version 0.1
                     PrintInColor("You KILLED the " + Enemy.Name,ConsoleColor.Yellow);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
-                    Map.MoveForward();
                     System.Threading.Thread.Sleep(1000);
                     break;
                 }
@@ -583,11 +628,11 @@ namespace TRP //Version 0.1
         public static Map GenerateMap()
         {
             Map map = new Map();
-            GenerateLayer(map);
+            GenerateLayers(map);
             map.InitMap();
             return map;
         }
-        public static void GenerateLayer(Map map)
+        public static void GenerateLayers(Map map)
         {
             for (int i = 0; i < 10; i++)
             {

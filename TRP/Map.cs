@@ -49,5 +49,6 @@ namespace TRP
         public int Num { get; set; }
         public TileType Type { get; set; }
         public string Name { get; set; }
+        public bool EventIsDone = false;
     }
 }
