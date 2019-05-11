@@ -30,7 +30,7 @@ namespace TRP //Version 0.1
         #endregion
         #endregion
 
-        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0,SwordSkillSet,0,5);
+        static Weapon BasicSword = new Weapon("Basic Sword", 10, WieldAttribute.MainHand, 0, SwordSkillSet, 0, 5);
         static List<Weapon> Weapons = new List<Weapon> {
             new Weapon("Sword", 20,WieldAttribute.MainHand,400,SwordSkillSet,10,7)
             , new Weapon("Spike", 40,WieldAttribute.TwoHanded,300,SpikeSkillSet,50,10)
@@ -50,7 +50,7 @@ namespace TRP //Version 0.1
         }; //load all game Equipment
 
         static Map Map;
-        static Player Player1 = new Player("Player1", 100, BasicSword,0); //Player
+        static Player Player1 = new Player("Player1", 100, BasicSword, 0); //Player
 
         static List<Monster> Monsters = new List<Monster> {
             new Monster("Wolf", 25, 30,75,40),
@@ -128,12 +128,12 @@ namespace TRP //Version 0.1
             StartGame();
             while (Player1.HitPoints > 0)
             {
-                InitTileEvent();            
+                InitTileEvent();
             }
         }
 
         static void Main(string[] args)
-        {             
+        {
             ShowStartMenu();
             System.Threading.Thread.Sleep(5000);
         }
@@ -142,7 +142,7 @@ namespace TRP //Version 0.1
         {
             for (int i = 0; i < 20; i++)
             {
-                Player1.AddToWeaponInventory(GenerateItem(Weapons,true));
+                Player1.AddToWeaponInventory(GenerateItem(Weapons, true));
             }
         }
 
@@ -204,11 +204,11 @@ namespace TRP //Version 0.1
             Console.Clear();
             Console.WriteLine("Choose A Weapon to equip.\n");
             Console.Write("[MainHand]");
-            Menu.DescribeItem(Player1.EquippedWeapons[0],false);
+            Menu.DescribeItem(Player1.EquippedWeapons[0], false);
             if (Player1.EquippedWeapons[1] != null)
             {
                 Console.WriteLine("[OffHand]");
-                Menu.DescribeItem(Player1.EquippedWeapons[1],false);
+                Menu.DescribeItem(Player1.EquippedWeapons[1], false);
             }
             else
             {
@@ -220,7 +220,7 @@ namespace TRP //Version 0.1
             int WeaponCount;
             for (WeaponCount = 0; WeaponCount < Player1.WeaponInventory.Count; WeaponCount++) //shows all items in inventory
             {
-                Menu.DescribeItem(Player1.WeaponInventory[WeaponCount],true ,WeaponCount);//show Inventory
+                Menu.DescribeItem(Player1.WeaponInventory[WeaponCount], true, WeaponCount);//show Inventory
             }
             Console.WriteLine("\n[0] Quit");
 
@@ -312,7 +312,7 @@ namespace TRP //Version 0.1
                 if (Enemy.HitPoints <= 0) //if enemy died
                 {
                     endBattle = true;
-                    PrintInColor("You KILLED the " + Enemy.Name,ConsoleColor.Yellow);
+                    PrintInColor("You KILLED the " + Enemy.Name, ConsoleColor.Yellow);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
                     System.Threading.Thread.Sleep(1000);
@@ -405,7 +405,7 @@ namespace TRP //Version 0.1
             {
                 damageDealt = 0;
             }
-           
+
             return damageDealt;
         }
 
@@ -552,7 +552,7 @@ namespace TRP //Version 0.1
         public static Item GenerateItem<T>(List<T> items, bool NoEmpty = false)
         {
             List<Item> convertedItems = items.Cast<Item>().ToList();
-            Item origin = RandomItemDrop(convertedItems,NoEmpty);
+            Item origin = RandomItemDrop(convertedItems, NoEmpty);
             if (origin == null)
             {
                 return origin;
@@ -602,7 +602,7 @@ namespace TRP //Version 0.1
                 return item;
             }
         }
-        public static Item RandomItemDrop(List<Item> items,bool NoEmpty = false)
+        public static Item RandomItemDrop(List<Item> items, bool NoEmpty = false)
         {
             int roll;
             if (NoEmpty == true)
@@ -653,10 +653,25 @@ namespace TRP //Version 0.1
             for (int i = 0; i < 8; i++)
             {
                 Tile tile = new Tile();
+                List<TileType> tileTypePool = new List<TileType>();
 
-                TileType[] values = {TileType.Battle, TileType.Shop};
+                if (i == 0) //first tile types
+                {
+                    tileTypePool.Add(TileType.Battle);
+                }
+                else if (i == 7) //Last tile typs (Boss) 
+                {
+                    tileTypePool.Add(TileType.Boss);
+                }
+                else
+                {
+                    tileTypePool.Add(TileType.Battle);
+                    tileTypePool.Add(TileType.Shop);
+                }
+
                 Random random = new Random();
-                TileType randomType = (TileType)values.GetValue(random.Next(values.Length));
+                int randomInt = random.Next(tileTypePool.Count);
+                TileType randomType = tileTypePool[randomInt];
                 tile.Type = randomType;
                 tile.Num = i;
 
@@ -686,6 +701,7 @@ namespace TRP //Version 0.1
                 layer.Tiles[i] = tile;
             }
         } //generte tiles for the layer of the map
+
         #endregion
 
         #region UI
