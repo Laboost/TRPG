@@ -29,6 +29,12 @@ namespace TRP //Version 0.1
 
         #endregion
 
+        #region UI
+        public const int SPEED_VAR = 1000;
+        public const int Battle_SPEED_VAR = 200;
+        public const int WIN_TEXT_SPEED = SPEED_VAR * 2;
+
+        #endregion
         #endregion
 
         #region Load Objects
@@ -160,7 +166,7 @@ namespace TRP //Version 0.1
         static void Main(string[] args)
         {
             ShowStartMenu();
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(SPEED_VAR * 4);
         }
 
         public static void test() //Test
@@ -221,13 +227,13 @@ namespace TRP //Version 0.1
         public static void WinGame()
         {
             PrintInColor("CONGRATZ",ConsoleColor.Yellow);
-            Thread.Sleep(2000);
+            Thread.Sleep(WIN_TEXT_SPEED);
             PrintInColor("\nnow back to the menu..",ConsoleColor.Yellow);
-            Thread.Sleep(2000);
+            Thread.Sleep(WIN_TEXT_SPEED);
             PrintInColor("\nnothing exciting after winning",ConsoleColor.Yellow);
-            Thread.Sleep(2000);
+            Thread.Sleep(WIN_TEXT_SPEED);
             PrintInColor("\nEZ WIN EZ LIFE!", ConsoleColor.Yellow);
-            Thread.Sleep(5000);
+            Thread.Sleep(WIN_TEXT_SPEED * 2);
             Console.Clear();
         }
 
@@ -345,14 +351,14 @@ namespace TRP //Version 0.1
                     endBattle = true;
                     Console.Clear();
                     PrintInColor("You have Escaped!", ConsoleColor.Blue);
-                    System.Threading.Thread.Sleep(3000);
+                    System.Threading.Thread.Sleep(Battle_SPEED_VAR * 4);
                     break;
                 }
                 RefreshScreen(Enemy);
                 if (playerAction.Contains("You hit")) //if player attacked
                 {
                     Console.WriteLine(playerAction);
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(Battle_SPEED_VAR * 2);
                 }
                 if (Enemy.HitPoints <= 0) //if enemy died
                 {
@@ -360,24 +366,24 @@ namespace TRP //Version 0.1
                     PrintInColor("You KILLED the " + Enemy.Name, ConsoleColor.Yellow);
                     LootMonster(Enemy, Player1);
                     Player1.AddExp(Enemy.Exp);
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(Battle_SPEED_VAR);
                     break;
                 }
-                System.Threading.Thread.Sleep(800);
+                System.Threading.Thread.Sleep(Battle_SPEED_VAR);
 
                 double damageDealt = Attack(Enemy.AttackPoints, Player1); //enemy turn
 
                 Console.Write(Enemy.Name + " hit you with ");
                 PrintInColor(damageDealt.ToString(), ConsoleColor.Red);
                 Console.Write(" Damage");
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(Battle_SPEED_VAR);
                 if (Player1.HitPoints <= 0) //if player died
                 {
                     endBattle = true;
                     RefreshScreen(Enemy);
                     Console.Write("You have ");
                     PrintInColor("DIED", ConsoleColor.Red);
-                    System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(Battle_SPEED_VAR * 3);
                     break;
                 }
 
@@ -387,7 +393,7 @@ namespace TRP //Version 0.1
             {
                 Console.Clear();
                 Console.WriteLine("GAME OVER.");
-                System.Threading.Thread.Sleep(5000);
+                System.Threading.Thread.Sleep(SPEED_VAR * 3);
                 Console.Clear();
             }
             else
@@ -785,7 +791,7 @@ namespace TRP //Version 0.1
                 if (result == false)
                 {
                     Console.WriteLine("Not enough Minerals.");
-                    Thread.Sleep(800);
+                    Thread.Sleep(SPEED_VAR);
                 }
                 else
                 {
