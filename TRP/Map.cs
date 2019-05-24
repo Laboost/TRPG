@@ -5,7 +5,7 @@ using System.Text;
 namespace TRP
 {
     public enum TileType {Boss, Battle, Shop} //first element is only picked for last tiles.
-    public enum LayerType {Desert, Forest}
+    public enum LayerType {Desert, Forest, Snowy}
 
     class Map
     {
@@ -28,9 +28,9 @@ namespace TRP
         {
             if (CurrentTile.Type == TileType.Boss) // if tile is last in layer == boss
             {
-                CurrentLayer = Layers[CurrentLayer.Num + 1];
+                CurrentLayer = Layers[CurrentLayer.Num];
                 CurrentTile = CurrentLayer.Tiles[0];
-                int layerNum = CurrentLayer.Num + 1;
+                int layerNum = CurrentLayer.Num;
                 LayerName = " Layer " + layerNum;
             }
             else
@@ -44,7 +44,7 @@ namespace TRP
     {
         public int Num { get; set; }
         public LayerType Type { get; set; }
-        public Tile[] Tiles = new Tile[8];
+        public Tile[] Tiles = new Tile[Program.NUMBER_OF_TILES_IN_LAYER];
     }
 
     class Tile

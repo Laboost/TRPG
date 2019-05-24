@@ -24,12 +24,8 @@ namespace TRP //Version 0.1
 
         #region MAP
 
-        public const int NUMBER_OF_MAP_LAYERS = 10;
-        private const int NUMBER_OF_TILES_IN_LAYER = 8;
-
-        #endregion
-
-        #region WIP
+        public const int NUMBER_OF_MAP_LAYERS = 3;
+        public const int NUMBER_OF_TILES_IN_LAYER = 3;
 
         #endregion
 
@@ -738,7 +734,7 @@ namespace TRP //Version 0.1
                 Random random = new Random();
                 int randomInt = random.Next(tileTypePool.Count);
                 TileType randomType = tileTypePool[randomInt];
-                string layerName = Enum.GetName(typeof(LayerType), randomInt);
+                string layerName = Enum.GetName(typeof(LayerType), layer.Type);
                 tile.Type = randomType;
                 tile.Num = i;
 
