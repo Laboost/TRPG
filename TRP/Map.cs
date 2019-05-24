@@ -9,11 +9,15 @@ namespace TRP
 
     class Map
     {
-        public Layer[] Layers = new Layer[10];
+        public Layer[] Layers;
         public string LayerName { get; set; }
         public Layer CurrentLayer { get; private set; }
         public Tile CurrentTile { get; private set; }
 
+        public Map(int numOfMapLayers)
+        {
+            Layers = new Layer[numOfMapLayers];
+        }
         public void InitMap()
         {
             CurrentLayer = Layers[0];

@@ -13,6 +13,28 @@ namespace TRP //Version 0.1
 {
     class Program
     {
+        #region CONSTS
+
+        #region Player
+
+        private const double PLAYER_STARTING_HP = 100;
+        private const int PLAYER_STARTING_GOLD = 500;
+
+        #endregion
+
+        #region MAP
+
+        public const int NUMBER_OF_MAP_LAYERS = 10;
+        private const int NUMBER_OF_TILES_IN_LAYER = 8;
+
+        #endregion
+
+        #region WIP
+
+        #endregion
+
+        #endregion
+
         #region Load Objects
 
         #region Skills
@@ -157,7 +179,7 @@ namespace TRP //Version 0.1
 
         public static void StartGame()
         {
-            Player1 = new Player("Player1", 100, BasicSword, 500);
+            Player1 = new Player("Player1", PLAYER_STARTING_HP, BasicSword, PLAYER_STARTING_GOLD);
             Console.WriteLine("Choose your Name: ");
             string name = Console.ReadLine();
             Player1.Name = name;
@@ -171,7 +193,7 @@ namespace TRP //Version 0.1
             Tile tile = Map.CurrentTile;
             TileType type = tile.Type;
 
-            if (Map.CurrentLayer.Num == 10 && type == TileType.Boss)
+            if (Map.CurrentLayer.Num == NUMBER_OF_MAP_LAYERS && type == TileType.Boss)
             {
                 Battle();
 
@@ -493,6 +515,7 @@ namespace TRP //Version 0.1
 
         #region Generators
 
+        #region Shop
         public static void GenerateShop()
         {
             CurrentShop.Items.Clear();
@@ -516,6 +539,9 @@ namespace TRP //Version 0.1
                 }
             }
         } //Generate new Shop
+        #endregion
+
+        #region Monster
 
         public static Monster GenerateMonster() //generate a random monster
         {
@@ -561,29 +587,10 @@ namespace TRP //Version 0.1
             }
             return null;
         }
+        
+        #endregion
 
-        public static Rarity RandomRarityDrop() //Generate Random Item Rarity
-        {
-            int roll = new Random().Next(0, 101);
-            if (roll <= 70)
-            {
-                return Rarity.Common;
-            }
-            else if (roll > 70 && roll <= 95)
-            {
-                return Rarity.Rare;
-            }
-            else if (roll > 95 && roll < 98)
-            {
-                return Rarity.Legendary;
-            }
-            else
-            {
-                return Rarity.Divine;
-            }
-
-        }
-
+        #region Item
         public static Item GenerateItem<T>(List<T> items, bool NoEmpty = false)
         {
             List<Item> convertedItems = items.Cast<Item>().ToList();
@@ -659,17 +666,41 @@ namespace TRP //Version 0.1
             }
             return null;
         }
+        public static Rarity RandomRarityDrop() //Generate Random Item Rarity
+        {
+            int roll = new Random().Next(0, 101);
+            if (roll <= 70)
+            {
+                return Rarity.Common;
+            }
+            else if (roll > 70 && roll <= 95)
+            {
+                return Rarity.Rare;
+            }
+            else if (roll > 95 && roll < 98)
+            {
+                return Rarity.Legendary;
+            }
+            else
+            {
+                return Rarity.Divine;
+            }
+
+        }
+        #endregion
+
+        #region Map
 
         public static Map GenerateMap()
         {
-            Map map = new Map();
+            Map map = new Map(NUMBER_OF_MAP_LAYERS);
             GenerateLayers(map);
             map.InitMap();
             return map;
         }
         public static void GenerateLayers(Map map)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < NUMBER_OF_MAP_LAYERS; i++)
             {
                 Layer layer = new Layer();
 
@@ -685,7 +716,7 @@ namespace TRP //Version 0.1
         }
         public static void GenerateTiles(Layer layer)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < NUMBER_OF_TILES_IN_LAYER; i++)
             {
                 Tile tile = new Tile();
                 List<TileType> tileTypePool = new List<TileType>();
@@ -694,7 +725,7 @@ namespace TRP //Version 0.1
                 {
                     tileTypePool.Add(TileType.Battle);
                 }
-                else if (i == 7) //Last tile typs (Boss) 
+                else if (i == NUMBER_OF_TILES_IN_LAYER - 1) //Last tile typs (Boss) 
                 {
                     tileTypePool.Add(TileType.Boss);
                 }
@@ -707,35 +738,24 @@ namespace TRP //Version 0.1
                 Random random = new Random();
                 int randomInt = random.Next(tileTypePool.Count);
                 TileType randomType = tileTypePool[randomInt];
+                string layerName = Enum.GetName(typeof(LayerType), randomInt);
                 tile.Type = randomType;
                 tile.Num = i;
 
                 int count = i + 1;
-                if (layer.Type == LayerType.Desert)
-                {
-                    tile.Name = "Desert " + count;
-                }
-                if (layer.Type == LayerType.Forest)
-                {
-                    tile.Name = "Forest " + count;
-                }
+                tile.Name = layerName + " " + count;
+
                 if (i == 7) //if tile is last in layer
                 {
                     tile.Type = TileType.Boss;
-
-                    if (layer.Type == LayerType.Desert)
-                    {
-                        tile.Name = "Desert Boss";
-                    }
-                    if (layer.Type == LayerType.Forest)
-                    {
-                        tile.Name = "Forest Boss";
-                    }
+                    tile.Name = layerName;
                 }
 
                 layer.Tiles[i] = tile;
             }
         } //generte tiles for the layer of the map
+        
+        #endregion
 
         #endregion
 
